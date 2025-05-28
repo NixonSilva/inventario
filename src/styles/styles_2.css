@@ -1,0 +1,358 @@
+/* CONTENEDOR PRINCIPAL */
+.container {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, poppins, sans-serif;
+}
+
+/* TÍTULO */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.texto_explicativo{
+  text-align: center;
+}
+
+/* TABLA */
+table {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+  color: #eee;
+  background-color: #0082C6;
+  border-bottom: 1px solid #ccc;
+}
+
+td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.fila-con-linea {
+  border-bottom: 1px solid #ddd; /* línea gris clara */
+  padding: 12px 0; /* espaciado vertical */
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.bold {
+  font-weight: bold;
+  color: black;
+}
+
+/* FILTROS */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filtros-container input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+/* BOTONES */
+.btn-mas {
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-mas:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-estilo {
+  background-color: white;
+  border: 2px solid #007bff;
+  color: #007bff;
+  padding: 2px 1px;
+  height: 40px;
+  width: 120px;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-estilo:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.expandida-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.expandida-botones button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0c7cd5;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.expandida-botones button:hover {
+  background-color: #095ea8;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contenido {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+
+/* PAGINACIÓN */
+.paginacion-mejorada {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.paginacion-mejorada button {
+  min-width: 40px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginacion-mejorada button:hover:not(:disabled) {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.paginacion-mejorada button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagina-activa {
+  background-color: #007bff !important;
+  color: white !important;
+  border-color: #007bff !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .filtros-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-estilo {
+    width: 100%;
+  }
+
+  table th,
+  table td {
+    font-size: 13px;
+  }
+
+  .paginacion-mejorada {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.usuario-hover {
+  cursor: pointer;
+  position: relative;
+}
+
+.fila-expandida td {
+  background-color: white;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  transition: all 0.3s ease-in-out;
+}
+
+.info-expandida {
+  margin: 0 auto;              /* Centra la tabla dentro del td */
+  width: 100%;                 /* Usa todo el ancho disponible */ 
+  border-spacing: 10px 10px;   /* Espaciado entre columnas (40px) y filas (10px) */
+  text-align: left;            /* Justifica el texto a la izquierda */
+}
+
+.info-expandida p {
+  vertical-align: top;
+}
+.info-expandida p strong {
+  font-weight: 600;
+}
+.tablaExpandida td{
+  padding: 8px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.tablaExpandida td, .tablaExpandida th, .tablaExpandida tr {
+  border: none;
+}
+
+.tarjeta-equipo {
+  background-color: #ffffff;
+  border: 1px solid #dfe6ed;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.cabecera-equipo {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.columna {
+  text-align: left;
+  width: 0px;
+}
+
+.columna-izquierda {
+  text-align: left;
+  width: 0px;
+}
+
+.columna-izquierda p{
+  white-space: nowrap; 
+}
+.columna-derecha p{
+  white-space: nowrap; 
+}
+.columna p{
+  white-space: nowrap; 
+}
+.fila-expandida {
+  background-color: #f9f9f9;
+}
+
+.botones-expandido {
+  margin-top: 10px;
+}
+
+.botones-expandido button {
+  margin-right: 10px;
+}
+
+.botones-acciones {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.btn-ver {
+  background-color: #4fafd4;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-editar {
+  background-color: #F2CA80;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-eliminar {
+  background-color: #F27979;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-ver:hover {
+  background-color: #0082C6;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #e6a93a;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn-eliminar:hover {
+  background-color: #e65151;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
