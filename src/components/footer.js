@@ -1,5 +1,6 @@
 
 // import { useAuth } from '../AuthContext';
+import React from 'react';
 import "../styles/Footer.css"
 
 function Footer() {

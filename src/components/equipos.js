@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaFilter } from "react-icons/fa";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
-const API_URL = "http://localhost:3000/api/equipos";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/equipos.php";
 
 const Equipos = () => {
   const [equipos, setEquipos] = useState([]);
@@ -39,7 +39,7 @@ const Equipos = () => {
   const aplicarFiltros = () => {
     return equipos.filter((equipo) => {
       return (
-        (equipo.usuario || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
+        (equipo.usuarios || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
         (equipo.ubicacion || "").toLowerCase().includes(filtros.ubicacion.toLowerCase()) &&
         (equipo.tipo_equipo || "").toLowerCase().includes(filtros.tipo.toLowerCase()) 
       );
