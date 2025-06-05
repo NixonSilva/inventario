@@ -1,62 +1,61 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import "../styles/styles_2.css";
 import { useNavigate } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/equipos.php";
 
 const Equipos = () => {
   const [equipos, setEquipos] = useState([]);
-  const navigate = useNavigate();
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
     usuario: "",
     ubicacion: "",
-    tipo: ""
+    tipo: "",
   });
 
-  const obtenerEquipos = useCallback(async () => {
+  const navigate = useNavigate();
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const obtenerEquipos = async () => {
     try {
       const response = await axios.get(API_URL);
-      const datos = Array.isArray(response.data.datos) ? response.data.datos : [];
+      const datos = Array.isArray(response.data.equipos) ? response.data.equipos : [];
       setEquipos(datos);
     } catch (error) {
       console.error("Error al obtener equipos:", error);
-      setEquipos([]);
-      setTotalPaginas(1);
     }
-  }, [paginaActual]);
+  };
 
   useEffect(() => {
     obtenerEquipos();
-  }, [obtenerEquipos]);
+  }, []);
 
-  const aplicarFiltros = () => {
+  const equiposFiltrados = useMemo(() => {
     return equipos.filter((equipo) => {
       return (
-        (equipo.usuarios || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
+        (equipo.usuario || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
         (equipo.ubicacion || "").toLowerCase().includes(filtros.ubicacion.toLowerCase()) &&
-        (equipo.tipo_equipo || "").toLowerCase().includes(filtros.tipo.toLowerCase()) 
+        (equipo.tipo_equipo || "").toLowerCase().includes(filtros.tipo.toLowerCase())
       );
     });
-  };
+  }, [equipos, filtros]);
+
+  const totalPages = Math.ceil(equiposFiltrados.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = equiposFiltrados.slice(indexOfFirstItem, indexOfLastItem);
 
   const limpiarFiltros = () => {
-    setFiltros({ usuario: "", ubicacion: "", tipo: ""});
-  };
-
-  const cambiarPagina = (nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
+    setFiltros({ usuario: "", ubicacion: "", tipo: "" });
+    setCurrentPage(1);
   };
 
   const handleInputChange = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
+    setCurrentPage(1);
   };
 
   const toggleFila = (id) => {
@@ -65,12 +64,10 @@ const Equipos = () => {
     );
   };
 
-  // ➕ Función para redirigir a edición (puedes cambiar a abrir modal si usas uno)
   const abrirModal = (equipo) => {
     navigate(`/Formularios/equipos/${equipo.id}`);
   };
 
-  // ➖ Función para eliminar equipo desde la fila
   const handleEliminarDesdeFila = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
@@ -78,6 +75,30 @@ const Equipos = () => {
     } catch (error) {
       console.error("Error al eliminar equipo:", error);
     }
+  };
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const getVisiblePages = () => {
+    const visibleCount = 3;
+    let start = Math.max(1, currentPage - Math.floor(visibleCount / 2));
+    let end = start + visibleCount - 1;
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = Math.max(1, end - visibleCount + 1);
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   };
 
   return (
@@ -95,9 +116,7 @@ const Equipos = () => {
         <button className="btn-estilo" onClick={() => navigate("/Formularios/equipos")}>+ Equipo</button>
       </div>
 
-      {Array.isArray(equipos) && equipos.length === 0 && (
-        <p>No se encontraron equipos o no hay datos aún.</p>
-      )}
+      {equipos.length === 0 && <p>No se encontraron equipos o no hay datos aún.</p>}
 
       <table>
         <thead>
@@ -114,34 +133,28 @@ const Equipos = () => {
           </tr>
         </thead>
         <tbody>
-          {aplicarFiltros().map((equipo) => (
+          {currentItems.map((equipo) => (
             <React.Fragment key={equipo.id}>
               <tr className="fila-con-linea">
-                <td>{equipo.id}</td>
-                <td>{equipo.usuario}</td>
-                <td>{equipo.ubicacion}</td>
-                <td>{equipo.lugar_uso}</td>
-                <td>{equipo.tipo_equipo}</td>
-                <td>{equipo.marca}</td>
-                <td>{equipo.cpu}</td>
-                <td>{equipo.serial}</td>
+                <td>{equipo.EQUIPO_ID}</td>
+                <td>{equipo.USUARIO}</td>
+                <td>{equipo.UBICACION}</td>
+                <td>{equipo.LUGAR_USO}</td>
+                <td>{equipo.TIPO_EQUIPO}</td>
+                <td>{equipo.MARCA}</td>
+                <td>{equipo.CPU}</td>
+                <td>{equipo.SERIAL}</td>
                 <td>
                   <div className="botones-acciones">
-                    <button className="btn-ver" onClick={() => toggleFila(equipo.id)}>
-                      <FaEye />
-                    </button>
-                    <button className="btn-editar" onClick={() => abrirModal(equipo)}>
-                      <FaEdit />
-                    </button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.id)}>
-                      <FaTrash />
-                    </button>
+                    <button className="btn-ver" onClick={() => toggleFila(equipo.id)}><FaEye /></button>
+                    <button className="btn-editar" onClick={() => abrirModal(equipo)}><FaEdit /></button>
+                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.id)}><FaTrash /></button>
                   </div>
                 </td>
               </tr>
 
               {filasExpandida.includes(equipo.id) && (
-                <tr className="fila-expandida">
+                <tr className="fila-expandida" key={`expandida-${equipo.id}`}>
                   <td colSpan="9">
                     <table className="info-expandida">
                       <tbody className="tablaExpandida">
@@ -163,15 +176,7 @@ const Equipos = () => {
                         </tr>
                         <tr>
                           <td><strong>SSD:</strong></td>
-                          <td>{equipo.disco_ssd || "No especificado"}</td>
-                          <td><strong>Fecha Mantenimiento:</strong></td>
-                          <td>{equipo.fecha_mantenimiento || "No especificado"}</td>
-                          <td><strong>Fecha Devolución:</strong></td>
-                          <td>{equipo.fecha_devolucion || "No especificado"}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>IP:</strong></td>
-                          <td>{equipo.ip || "No especificado"}</td>
+                          <td>{equipo.disco_solido || "No especificado"}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -183,25 +188,25 @@ const Equipos = () => {
         </tbody>
       </table>
 
-      <div className="paginacion-mejorada">
-        <button onClick={() => cambiarPagina(1)} disabled={paginaActual === 1}>{"<<"}</button>
-        <button onClick={() => cambiarPagina(paginaActual - 1)} disabled={paginaActual === 1}>{"<"}</button>
+      {equiposFiltrados.length > itemsPerPage && (
+        <div className="paginacion-mejorada">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1}>&laquo;</button>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>&lsaquo;</button>
 
-        {(() => {
-          const paginas = [];
-          const inicio = Math.max(1, paginaActual - 1);
-          const fin = Math.min(totalPaginas, inicio + 2);
-          for (let i = inicio; i <= fin; i++) {
-            paginas.push(
-              <button key={i} onClick={() => cambiarPagina(i)} className={i === paginaActual ? "pagina-activa" : ""}>{i}</button>
-            );
-          }
-          return paginas;
-        })()}
+          {getVisiblePages().map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className={currentPage === number ? "pagina-activa" : ""}
+            >
+              {number}
+            </button>
+          ))}
 
-        <button onClick={() => cambiarPagina(paginaActual + 1)} disabled={paginaActual === totalPaginas}>{">"}</button>
-        <button onClick={() => cambiarPagina(totalPaginas)} disabled={paginaActual === totalPaginas}>{">>"}</button>
-      </div>
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>&rsaquo;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages}>&raquo;</button>
+        </div>
+      )}
     </div>
   );
 };
