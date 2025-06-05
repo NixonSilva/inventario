@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { FaTools, FaUsers, FaPhone, FaKeyboard, FaPrint } from "react-icons/fa"; 
 import "../styles/index.css";
 import Footer from "./footer";
-import Header from "./header"; // Asegúrate de que sea Header.js y no header.js
+//import Header from "./header"; // Asegúrate de que sea Header.js y no header.js
 
 function Servicios() {
     return (
         <>
-            <Header /> {/* Aquí se incluye el encabezado */}
+            {/*<Header /> {/* Aquí se incluye el encabezado */}
             <div className="servicios-container">
                 <h1 className="titulo">Manejo Inventarios</h1>
 

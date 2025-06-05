@@ -1,51 +1,64 @@
 // src/App.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Header from "./components/header";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Importación de otros componentes (tablas y gráficas)
+// Auth
+import { AuthProvider } from "./AutoContext";
+//import ProtectedRouteInternal from "./LoginValidate/ProtectedRouteInternal";
+
+// Componentes
+import Header from "./components/header";
+//import LoginInterno from "./LoginValidate/loginInterno";
+
+// Páginas públicas
+import Servicios from "./components/servicios";
+
+// Páginas protegidas
 import TablaUsuarios from "./components/usuarios";
 import TablaEquipos from "./components/equipos";
 import TablaTelefonia from "./components/telefonia";
 import TablaPerifericos from "./components/perifericos";
 import TablaImpresoras from "./components/impresoras";
 import GraficasUsuarios from "./Graph/G_usuarios";
-import Servicios from "./components/servicios"; // Si quieres mostrarlo al inicio
+//import UsuariosPorEmpresa from "./Graph/UsuariosPorEmpresa";
 
-//Registros
+// Formularios protegidos
 import Registrotelefonia from "./Formularios/telefonia";
 import Registrousuarios from "./Formularios/usuarios";
 
 function App() {
   return (
-    <Router>
-      {/* Header se muestra en todas las páginas */}
-      <Header />
+    <AuthProvider>
+      <Router>
+        <Header />
 
-      <main>
-        <Routes>
-          {/* Página principal */}
-          <Route path="/" element={<Servicios />} />
+        <main>
+          <Routes>
+            {/* Rutas públicas */}
+            <Route path="/" element={<Servicios />} />
+            {/*<Route path="/login-navemar" element={<LoginInterno />} />*/}
 
-          {/* Rutas asociadas al header */}
-          <Route path="/informes" element={<GraficasUsuarios />} />
-          <Route path="/contacto" element={<p>Contacto en construcción</p>} />
-          <Route path="/proveedores" element={<p>Proveedores en construcción</p>} />
+            {/* Rutas protegidas */}
+            {/*<Route element={<ProtectedRouteInternal />}>*/}
+              <Route path="/informes" element={<GraficasUsuarios />} />
+              <Route path="/contacto" element={<p>Contacto en construcción</p>} />
+              <Route path="/proveedores" element={<p>Proveedores en construcción</p>} />
 
-          {/* Otras rutas disponibles en la app */}
-          <Route path="/usuarios" element={<TablaUsuarios />} />
-          <Route path="/equipos" element={<TablaEquipos />} />
-          <Route path="/telefonia" element={<TablaTelefonia />} />
-          <Route path="/perifericos" element={<TablaPerifericos />} />
-          <Route path="/impresoras" element={<TablaImpresoras />} />
-          <Route path="/Rtelefonia" element= {<Registrotelefonia />} />
-          <Route path="/Formularios/usuarios" element= {<Registrousuarios />} />
+              <Route path="/usuarios" element={<TablaUsuarios />} />
+              <Route path="/equipos" element={<TablaEquipos />} />
+              <Route path="/telefonia" element={<TablaTelefonia />} />
+              <Route path="/perifericos" element={<TablaPerifericos />} />
+              <Route path="/impresoras" element={<TablaImpresoras />} />
+              <Route path="/Rtelefonia" element={<Registrotelefonia />} />
+              <Route path="/Rusuarios" element={<Registrousuarios />} />
+            {/*</Route>*/}
 
-          {/* Ruta para páginas no encontradas */}
-          <Route path="*" element={<p>Página no encontrada</p>} />
-        </Routes>
-      </main>
-    </Router>
+            {/* Ruta para páginas no encontradas */}
+            <Route path="*" element={<p>Página no encontrada</p>} />
+          </Routes>
+        </main>
+      </Router>
+    </AuthProvider>
   );
 }
 

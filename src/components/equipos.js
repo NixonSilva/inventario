@@ -21,10 +21,9 @@ const Equipos = () => {
 
   const obtenerEquipos = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_URL}?page=${paginaActual}&limit=10`);
+      const response = await axios.get(API_URL);
       const datos = Array.isArray(response.data.datos) ? response.data.datos : [];
       setEquipos(datos);
-      setTotalPaginas(response.data.totalPaginas || 1);
     } catch (error) {
       console.error("Error al obtener equipos:", error);
       setEquipos([]);
