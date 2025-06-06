@@ -25,6 +25,9 @@ import GraficasUsuarios from "./Graph/G_usuarios";
 // Formularios protegidos
 import Registrotelefonia from "./Formularios/telefonia";
 import Registrousuarios from "./Formularios/usuarios";
+import Registroequipos from "./Formularios/RegistroEquipos";
+import Registroperifericos from "./Formularios/RegistroPerifericos";
+import Registroimpresoras from "./Formularios/Registroimpresoras";
 
 function App() {
   return (
@@ -51,6 +54,9 @@ function App() {
               <Route path="/impresoras" element={<TablaImpresoras />} />
               <Route path="/Rtelefonia" element={<Registrotelefonia />} />
               <Route path="/Rusuarios" element={<Registrousuarios />} />
+              <Route path="/Requipos" element={<Registroequipos />} />
+              <Route path="/Rperifericos" element={<Registroperifericos />} />
+              <Route path="/Rimpresoras" element={<Registroimpresoras />} />
             {/*</Route>*/}
 
             {/* Ruta para páginas no encontradas */}

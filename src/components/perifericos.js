@@ -1,67 +1,87 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import "../styles/styles_5.css";
 import { useNavigate } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
-const API_URL = "http://localhost:3000/api/perifericos";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/perifericos.php";
 
 const Perifericos = () => {
   const [perifericos, setPerifericos] = useState([]);
-  const navigate = useNavigate();
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
     usuario: "",
     pantalla1: "",
     pantalla2: "",
     mouse: "",
-    teclado: ""
+    teclado: "",
   });
 
-  const obtenerPerifericos = useCallback(async () => {
+  const navigate = useNavigate();
+
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const obtenerPerifericos = async () => {
     try {
-      const response = await axios.get(`${API_URL}?page=${paginaActual}&limit=10`);
-      const datos = response.data?.datos ?? []; // Asegura que siempre sea array
-      const total = response.data?.totalPaginas ?? 1; // Valor por defecto si no llega
-      setPerifericos(datos);
-      setTotalPaginas(total);
+      const response = await axios.get(API_URL);
+      setPerifericos(response.data.perifericos || []);
     } catch (error) {
       console.error("Error al obtener periféricos:", error);
-      setPerifericos([]); // fallback para evitar errores si falla la carga
     }
-  }, [paginaActual]);
+  };
 
   useEffect(() => {
     obtenerPerifericos();
-  }, [obtenerPerifericos]);
+  }, []);
 
-  const aplicarFiltros = () => {
-    return (perifericos ?? []).filter((item) => {
-      return (
-        (item.usuario_responsable || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
-        (item.pantalla_1_marca_modelo || "").toLowerCase().includes(filtros.pantalla1.toLowerCase()) &&
-        (item.pantalla_2_marca_modelo || "").toLowerCase().includes(filtros.pantalla2.toLowerCase()) &&
-        (item.mouse || "").toLowerCase().includes(filtros.mouse.toLowerCase()) &&
-        (item.teclado || "").toLowerCase().includes(filtros.teclado.toLowerCase())
-      );
-    });
+  const perifericosFiltrados = useMemo(() => {
+    return perifericos.filter((item) => (
+      (item.usuario_responsable || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
+      (item.pantalla_1_marca_modelo || "").toLowerCase().includes(filtros.pantalla1.toLowerCase()) &&
+      (item.pantalla_2_marca_modelo || "").toLowerCase().includes(filtros.pantalla2.toLowerCase()) &&
+      (item.mouse || "").toLowerCase().includes(filtros.mouse.toLowerCase()) &&
+      (item.teclado || "").toLowerCase().includes(filtros.teclado.toLowerCase())
+    ));
+  }, [perifericos, filtros]);
+
+  const totalPages = Math.ceil(perifericosFiltrados.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = perifericosFiltrados.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const getVisiblePages = () => {
+    const visibleCount = 3;
+    let start = Math.max(1, currentPage - Math.floor(visibleCount / 2));
+    let end = start + visibleCount - 1;
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = Math.max(1, end - visibleCount + 1);
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   };
 
   const limpiarFiltros = () => {
     setFiltros({ usuario: "", pantalla1: "", pantalla2: "", mouse: "", teclado: "" });
-  };
-
-  const cambiarPagina = (nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
+    setCurrentPage(1);
   };
 
   const handleInputChange = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
+    setCurrentPage(1);
   };
 
   const toggleFila = (id) => {
@@ -70,18 +90,16 @@ const Perifericos = () => {
     );
   };
 
-  // ➕ Función para redirigir a edición (puedes cambiar a abrir modal si usas uno)
-  const abrirModal = (perifericos) => {
-    navigate(`/Formularios/perifericos/${perifericos.id}`);
+  const abrirModal = (item) => {
+    navigate(`/Formularios/perifericos/${item.id}`);
   };
 
-  // ➖ Función para eliminar equipo desde la fila
   const handleEliminarDesdeFila = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       obtenerPerifericos();
     } catch (error) {
-      console.error("Error al eliminar equipo:", error);
+      console.error("Error al eliminar periférico:", error);
     }
   };
 
@@ -89,56 +107,27 @@ const Perifericos = () => {
     <div className="container">
       <h2>Lista de Periféricos</h2>
       <div className="texto_explicativo">
-         <p>En esta sección encontraras toda la información relacionada a la asignación de cada uno de los perifericos</p>
+        <p>En esta sección encontrarás toda la información relacionada a la asignación de cada uno de los periféricos.</p>
       </div>
 
       <div className="filtros-container">
-        <input
-          type="text"
-          name="usuario"
-          placeholder="Filtrar por usuario"
-          value={filtros.usuario}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="pantalla1"
-          placeholder="Filtrar por Pantalla 1"
-          value={filtros.pantalla1}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="pantalla2"
-          placeholder="Filtrar por Pantalla 2"
-          value={filtros.pantalla2}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="mouse"
-          placeholder="Filtrar por Mouse"
-          value={filtros.mouse}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="teclado"
-          placeholder="Filtrar por Teclado"
-          value={filtros.teclado}
-          onChange={handleInputChange}
-        />
+        <input type="text" name="usuario" placeholder="Filtrar por usuario" value={filtros.usuario} onChange={handleInputChange} />
+        <input type="text" name="pantalla1" placeholder="Filtrar por Pantalla 1" value={filtros.pantalla1} onChange={handleInputChange} />
+        <input type="text" name="pantalla2" placeholder="Filtrar por Pantalla 2" value={filtros.pantalla2} onChange={handleInputChange} />
+        <input type="text" name="mouse" placeholder="Filtrar por Mouse" value={filtros.mouse} onChange={handleInputChange} />
+        <input type="text" name="teclado" placeholder="Filtrar por Teclado" value={filtros.teclado} onChange={handleInputChange} />
+
         <button className="btn-estilo" onClick={limpiarFiltros}>
           Limpiar <FaFilter className="icono-filtro" />
         </button>
-        <button className="btn-estilo" onClick={() => navigate("/Formularios/perifericos")}>
-          + Agregar
+        <button className="btn-estilo" onClick={() => navigate("/Rperifericos")}>
+          + Periferico
         </button>
       </div>
 
-      {(perifericos?.length ?? 0) === 0 && <p>No se encontraron periféricos o no hay datos aún.</p>}
-
-      {(perifericos?.length ?? 0) > 0 && (
+      {perifericosFiltrados.length === 0 ? (
+        <p>No se encontraron periféricos.</p>
+      ) : (
         <table>
           <thead>
             <tr>
@@ -152,84 +141,78 @@ const Perifericos = () => {
             </tr>
           </thead>
           <tbody>
-            {aplicarFiltros().map((item) => (
-              <React.Fragment key={perifericos.id}>
-                <tr key={item.id} className="fila-con-linea">
+            {currentItems.map((item) => (
+              <React.Fragment key={item.id}>
+                <tr className="fila-con-linea">
                   <td>{item.id}</td>
-                  <td>{item.usuario_responsable}</td>
-                  <td>{item.pantalla_1_marca_modelo}</td>
-                  <td>{item.pantalla_2_marca_modelo}</td>
-                  <td>{item.mouse}</td>
-                  <td>{item.teclado}</td>
+                  <td>{item.USUARIO_RESPONSABLE}</td>
+                  <td>{item.PANTALLA_1_MARCA_MODELO || "No especificado"}</td>
+                  <td>{item.PANTALLA_2_MARCA_MODELO || "No especificado"}</td>
+                  <td>{item.MOUSE}</td>
+                  <td>{item.TECLADO}</td>
                   <td>
                     <div className="botones-acciones">
-                      <button className="btn-ver" onClick={() => toggleFila(perifericos.id)}>
-                        <FaEye />
-                      </button>
-                      <button className="btn-editar" onClick={() => abrirModal(perifericos)}>
-                        <FaEdit />
-                      </button>
-                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(perifericos.id)}>
-                        <FaTrash />
-                      </button>
+                      <button className="btn-ver" onClick={() => toggleFila(item.id)}><FaEye /></button>
+                      <button className="btn-editar" onClick={() => abrirModal(item)}><FaEdit /></button>
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(item.id)}><FaTrash /></button>
                     </div>
                   </td>
                 </tr>
-                {filasExpandida.includes(perifericos.id) && (
+                {filasExpandida.includes(item.id) && (
                   <tr className="fila-expandida">
                     <td colSpan="9">
                       <table className="info-expandida">
                         <tbody className="tablaExpandida">
                           <tr>
                             <td><strong>Diadema:</strong></td>
-                            <td>{perifericos.diadema || "No especificado"}</td>
+                            <td>{item.diadema || "No especificado"}</td>
                             <td><strong>Base refrigerante:</strong></td>
-                            <td>{perifericos.base_refigerante|| "No especificado"}</td>
+                            <td>{item.base_refigerante || "No especificado"}</td>
                           </tr>
                           <tr>
                             <td><strong>Base pantalla:</strong></td>
-                            <td>{perifericos.base_pantalla || "No especificado"}</td>
-                            <td><strong>Maletin:</strong></td>
-                            <td>{perifericos.maletin || "No especificado"}</td>
+                            <td>{item.base_pantalla || "No especificado"}</td>
+                            <td><strong>Maletín:</strong></td>
+                            <td>{item.maletin || "No especificado"}</td>
                           </tr>
                           <tr>
-                            <td><strong>Camara:</strong></td>
-                            <td>{perifericos.camara_desktop || "No especificado"}</td>
+                            <td><strong>Cámara:</strong></td>
+                            <td>{item.camara_desktop || "No especificado"}</td>
                           </tr>
                           <tr>
                             <td><strong>IP:</strong></td>
-                            <td>{perifericos.ip || "No especificado"}</td>
+                            <td>{item.ip || "No especificado"}</td>
                           </tr>
                         </tbody>
                       </table>
                     </td>
                   </tr>
                 )}
-              </React.Fragment>  
+              </React.Fragment>
             ))}
           </tbody>
         </table>
       )}
 
-      <div className="paginacion-mejorada">
-        <button onClick={() => cambiarPagina(1)} disabled={paginaActual === 1}>{"<<"}</button>
-        <button onClick={() => cambiarPagina(paginaActual - 1)} disabled={paginaActual === 1}>{"<"}</button>
+      {perifericosFiltrados.length > itemsPerPage && (
+        <div className="paginacion-mejorada">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1}>&laquo;</button>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>&lsaquo;</button>
 
-        {(() => {
-          const paginas = [];
-          const inicio = Math.max(1, paginaActual - 1);
-          const fin = Math.min(totalPaginas, inicio + 2);
-          for (let i = inicio; i <= fin; i++) {
-            paginas.push(
-              <button key={i} onClick={() => cambiarPagina(i)} className={i === paginaActual ? "pagina-activa" : ""}>{i}</button>
-            );
-          }
-          return paginas;
-        })()}
+          {getVisiblePages().map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className={currentPage === number ? "pagina-activa" : ""}
+            >
+              {number}
+            </button>
+          ))}
 
-        <button onClick={() => cambiarPagina(paginaActual + 1)} disabled={paginaActual === totalPaginas}>{">"}</button>
-        <button onClick={() => cambiarPagina(totalPaginas)} disabled={paginaActual === totalPaginas}>{">>"}</button>
-      </div>
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>&rsaquo;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages}>&raquo;</button>
+        </div>
+      )}
     </div>
   );
 };

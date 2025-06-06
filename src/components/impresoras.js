@@ -1,19 +1,14 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import "../styles/styles_6.css";
 import { useNavigate } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
-const API_URL = "http://localhost:3000/api/impresoras";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/impresoras.php";
 
 const Impresoras = () => {
   const [impresoras, setImpresoras] = useState([]);
-  const navigate = useNavigate();
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
-  const [modalImpresora, setModalImpresora] = useState(null);
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [impresoraEditada, setImpresoraEditada] = useState({});
+  const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
     ciudad: "",
     empresa: "",
@@ -23,21 +18,25 @@ const Impresoras = () => {
     estado: "",
   });
 
-  const obtenerImpresoras = useCallback(async () => {
+  const navigate = useNavigate();
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const obtenerImpresoras = async () => {
     try {
-      const response = await axios.get(`${API_URL}?page=${paginaActual}&limit=10`);
-      setImpresoras(response.data.datos);
-      setTotalPaginas(response.data.totalPaginas);
+      const response = await axios.get(API_URL);
+      const datos = Array.isArray(response.data.impresoras) ? response.data.impresoras : [];
+      setImpresoras(datos);
     } catch (error) {
       console.error("Error al obtener impresoras:", error);
     }
-  }, [paginaActual]);
+  };
 
   useEffect(() => {
     obtenerImpresoras();
-  }, [obtenerImpresoras]);
+  }, []);
 
-  const aplicarFiltros = () => {
+  const impresorasFiltradas = useMemo(() => {
     return impresoras.filter((impresora) => {
       return (
         (impresora.ciudad || "").toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
@@ -48,62 +47,78 @@ const Impresoras = () => {
         (impresora.estado || "").toLowerCase().includes(filtros.estado.toLowerCase())
       );
     });
-  };
+  }, [impresoras, filtros]);
+
+  const totalPages = Math.ceil(impresorasFiltradas.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = impresorasFiltradas.slice(indexOfFirstItem, indexOfLastItem);
 
   const limpiarFiltros = () => {
-    setFiltros({ ciudad: "", empresa: "", usuarioResponsable: "", marcaModelo: "", serial: "", estado: "" });
-  };
-
-  const cambiarPagina = (nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
+    setFiltros({
+      ciudad: "",
+      empresa: "",
+      usuarioResponsable: "",
+      marcaModelo: "",
+      serial: "",
+      estado: "",
+    });
+    setCurrentPage(1);
   };
 
   const handleInputChange = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
+    setCurrentPage(1);
+  };
+
+  const toggleFila = (id) => {
+    setFilasExpandida((prev) =>
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    );
   };
 
   const abrirModal = (impresora) => {
-    setModalImpresora(impresora);
-    setImpresoraEditada(impresora);
-    setModoEdicion(false);
+    navigate(`/Formularios/impresoras/${impresora.id}`);
   };
 
-  const cerrarModal = () => {
-    setModalImpresora(null);
-    setModoEdicion(false);
-  };
-
-  const handleEditar = () => {
-    setModoEdicion(true);
-  };
-
-  const handleGuardar = async () => {
+  const handleEliminarDesdeFila = async (id) => {
     try {
-      await axios.put(`${API_URL}/${impresoraEditada.id}`, impresoraEditada);
+      await axios.delete(`${API_URL}/${id}`);
       obtenerImpresoras();
-      cerrarModal();
-    } catch (error) {
-      console.error("Error al guardar cambios:", error);
-    }
-  };
-
-  const handleEliminar = async () => {
-    try {
-      await axios.delete(`${API_URL}/${modalImpresora.id}`);
-      obtenerImpresoras();
-      cerrarModal();
     } catch (error) {
       console.error("Error al eliminar impresora:", error);
     }
+  };
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const getVisiblePages = () => {
+    const visibleCount = 3;
+    let start = Math.max(1, currentPage - Math.floor(visibleCount / 2));
+    let end = start + visibleCount - 1;
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = Math.max(1, end - visibleCount + 1);
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   };
 
   return (
     <div className="container">
       <h2>Lista de Impresoras</h2>
       <div className="texto_explicativo">
-         <p>En esta sección encontraras toda la información relacionada a las impresoras</p>
+        <p>En esta sección encontrarás las impresoras registradas con sus detalles</p>
       </div>
 
       <div className="filtros-container">
@@ -113,8 +128,8 @@ const Impresoras = () => {
         <input type="text" name="marcaModelo" placeholder="Filtrar por marca/modelo" value={filtros.marcaModelo} onChange={handleInputChange} />
         <input type="text" name="serial" placeholder="Filtrar por serial" value={filtros.serial} onChange={handleInputChange} />
         <input type="text" name="estado" placeholder="Filtrar por estado" value={filtros.estado} onChange={handleInputChange} />
-        <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro"/></button>
-        <button className="btn-estilo" onClick={() => navigate("/Formularios/impresoras")}>+Impresora</button>
+        <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
+        <button className="btn-estilo" onClick={() => navigate("/Rimpresoras")}>+ Impresora</button>
       </div>
 
       {impresoras.length === 0 && <p>No se encontraron impresoras o no hay datos aún.</p>}
@@ -128,97 +143,74 @@ const Impresoras = () => {
             <th>Usuario Responsable</th>
             <th>Marca / Modelo</th>
             <th>Serial</th>
-            <th>IP</th>
             <th>Estado</th>
-            <th>Fecha Cambio Toner</th>
-            <th>Observación</th>
-            <th>Fecha Mantenimiento</th>
-            <th>Propietario</th>
             <th>Más</th>
           </tr>
         </thead>
         <tbody>
-          {aplicarFiltros().map((impresora) => (
-            <tr key={impresora.id} className="fila-con-linea">
-              <td>{impresora.id}</td>
-              <td>{impresora.ciudad}</td>
-              <td>{impresora.empresa}</td>
-              <td>{impresora.usuarioResponsable}</td>
-              <td>{impresora.marcaModelo}</td>
-              <td>{impresora.serial}</td>
-              <td>{impresora.ip}</td>
-              <td>{impresora.estado}</td>
-              <td>{impresora.fechaCambioToner}</td>
-              <td>{impresora.observacion}</td>
-              <td>{impresora.fechaMantenimiento}</td>
-              <td>{impresora.propietario}</td>
-              <td><button className="btn-mas" onClick={() => abrirModal(impresora)}>⋯</button></td>
-            </tr>
+          {currentItems.map((impresora) => (
+            <React.Fragment key={impresora.id}>
+              <tr className="fila-con-linea">
+                <td>{impresora.id}</td>
+                <td>{impresora.CIUDAD}</td>
+                <td>{impresora.EMPRESA}</td>
+                <td>{impresora.USUARIO_RESPONSABLE}</td>
+                <td>{impresora.MARCA_MODELO}</td>
+                <td>{impresora.SERIAL}</td>
+                <td>{impresora.ESTADO}</td>
+                <td>
+                  <div className="botones-acciones">
+                    <button className="btn-ver" onClick={() => toggleFila(impresora.id)}><FaEye /></button>
+                    <button className="btn-editar" onClick={() => abrirModal(impresora)}><FaEdit /></button>
+                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(impresora.id)}><FaTrash /></button>
+                  </div>
+                </td>
+              </tr>
+
+              {filasExpandida.includes(impresora.id) && (
+                <tr className="fila-expandida" key={`expandida-${impresora.id}`}>
+                  <td colSpan="8">
+                    <table className="info-expandida">
+                      <tbody className="tablaExpandida">
+                        <tr>
+                          <td><strong>IP:</strong></td>
+                          <td>{impresora.ip || "No especificado"}</td>
+                          <td><strong>Propietario:</strong></td>
+                          <td>{impresora.propietario || "No especificado"}</td>
+                          <td><strong>Fecha Cambio Tóner:</strong></td>
+                          <td>{impresora.fechaCambioToner || "No especificado"}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Mantenimiento:</strong></td>
+                          <td>{impresora.fechaMantenimiento || "No especificado"}</td>
+                          <td><strong>Observación:</strong></td>
+                          <td colSpan="3">{impresora.observacion || "No especificado"}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
 
-      <div className="paginacion-mejorada">
-        <button onClick={() => cambiarPagina(1)} disabled={paginaActual === 1}>{"<<"}</button>
-        <button onClick={() => cambiarPagina(paginaActual - 1)} disabled={paginaActual === 1}>{"<"}</button>
-
-        {(() => {
-          const paginas = [];
-          const inicio = Math.max(1, paginaActual - 1);
-          const fin = Math.min(totalPaginas, inicio + 2);
-
-          for (let i = inicio; i <= fin; i++) {
-            paginas.push(
-              <button key={i} onClick={() => cambiarPagina(i)} className={i === paginaActual ? "pagina-activa" : ""}>{i}</button>
-            );
-          }
-
-          return paginas;
-        })()}
-
-        <button onClick={() => cambiarPagina(paginaActual + 1)} disabled={paginaActual === totalPaginas}>{">"}</button>
-        <button onClick={() => cambiarPagina(totalPaginas)} disabled={paginaActual === totalPaginas}>{">>"}</button>
-      </div>
-
-      {modalImpresora && (
-        <div className="modal">
-          <div className="modal-contenido">
-            <h3>Detalles de la Impresora</h3>
-            {modoEdicion ? (
-              <>
-                <input value={impresoraEditada.ciudad} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, ciudad: e.target.value })} />
-                <input value={impresoraEditada.empresa} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, empresa: e.target.value })} />
-                <input value={impresoraEditada.usuarioResponsable} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, usuarioResponsable: e.target.value })} />
-                <input value={impresoraEditada.marcaModelo} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, marcaModelo: e.target.value })} />
-                <input value={impresoraEditada.serial} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, serial: e.target.value })} />
-                <input value={impresoraEditada.ip} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, ip: e.target.value })} />
-                <input value={impresoraEditada.estado} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, estado: e.target.value })} />
-                <input value={impresoraEditada.fechaCambioToner} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, fechaCambioToner: e.target.value })} />
-                <input value={impresoraEditada.observacion} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, observacion: e.target.value })} />
-                <input value={impresoraEditada.fechaMantenimiento} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, fechaMantenimiento: e.target.value })} />
-                <input value={impresoraEditada.propietario} onChange={(e) => setImpresoraEditada({ ...impresoraEditada, propietario: e.target.value })} />
-                <button onClick={handleGuardar}>Guardar</button>
-              </>
-            ) : (
-              <>
-                <p><strong>ID:</strong> {modalImpresora.id}</p>
-                <p><strong>Ciudad:</strong> {modalImpresora.ciudad}</p>
-                <p><strong>Empresa:</strong> {modalImpresora.empresa}</p>
-                <p><strong>Usuario Responsable:</strong> {modalImpresora.usuarioResponsable}</p>
-                <p><strong>Marca / Modelo:</strong> {modalImpresora.marcaModelo}</p>
-                <p><strong>Serial:</strong> {modalImpresora.serial}</p>
-                <p><strong>IP:</strong> {modalImpresora.ip}</p>
-                <p><strong>Estado:</strong> {modalImpresora.estado}</p>
-                <p><strong>Fecha Cambio Toner:</strong> {modalImpresora.fechaCambioToner}</p>
-                <p><strong>Observación:</strong> {modalImpresora.observacion}</p>
-                <p><strong>Fecha Mantenimiento:</strong> {modalImpresora.fechaMantenimiento}</p>
-                <p><strong>Propietario:</strong> {modalImpresora.propietario}</p>
-                <button onClick={handleEditar}>Editar</button>
-                <button onClick={handleEliminar}>Eliminar</button>
-              </>
-            )}
-            <button onClick={cerrarModal}>Cerrar</button>
-          </div>
+      {impresorasFiltradas.length > itemsPerPage && (
+        <div className="paginacion-mejorada">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1}>&laquo;</button>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>&lsaquo;</button>
+          {getVisiblePages().map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className={currentPage === number ? "pagina-activa" : ""}
+            >
+              {number}
+            </button>
+          ))}
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>&rsaquo;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages}>&raquo;</button>
         </div>
       )}
     </div>

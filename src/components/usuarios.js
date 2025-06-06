@@ -116,7 +116,7 @@ const Usuarios = () => {
         <input type="text" name="empresas" placeholder="Filtrar por empresa" value={filtros.empresas} onChange={handleInputChange} />
         <input type="text" name="unidades_negocio" placeholder="Filtrar por unidad de negocio" value={filtros.unidades_negocio} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Formularios/usuarios")}>+ Usuario</button>
+        <button className="btn-estilo" onClick={() => navigate("/Rusuarios")}>+ Usuario</button>
       </div>
 
       {usuarios.length === 0 && <p>No se encontraron usuarios o no hay datos aún.</p>}
