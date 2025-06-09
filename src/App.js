@@ -3,8 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Auth
-import { AuthProvider } from "./AutoContext";
-//import ProtectedRouteInternal from "./LoginValidate/ProtectedRouteInternal";
+import { AuthProvider } from "./AutoContext.jsx";
 
 // Componentes
 import Header from "./components/header";
