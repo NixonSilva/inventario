@@ -1,0 +1,75 @@
+:root {
+  --color-white: white;
+  --color-black: black;
+  --color-red: red;
+  --color-light: #f8f9fd;
+  --color-disabled: #79807f;
+  --color-gris-tooltip: #636363;
+  --color-borde-tramites: #b8b8b8;
+  --color-borde_resumenBl: #d9d9d9;
+  --box-shadow: 0px 3px 6px #00000029;
+  --box-shadow-mayor: 0px 6px 9px #00000029;
+  --box-shadow-clientes: 0px 6px 12px #00000029;
+  --fondo-gris: #a0a0a0;
+  --main-bg-color: #0082c6;
+  --main-txt-color: #000;
+  --menu-txt-size: 13px;
+  --main-txt-size: 14px;
+  --blog-topic-size: 13px;
+  --blog-titulo-size: 14px;
+  --sucursal-txt-size: 15px;
+  --oficinas-txt-size: 14px;
+  --derechos-txt-size: 13px;
+  --main-subtitle-size: 17px;
+  --main-subtitle-size-valores: 17px;
+  --main-bg-claro: #f2f4ff;
+  --button-txt-size: 13px;
+  --main-button-color: #0082c6;
+  --main-button-hover: white;
+  --colorPoderbotonpApro: #d8ffe9;
+  --color-borderPoderpApro: #37c976;
+  ---colorPoderbotonpRec: #ffe3e2;
+  --color-borderPoderRec: #fe4543;
+  --colorPoderbotonpTra: #fff9e7;
+  --color-borderPoderpTra: #ffcc3d;
+  --secondary-button-color: #cedeff;
+  --secondary-button-hover: white;
+  --third-button-color: white;
+  --disabled-button-color: #f2f4ff;
+  --disabled-button-color-text: #a0a0a0;
+  --third-button-hover: var(--main-button-color);
+  --h1-size: 40px;
+  --h2-size: 36px;
+  --h3-size: 32px;
+  --h4-size: 28px;
+  --h5-size: 26px;
+  --secondary-bg-color: #cedeff;
+  --bold-text: "Poppins-Bold", sans-serif;
+  --semibold-text: "Poppins-SemiBold", sans-serif;
+  --regular-text: "Poppins-Regular", sans-serif;
+  --medium-text: "Poppins-Medium", sans-serif;
+  --min-width-button: 150px;
+  --min-width-button-lg: 180px;
+  --width-timeline: 35%;
+  --width-timeline-tablet: 42%;
+  --min-width-button-modal: 30%;
+  --button-txt-size-modal: 13px;
+
+  --mobile-min-width-button-modal: 60%;
+  --mobile-button-txt-size-modal: 13px;
+  --derechos-mobile-txt-size: 10px;
+
+  --tablet-button-txt-size: 11px;
+
+  --mobile-button-txt-size: 10px;
+
+  --mobile-txt-size: 12px;
+  --mobile-subtitle-size: 14px;
+  --main-subtitle-size: 17px;
+  --h1-size-mobile: 25px;
+  --h2-size-mobile: 20px;
+  --h3-size-mobile: 16px;
+  --h4-size-mobile: 16px;
+  --h5-size-mobile: 16px;
+  --min-width-button-mobile: 115px;
+}
