@@ -22,11 +22,14 @@ import GraficasUsuarios from "./Graph/G_usuarios";
 //import UsuariosPorEmpresa from "./Graph/UsuariosPorEmpresa";
 
 // Formularios protegidos
-import Registrotelefonia from "./Formularios/telefonia";
-import Registrousuarios from "./Formularios/usuarios";
+import Registrotelefonia from "./Formularios/RegistroTelefonia.jsx";
+import Registrousuarios from "./Formularios/RegistroUsuarios.jsx";
 import Registroequipos from "./Formularios/RegistroEquipos";
 import Registroperifericos from "./Formularios/RegistroPerifericos";
 import Registroimpresoras from "./Formularios/Registroimpresoras";
+
+//Modificar Datos
+import EditarUsuario from "./Modificar/EditarUsuario.jsx";
 
 function App() {
   return (
@@ -56,6 +59,7 @@ function App() {
               <Route path="/Requipos" element={<Registroequipos />} />
               <Route path="/Rperifericos" element={<Registroperifericos />} />
               <Route path="/Rimpresoras" element={<Registroimpresoras />} />
+              <Route path="/Modificar/EditarUsuario/:id" element={<EditarUsuario />} />
             {/*</Route>*/}
 
             {/* Ruta para páginas no encontradas */}

@@ -40,7 +40,7 @@ const Registroimpresoras = () => {
 
   return (
     <div className="form-container">
-      <h2 className="form-title">Formulario de Registro</h2>
+      <h2 className="form-title">Registro de impresoras</h2>
       <form className="form-grid">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="form-group">

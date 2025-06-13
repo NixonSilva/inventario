@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/LoginModal.css";
 import { Link, useNavigate } from "react-router-dom";
-import config from "../../configuration/config";
-import BeatLoader from "react-spinners/BeatLoader";
+import config from "http://172.20.158.193/inventario_navesoft//backend/config/configuration.php";
+//import BeatLoader from "react-spinners/BeatLoader";
 import Alert from "@mui/material/Alert";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../AutoContext";
 import OlvidoPasswordInterno from "./OlvidoPasswordInterno";
 
 const LoginInterno = () => {
@@ -52,9 +52,8 @@ const LoginInterno = () => {
       if (data.status === "success") {
         loginInterno(
           {
-            nit: data.nit,
             nombreCliente: data.nombre,
-            nitsistema: data.nitsistema,
+
             perfil: data.perfil,
             proceso: data.proceso,
             email: data.email,
@@ -117,7 +116,7 @@ const LoginInterno = () => {
                 Entrar
               </button>
             ) : (
-              <BeatLoader color="#0082c6" size={15} margin={20} />
+              //<BeatLoader color="#0082c6" size={15} margin={20} />
             )}
             <Link onClick={handlePasswordResetClick} className="forgot-password mb-4">
               ¿Olvidó la contraseña?

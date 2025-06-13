@@ -6,10 +6,11 @@ import "../styles/styles_F2.css";
 const NuevoUsuario = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    Id: "",
     nombre: "",
     ubicacion: "",
-    empresa: "",
-    unidad_negocio: "",
+    empresas: "",
+    unidades_negocio: "",
   });
 
   const handleChange = (e) => {
@@ -18,7 +19,7 @@ const NuevoUsuario = () => {
 
   const handleRegistrar = async () => {
     try {
-      await axios.post("http://localhost:3000/api/usuarios", formData); // <-- Cambia la URL si tu backend tiene otro puerto o ruta
+      await axios.post("http://172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php", formData); // <-- Cambia la URL si tu backend tiene otro puerto o ruta
       alert("Usuario registrado correctamente");
       navigate("/usuarios"); // Redirige a la vista de usuarios
     } catch (error) {
@@ -32,11 +33,21 @@ const NuevoUsuario = () => {
       <h2 className="form-title">Registro de Usuario</h2>
       <div className="form-grid-simplificado">
         <label>
-          Nombre
+          Cedula
+          <input
+            type="text"
+            name="Id"
+            placeholder="Cedula"
+            value={formData.Id}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Nombre Completo
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre"
+            placeholder="Nombre Completo"
             value={formData.nombre}
             onChange={handleChange}
           />
@@ -55,9 +66,9 @@ const NuevoUsuario = () => {
           Empresa
           <input
             type="text"
-            name="empresa"
-            placeholder="Empresa"
-            value={formData.empresa}
+            name="empresas"
+            placeholder="Empresas"
+            value={formData.empresas}
             onChange={handleChange}
           />
         </label>
@@ -65,9 +76,9 @@ const NuevoUsuario = () => {
           Unidad de Negocio
           <input
             type="text"
-            name="unidad_negocio"
+            name="unidades_negocio"
             placeholder="Unidad de Negocio"
-            value={formData.unidad_negocio}
+            value={formData.unidades_negocio}
             onChange={handleChange}
           />
         </label>

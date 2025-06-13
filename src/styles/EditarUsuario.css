@@ -1,0 +1,70 @@
+/* Contenedor principal del formulario */
+.for-container {
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 40px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+/* Título */
+.for-container h2 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 25px;
+}
+
+/* Etiquetas */
+.for-container label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Inputs */
+.for-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.for-container input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Botones */
+.for-container button {
+  padding: 10px 20px;
+  margin: 10px 5px 0 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.for-container button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.for-container button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.for-container button[type="button"] {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.for-container button[type="button"]:hover {
+  background-color: #ddd;
+}

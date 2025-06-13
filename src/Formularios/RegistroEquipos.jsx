@@ -46,7 +46,7 @@ const RegistroEquipos = () => {
 
   return (
     <div className="form-containeer">
-      <h2 className="form-title">Formulario de Registro</h2>
+      <h2 className="form-title">Registro de equipos</h2>
       <form className="forms-grid">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="form-group">

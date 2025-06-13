@@ -73,8 +73,9 @@ const Usuarios = () => {
     );
   };
 
-  const abrirModal = (usuario) => {
-    navigate(`/Formularios/usuarios/${usuario.id}`);
+  const abrirModal = (id) => {
+    console.log(usuarios);
+    navigate(`/Modificar/EditarUsuario/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
@@ -124,7 +125,7 @@ const Usuarios = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Cedula</th>
             <th>Nombre</th>
             <th>Ubicación</th>
             <th>Empresa</th>
@@ -146,7 +147,7 @@ const Usuarios = () => {
                     <button className="btn-ver" onClick={() => toggleFila(usuario.id)}>
                       <FaEye />
                     </button>
-                    <button className="btn-editar" onClick={() => abrirModal(usuario)}>
+                    <button className="btn-editar" onClick={() => abrirModal(usuario.usuario_id)}>
                       <FaEdit />
                     </button>
                     <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(usuario.id)}>
