@@ -156,12 +156,20 @@ const Usuarios = () => {
                   </div>
                 </td>
               </tr>
+
               {filasExpandida.includes(usuario.id) && (
                 <tr className="fila-expandida">
-                  <td colSpan="9">
+                  <td colSpan="6">
                     <table className="info-expandida">
                       <tbody className="tablaExpandida">
-                        {/* Puedes agregar más detalles aquí */}
+                        <tr>
+                          <td>Correo electrónico</td>
+                          <td>{usuario.correo_electronico || 'No especificado'}</td>
+                        </tr>
+                        <tr>
+                          <td>Teléfono</td>
+                          <td>{usuario.telefono || 'No especificado'}</td>
+                        </tr>
                       </tbody>
                     </table>
                   </td>

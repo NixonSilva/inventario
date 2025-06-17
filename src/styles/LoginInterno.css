@@ -1,0 +1,64 @@
+/* src/styles/LoginInterno.css */
+
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  text-align: center;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container input {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.login-container button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-container button:hover {
+  background-color: #005fa3;
+}
+
+.login-container .error-message {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.login-container .extra-links {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-container .extra-links a {
+  color: #0077cc;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.login-container .extra-links a:hover {
+  text-decoration: underline;
+}

@@ -198,3 +198,37 @@ input:checked + .slider:before {
   justify-content: space-between;
   margin-top: 10px;
 }
+
+.fila-expandida {
+  background-color: #f9f9f9;
+  border: none;
+}
+
+.info-expandida {
+  width: 100%;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.tablaExpandida {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 120px; /* espacio entre los dos campos */
+  padding: 10px 0;
+  border: none;
+}
+
+.tablaExpandida td {
+  padding: 6px 12px;
+  vertical-align: middle;
+  border: none;
+}
+
+.tablaExpandida td:first-child {
+  font-weight: bold;
+  color: #333;
+  width: auto;
+}

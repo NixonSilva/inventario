@@ -128,7 +128,7 @@ const Equipos = () => {
             <th>Tipo</th>
             <th>Marca</th>
             <th>CPU</th>
-            <th>Serial</th>
+            <th>Anydesk</th>
             <th>Más</th>
           </tr>
         </thead>
@@ -143,7 +143,7 @@ const Equipos = () => {
                 <td>{equipo.TIPO_EQUIPO}</td>
                 <td>{equipo.MARCA}</td>
                 <td>{equipo.CPU}</td>
-                <td>{equipo.SERIAL}</td>
+                <td>{equipo.ANYDESK}</td>
                 <td>
                   <div className="botones-acciones">
                     <button className="btn-ver" onClick={() => toggleFila(equipo.id)}><FaEye /></button>
@@ -177,6 +177,8 @@ const Equipos = () => {
                         <tr>
                           <td><strong>SSD:</strong></td>
                           <td>{equipo.disco_solido || "No especificado"}</td>
+                          <td><strong>SERIAL:</strong></td>
+                          <td>{equipo.SERIAL || "No especificado"}</td>
                         </tr>
                       </tbody>
                     </table>

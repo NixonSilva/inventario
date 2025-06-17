@@ -1,19 +1,44 @@
-// src/components/Header.js
-import React from "react"; // 👈 Importación necesaria
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { useAuth } from "../AutoContext"; // Asegúrate que esta ruta sea correcta
+import "../styles/Header.css";
 
 const Header = () => {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const { logout } = useAuth(); // 👈 Aquí usamos tu logout del contexto
+
+  const toggleMenu = () => {
+  setMenuAbierto((prev) => {
+    console.log("menuAbierto:", !prev);
+    return !prev;
+  });
+ };
+
   return (
     <header>
       <div className="logo">
-        <img src="./Logo_navemar.jpg" alt="Logo de la empresa" />
+        <img src="/img/logo_navemar.png" alt="Logo Navemar" />
+        <h2>Navemar</h2>
       </div>
+
       <nav>
         <ul>
-          <li><Link to="/informes">Informes</Link></li>
-          <li><Link to="/contacto">Contacto</Link></li>
-          <li><Link to="/proveedores">Proveedores</Link></li>
+          <li><a href="#">Informes</a></li>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">Proveedores</a></li>
         </ul>
+
+        <div className="user-menu-container">
+          <button onClick={toggleMenu} className="icon-button">
+            {menuAbierto ? <FiChevronUp /> : <FiChevronDown />}
+          </button>
+
+          {menuAbierto && (
+            <div className="dropdown-menu">
+              <button onClick={logout}>Cerrar sesión</button>
+            </div>
+          )}
+        </div>
       </nav>
     </header>
   );
