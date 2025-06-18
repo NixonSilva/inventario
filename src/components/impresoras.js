@@ -121,6 +121,10 @@ const Impresoras = () => {
         <p>En esta sección encontrarás las impresoras registradas con sus detalles</p>
       </div>
 
+      <div className="contenedor-centro">
+        <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
+      </div>
+
       <div className="filtros-container">
         <input type="text" name="ciudad" placeholder="Filtrar por ciudad" value={filtros.ciudad} onChange={handleInputChange} />
         <input type="text" name="empresa" placeholder="Filtrar por empresa" value={filtros.empresa} onChange={handleInputChange} />

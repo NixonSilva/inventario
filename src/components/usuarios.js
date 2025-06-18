@@ -110,6 +110,9 @@ const Usuarios = () => {
       <div className="texto_explicativo">
         <p>En esta sección encontrarás toda la información relacionada con los usuarios.</p>
       </div>
+      <div className="contenedor-centro">
+        <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
+      </div>
 
       <div className="filtros-container">
         <input type="text" name="nombre" placeholder="Filtrar por nombre" value={filtros.nombre} onChange={handleInputChange} />

@@ -33,13 +33,13 @@ function App() {
   return (
       <Router>
         <AuthProvider>
-         <Header />
+          <Header />
 
           <main>
             <Routes>
               {/* Rutas públicas */}
               {/*<Route path="/login-navemar" element={<LoginInterno />} />*/}
-          <Route
+            <Route
                   path="/"
                   element={
                     <ProtectedRoute>

@@ -111,6 +111,10 @@ const Telefonia = () => {
       <div className="texto_explicativo">
         <p>En esta sección encontrarás toda la información relacionada a la asignación de teléfonos y sus diferentes especificaciones</p>
       </div>
+      
+      <div className="contenedor-centro">
+        <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
+      </div>
 
       <div className="filtros-container">
         <input type="text" name="usuario" placeholder="Filtrar por usuario" value={filtros.usuario} onChange={handleInputChange} />

@@ -107,6 +107,10 @@ const Equipos = () => {
       <div className="texto_explicativo">
         <p>En esta sección encontrarás los respectivos equipos asignados con su usuario responsable</p>
       </div>
+      
+      <div className="contenedor-centro">
+        <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
+      </div>
 
       <div className="filtros-container">
         <input type="text" name="usuario" placeholder="Filtrar por usuario" value={filtros.usuario} onChange={handleInputChange} />

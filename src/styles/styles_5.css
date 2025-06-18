@@ -196,3 +196,33 @@
     }
   }
   
+  .contenedor-centro {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* opcional si también quieres centrar verticalmente */
+  width: 100%;
+  margin-top: 20px; /* opcional para separación vertical */
+  margin-bottom: 15px;
+}
+
+.boton-estilo{
+  background-color: white;
+  color: #007dc5;
+  border: 2px solid #007dc5;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 10%;
+  height: 120%--important;
+}
+
+.boton-estilo:hover{
+  background-color: #007dc5;
+  color: white;
+  border: none;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
