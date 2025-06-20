@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     localStorage.removeItem("user");
-    navigate("/LoginInterno");
+    navigate("/LoginInventario");
   }, [setUser, navigate]);
 
   useEffect(() => {

@@ -23,7 +23,7 @@ function Servicios() {
                         <h2>Usuarios</h2>
                         <p>Base de datos de Usuarios</p>
                     </Link>
-                    <Link to="/Rtelefonia" className="service-card">
+                    <Link to="/telefonia" className="service-card">
                         <FaPhone className="icon" />
                         <h2>Telefonia</h2>
                         <p>Relación de ip y extensión</p>

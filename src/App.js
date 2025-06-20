@@ -7,8 +7,6 @@ import { AuthProvider, useAuth } from "./AutoContext.jsx";
 
 // Componentes
 import Header from "./components/header";
-//import LoginInterno from "./LoginValidate/loginInterno";
-
 
 import Servicios from "./components/servicios";
 import TablaUsuarios from "./components/usuarios";
@@ -33,12 +31,11 @@ function App() {
   return (
       <Router>
         <AuthProvider>
-          <Header />
 
           <main>
             <Routes>
               {/* Rutas públicas */}
-              {/*<Route path="/login-navemar" element={<LoginInterno />} />*/}
+              {/*<Route path="/login-navemar" element={<LoginInventario />} />*/}
             <Route
                   path="/"
                   element={
@@ -81,10 +78,19 @@ const ProtectedRoute = ({ children }) => {
   if (!user) {
     return <Navigate to="/LoginInventario" />;
   }
-  return children;
+
+  // ✅ Aquí se mueve el Header dentro de las rutas protegidas
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
- 
+
 ProtectedRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 export default App;
+

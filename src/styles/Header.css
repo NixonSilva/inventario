@@ -8,7 +8,7 @@ header {
 }
 
 .logo img {
-  height: 45px;
+  height: 75px;
 }
 
 /* Navegación */
@@ -51,22 +51,26 @@ nav ul li a:hover {
   align-items: center;
 }
 
-.dropdown-menu {
+.dropdown-menus {
   position: absolute;
-  top: 120%; /* Justo debajo del botón */
-  right: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  padding: 8px 12px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-  z-index: 9999; /* ¡Muy alto para que esté por delante de todo! */
+  top: 30px; /* Ajusta según la altura de tu navbar */
+  right: 2px; /* Más separación del borde */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
 }
 
-.dropdown-menu button {
-  background-color: transparent;
-  border: none;
+.logouts-button {
+  background-color: #ffffff;
+  color: red;
+  border: 1px solid white;
+  border-radius: 12px;
+  padding: 8px 48px;
+  font-weight: 600;
+  font-size: 14px;
+  width: 100%;
   cursor: pointer;
-  font-weight: bold;
-  color: #d9534f; /* rojo claro */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

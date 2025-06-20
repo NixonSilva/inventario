@@ -46,7 +46,8 @@ const LoginInterno = () => {
   };
 
   return (
-    <div className="login-container">
+    <div class="login-wrapper">
+      <div className="login-container">
       <h2>Iniciar Sesión</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleLogin}>
@@ -72,6 +73,7 @@ const LoginInterno = () => {
         <span>¿No tiene cuenta?</span>
         <Link to="/registrese-navemar">Regístrese</Link>
       </div>
+    </div>
     </div>
   );
 };

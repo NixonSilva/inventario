@@ -19,7 +19,7 @@
   --blog-titulo-size: 14px;
   --sucursal-txt-size: 15px;
   --oficinas-txt-size: 14px;
-  --derechos-txt-size: 13px;
+  --derechos-txt-size: 18px;
   --main-subtitle-size: 17px;
   --main-subtitle-size-valores: 17px;
   --main-bg-claro: #f2f4ff;
@@ -57,7 +57,7 @@
 
   --mobile-min-width-button-modal: 60%;
   --mobile-button-txt-size-modal: 13px;
-  --derechos-mobile-txt-size: 10px;
+  --derechos-mobile-txt-size: 12px;
 
   --tablet-button-txt-size: 11px;
 

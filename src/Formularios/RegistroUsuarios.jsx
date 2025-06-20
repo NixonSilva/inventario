@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/styles_F2.css";
+import MessageModal from "../MessageModal";
 
 const NuevoUsuario = () => {
   const navigate = useNavigate();
@@ -13,18 +14,55 @@ const NuevoUsuario = () => {
     unidades_negocio: "",
   });
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check", // o "fail"
+    buttons: [],
+  });
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleRegistrar = async () => {
     try {
-      await axios.post("http://172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php", formData); // <-- Cambia la URL si tu backend tiene otro puerto o ruta
-      alert("Usuario registrado correctamente");
-      navigate("/usuarios"); // Redirige a la vista de usuarios
+      await axios.post(
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php",
+        formData
+      );
+
+      setModalConfig({
+        titulo: "Registro exitoso",
+        texto: "El usuario fue registrado correctamente.",
+        icono: "check",
+        buttons: [
+          {
+            label: "Aceptar",
+            onClick: () => {
+              setShowModal(false);
+              navigate("/usuarios");
+            },
+          },
+        ],
+      });
+      setShowModal(true);
     } catch (error) {
       console.error("Error al registrar usuario:", error);
-      alert("Error al registrar usuario");
+
+      setModalConfig({
+        titulo: "Error en el registro",
+        texto: "No se pudo registrar el usuario.",
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
+      setShowModal(true);
     }
   };
 
@@ -33,11 +71,11 @@ const NuevoUsuario = () => {
       <h2 className="form-title">Registro de Usuario</h2>
       <div className="form-grid-simplificado">
         <label>
-          Cedula
+          Cédula
           <input
             type="text"
             name="Id"
-            placeholder="Cedula"
+            placeholder="Cédula"
             value={formData.Id}
             onChange={handleChange}
           />
@@ -67,7 +105,7 @@ const NuevoUsuario = () => {
           <input
             type="text"
             name="empresas"
-            placeholder="Empresas"
+            placeholder="Empresa"
             value={formData.empresas}
             onChange={handleChange}
           />
@@ -85,9 +123,22 @@ const NuevoUsuario = () => {
       </div>
 
       <div className="form-botones">
-      <button className="btn-estilo" onClick={() => navigate("/usuarios")}>Registros</button>
-        <button className="btn-estilo" onClick={handleRegistrar}>Guardar</button>
+        <button className="btn-estilo" onClick={() => navigate("/usuarios")}>
+          Registros
+        </button>
+        <button className="btn-estilo" onClick={handleRegistrar}>
+          Guardar
+        </button>
       </div>
+
+      {/* Modal */}
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

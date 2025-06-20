@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { useAuth } from "../AutoContext"; // Asegúrate que esta ruta sea correcta
 import "../styles/Header.css";
+import logo from "../assets/Logo_navemar.jpg";
 
 const Header = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -17,8 +18,7 @@ const Header = () => {
   return (
     <header>
       <div className="logo">
-        <img src="/img/logo_navemar.png" alt="Logo Navemar" />
-        <h2>Navemar</h2>
+        <img src={logo} alt="Logo Navemar" />
       </div>
 
       <nav>
@@ -34,8 +34,8 @@ const Header = () => {
           </button>
 
           {menuAbierto && (
-            <div className="dropdown-menu">
-              <button onClick={logout}>Cerrar sesión</button>
+            <div className="dropdown-menus">
+              <button className="logouts-button" onClick={logout}>Cerrar sesión</button>
             </div>
           )}
         </div>

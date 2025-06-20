@@ -111,7 +111,7 @@ const Telefonia = () => {
       <div className="texto_explicativo">
         <p>En esta sección encontrarás toda la información relacionada a la asignación de teléfonos y sus diferentes especificaciones</p>
       </div>
-      
+
       <div className="contenedor-centro">
         <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
       </div>
@@ -123,7 +123,7 @@ const Telefonia = () => {
         <input type="text" name="lugar" placeholder="Filtrar por lugar" value={filtros.lugar} onChange={handleInputChange} />
         <input type="text" name="extension" placeholder="Filtrar por extensión" value={filtros.extension} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Formularios/telefonia")}>+ Teléfono</button>
+        <button className="btn-estilo" onClick={() => navigate("/Rtelefonia")}>+ Teléfono</button>
       </div>
 
       {telefonos.length === 0 && <p>No se encontraron teléfonos o no hay datos aún.</p>}

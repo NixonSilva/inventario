@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Styles_F1.css";
+import MessageModal from "../MessageModal";
+import axios from "axios";
 
 const Registrotelefonia = () => {
   const navigate = useNavigate();
-
+  
+  const [showModal, setShowModal] = useState(false);
+    const [modalConfig, setModalConfig] = useState({
+      titulo: "",
+      texto: "",
+      icono: "check", // o "fail"
+      buttons: [],
+    });
+  
   const [formData, setFormData] = useState({
     id: "",
     usuarios: "",
@@ -26,10 +36,44 @@ const Registrotelefonia = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRegistrar = () => {
-    setActiveButton("Guardar");
-    console.log("Datos registrados:", formData);
-    // Aquí podrías hacer un fetch o axios para enviar los datos
+  const handleRegistrar = async () => {
+    try {
+      await axios.post(
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroTelefonia.php",
+        formData
+      );
+
+      setModalConfig({
+        titulo: "Registro exitoso",
+        texto: "El telefono fue registrado correctamente.",
+        icono: "check",
+        buttons: [
+          {
+            label: "Aceptar",
+            onClick: () => {
+              setShowModal(false);
+              navigate("/telefonia");
+            },
+          },
+        ],
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error al registrar telefono:", error);
+
+      setModalConfig({
+        titulo: "Error en el registro",
+        texto: "No se pudo registrar el telefono.",
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
+      setShowModal(true);
+    }
   };
 
   const handleVerRegistros = () => {
@@ -73,6 +117,14 @@ const Registrotelefonia = () => {
           Guardar
         </button>
       </div>
+      {/* Modal */}
+        <MessageModal
+          show={showModal}
+          title={modalConfig.titulo}
+          body={modalConfig.texto}
+          buttons={modalConfig.buttons}
+          imageType={modalConfig.icono}
+        />
     </div>
   );
 };

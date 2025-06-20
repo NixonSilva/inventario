@@ -10,7 +10,7 @@ function Footer() {
                 <div className="height-space-min"></div>
                 <div className="row border-top-blue pt-4" style={{ height: '50px' }}>
                     <div className="col-12 d-flex align-items-center justify-content-center">
-                        <p className="derechos-footer"> Navemar</p>
+                        <p className="derechos-footer">© 2025 Navemar. Todos los derechos reservados.</p>
                     </div>
             </div>
         </footer>
