@@ -3,10 +3,13 @@ import axios from "axios";
 import "../styles/styles_1.css";
 import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useAuth } from "../AutoContext";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/usuarios.php";
 
+
 const Usuarios = () => {
+  const {user}=useAuth();
   const [usuarios, setUsuarios] = useState([]);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
@@ -120,7 +123,8 @@ const Usuarios = () => {
         <input type="text" name="empresas" placeholder="Filtrar por empresa" value={filtros.empresas} onChange={handleInputChange} />
         <input type="text" name="unidades_negocio" placeholder="Filtrar por unidad de negocio" value={filtros.unidades_negocio} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Rusuarios")}>+ Usuario</button>
+        {user.permite_insertar === "Y" && 
+        <button className="btn-estilo" onClick={() => navigate("/Rusuarios")} disabled={user.permite_insertar === "Y"}>+ Usuario</button>}
       </div>
 
       {usuarios.length === 0 && <p>No se encontraron usuarios o no hay datos aún.</p>}
@@ -150,12 +154,16 @@ const Usuarios = () => {
                     <button className="btn-ver" onClick={() => toggleFila(usuario.id)}>
                       <FaEye />
                     </button>
-                    <button className="btn-editar" onClick={() => abrirModal(usuario.usuario_id)}>
-                      <FaEdit />
-                    </button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(usuario.id)}>
-                      <FaTrash />
-                    </button>
+                    {user.permite_modificar === "Y" && (
+                      <button className="btn-editar" onClick={() => abrirModal(usuario.usuario_id)}>
+                        <FaEdit />
+                      </button>
+                    )}
+                    {user.permite_desactivar === "Y" && (
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(usuario.id)}>
+                        <FaTrash />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

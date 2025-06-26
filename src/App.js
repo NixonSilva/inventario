@@ -24,6 +24,8 @@ import Registroequipos from "./Formularios/RegistroEquipos";
 import Registroperifericos from "./Formularios/RegistroPerifericos";
 import Registroimpresoras from "./Formularios/Registroimpresoras";
 import LoginInventario from "./LoginValidate/loginInterno.jsx";
+import RegistroLogin from "./LoginValidate/RegistrarLogin.jsx";
+import BuscarUsuario from "./Formularios/BuscarUsuario.jsx";
 //Modificar Datos
 import EditarUsuario from "./Modificar/EditarUsuario.jsx";
 
@@ -51,6 +53,7 @@ function App() {
                 <Route path="/proveedores" element={<p>Proveedores en construcción</p>} />
                 <Route path="/usuarios" element={<TablaUsuarios />} />
                 <Route path="/LoginInventario" element={<LoginInventario />} />
+                <Route path="/RegistroLogin" element={<RegistroLogin />} />
                 <Route path="/equipos" element={<TablaEquipos />} />
                 <Route path="/telefonia" element={<TablaTelefonia />} />
                 <Route path="/perifericos" element={<TablaPerifericos />} />
@@ -60,6 +63,7 @@ function App() {
                 <Route path="/Requipos" element={<Registroequipos />} />
                 <Route path="/Rperifericos" element={<Registroperifericos />} />
                 <Route path="/Rimpresoras" element={<Registroimpresoras />} />
+                <Route path="/BuscarUsuario" element= {<BuscarUsuario />} />
                 <Route path="/Modificar/EditarUsuario/:id" element={<EditarUsuario />} />
               {/*</Route>*/}
 

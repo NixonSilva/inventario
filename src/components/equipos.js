@@ -117,7 +117,7 @@ const Equipos = () => {
         <input type="text" name="ubicacion" placeholder="Filtrar por ubicación" value={filtros.ubicacion} onChange={handleInputChange} />
         <input type="text" name="tipo" placeholder="Filtrar por tipo" value={filtros.tipo} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Requipos")}>+ Equipo</button>
+        <button className="btn-estilo" onClick={() => navigate("/BuscarUsuario")}>+ Equipo</button>
       </div>
 
       {equipos.length === 0 && <p>No se encontraron equipos o no hay datos aún.</p>}

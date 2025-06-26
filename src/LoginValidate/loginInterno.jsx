@@ -32,9 +32,12 @@ const LoginInterno = () => {
       if (data.respuesta === "Consulta exitosa" && data.Consulta?.length > 0) {
         const usuario = data.Consulta[0];
         login({
-          id_usuario: usuario.id_usuario,
           nombre: usuario.nombre_completo,
           email: usuario.email,
+          nombre_tipo: usuario.nombre_tipo,
+          permite_modificar: usuario.permite_modificar,
+          permite_desactivar: usuario.permite_desactivar,
+          permite_insertar: usuario.permite_insertar,
         });
         navigate("/"); // Redirección a la página principal protegida
       } else {
@@ -71,7 +74,7 @@ const LoginInterno = () => {
         <Link to="/olvide-clave">¿Olvidó su contraseña?</Link>
         <br />
         <span>¿No tiene cuenta?</span>
-        <Link to="/registrese-navemar">Regístrese</Link>
+        <Link to="/RegistroLogin">Regístrese</Link>
       </div>
     </div>
     </div>
