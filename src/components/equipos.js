@@ -3,10 +3,12 @@ import axios from "axios";
 import "../styles/styles_2.css";
 import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useAuth } from "../AutoContext";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/equipos.php";
 
 const Equipos = () => {
+  const {user}=useAuth();
   const [equipos, setEquipos] = useState([]);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
@@ -34,11 +36,13 @@ const Equipos = () => {
   }, []);
 
   const equiposFiltrados = useMemo(() => {
-    return equipos.filter((equipo) => {
+    return equipos
+    .filter((equipo) => equipo.ACTIVO === 'Y')
+    .filter((equipo) => {
       return (
-        (equipo.usuario || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
-        (equipo.ubicacion || "").toLowerCase().includes(filtros.ubicacion.toLowerCase()) &&
-        (equipo.tipo_equipo || "").toLowerCase().includes(filtros.tipo.toLowerCase())
+        (equipo.USUARIO || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
+        (equipo.UBICACION || "").toLowerCase().includes(filtros.ubicacion.toLowerCase()) &&
+        (equipo.TIPO_EQUIPO || "").toLowerCase().includes(filtros.tipo.toLowerCase())
       );
     });
   }, [equipos, filtros]);
@@ -65,15 +69,20 @@ const Equipos = () => {
   };
 
   const abrirModal = (equipo) => {
-    navigate(`/Formularios/equipos/${equipo.id}`);
+    navigate(`/Modificar/EditarEquipo/${equipo.id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas desactivar este equipo?");
+    if (!confirmacion) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      obtenerEquipos();
+      await axios.delete(API_URL, {
+        data: { id: id }
+      });
+      obtenerEquipos(); // Recarga lista y ya no se verá el equipo
     } catch (error) {
-      console.error("Error al eliminar equipo:", error);
+      console.error("Error al desactivar equipo:", error);
     }
   };
 
@@ -117,7 +126,8 @@ const Equipos = () => {
         <input type="text" name="ubicacion" placeholder="Filtrar por ubicación" value={filtros.ubicacion} onChange={handleInputChange} />
         <input type="text" name="tipo" placeholder="Filtrar por tipo" value={filtros.tipo} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/BuscarUsuario")}>+ Equipo</button>
+        {user.permite_insertar === "Y" && 
+        <button className="btn-estilo" onClick={() => navigate("/BuscarUsuario")}>+ Equipo</button>}
       </div>
 
       {equipos.length === 0 && <p>No se encontraron equipos o no hay datos aún.</p>}
@@ -150,9 +160,19 @@ const Equipos = () => {
                 <td>{equipo.ANYDESK}</td>
                 <td>
                   <div className="botones-acciones">
-                    <button className="btn-ver" onClick={() => toggleFila(equipo.EQUIPO_ID)}><FaEye /></button>
-                    <button className="btn-editar" onClick={() => abrirModal(equipo)}><FaEdit /></button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.EQUIPO_ID)}><FaTrash /></button>
+                    <button className="btn-ver" onClick={() => toggleFila(equipo.EQUIPO_ID)}>
+                      <FaEye />
+                    </button>
+                    {user.permite_modificar === "Y" && (
+                      <button className="btn-editar" onClick={() => abrirModal(equipo.EQUIPO_ID)}>
+                        <FaEdit />
+                      </button>
+                    )}
+                    {user.permite_desactivar === "Y" && (
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.EQUIPO_ID)}>
+                        <FaTrash />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

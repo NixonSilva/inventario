@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // 🧠 AÑADIR useLocation
 import axios from "axios";
 import "../styles/Styles_F3.css";
 
-const RegistroEquipos = ({ usuarioNombre, cedula }) => {
+const RegistroEquipos = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // 👈 aquí llegan los datos enviados desde navigate()
+
+  const { usuarioNombre, cedula } = location.state || {}; // ⚠️ desestructurar con fallback
 
   const [formData, setFormData] = useState({
     id: "",
@@ -30,7 +33,7 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
   const [activeButton, setActiveButton] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  // Autocompletar datos del usuario
+  // ✅ Autocompletar datos del usuario al cargar
   useEffect(() => {
     if (cedula && usuarioNombre) {
       setFormData((prev) => ({
@@ -41,22 +44,20 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
     }
   }, [cedula, usuarioNombre]);
 
-  // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Enviar datos al backend (API PHP)
   const handleGuardar = async () => {
     setActiveButton("guardar");
     try {
       const response = await axios.post("http://localhost/api/insertar_equipo.php", formData);
       if (response.data.success) {
         setMensaje("Equipo registrado exitosamente");
-        setFormData({
-          id: "",
-          usuario: "",
+        // Mantener ID y Usuario después de guardar
+        setFormData((prev) => ({
+          ...prev,
           ubicacion: "",
           lugar_uso: "",
           tipo_equipo: "",
@@ -73,7 +74,7 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
           fecha_devolucion: "",
           fecha_mantenimiento: "",
           observacion: ""
-        });
+        }));
       } else {
         setMensaje(`Error: ${response.data.message}`);
       }
@@ -83,7 +84,6 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
     }
   };
 
-  // Redirigir a lista de registros
   const handleVerRegistros = () => {
     setActiveButton("ver");
     navigate("/equipos");
@@ -96,9 +96,7 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
       <form className="forms-grid">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="form-group">
-            <label htmlFor={key}>
-              {key.replace(/_/g, " ").toUpperCase()}
-            </label>
+            <label htmlFor={key}>{key.replace(/_/g, " ").toUpperCase()}</label>
             <input
               type={key.includes("fecha") ? "date" : "text"}
               id={key}
@@ -106,7 +104,7 @@ const RegistroEquipos = ({ usuarioNombre, cedula }) => {
               value={value}
               onChange={handleChange}
               placeholder={`Ingrese ${key.replace(/_/g, " ")}`}
-              disabled={key === "id" || key === "usuario"}
+              disabled={key === "id" || key === "usuario"} // desactivar estos campos
             />
           </div>
         ))}

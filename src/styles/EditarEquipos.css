@@ -1,0 +1,87 @@
+.formulario-editar-container {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 40px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.formulario-editar-container h2 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 30px;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 30px;
+}
+
+.campo-formulario {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo-formulario label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.campo-formulario input {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.campo-formulario input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.botonera {
+  grid-column: span 3;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.botonera button {
+  padding: 10px 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.botonera button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.botonera button[type="button"] {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.botonera button:hover {
+  filter: brightness(90%);
+}
+
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .botonera {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

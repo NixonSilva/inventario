@@ -3,10 +3,12 @@ import axios from "axios";
 import "../styles/styles_4.css";
 import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useAuth } from "../AutoContext";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/telefonia.php";
 
 const Telefonia = () => {
+  const { user } = useAuth();
   const [telefonos, setTelefonos] = useState([]);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
@@ -24,7 +26,14 @@ const Telefonia = () => {
   const obtenerTelefonos = async () => {
     try {
       const response = await axios.get(API_URL);
-      const datos = Array.isArray(response.data.telefonia) ? response.data.telefonia : [];
+
+      const normalizarClaves = (obj) =>
+        Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]));
+
+      const datos = Array.isArray(response.data.telefonia)
+        ? response.data.telefonia.map(normalizarClaves)
+        : [];
+
       setTelefonos(datos);
     } catch (error) {
       console.error("Error al obtener teléfonos:", error);
@@ -36,15 +45,17 @@ const Telefonia = () => {
   }, []);
 
   const telefonosFiltrados = useMemo(() => {
-    return telefonos.filter((telefono) => {
-      return (
-        (telefono.usuario || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
-        (telefono.empresa || "").toLowerCase().includes(filtros.empresa.toLowerCase()) &&
-        (telefono.ciudad || "").toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
-        (telefono.lugar || "").toLowerCase().includes(filtros.lugar.toLowerCase()) &&
-        (telefono.extension || "").toLowerCase().includes(filtros.extension.toLowerCase())
-      );
-    });
+    return telefonos
+      .filter((telefonia) => telefonia.activo === 'Y')
+      .filter((telefonia) => {
+        return (
+          (telefonia.nombre_usuario || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
+          (telefonia.empresa || "").toLowerCase().includes(filtros.empresa.toLowerCase()) &&
+          (telefonia.ciudad || "").toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
+          (telefonia.lugar || "").toLowerCase().includes(filtros.lugar.toLowerCase()) &&
+          (telefonia.extension || "").toLowerCase().includes(filtros.extension.toLowerCase())
+        );
+      });
   }, [telefonos, filtros]);
 
   const totalPages = Math.ceil(telefonosFiltrados.length / itemsPerPage);
@@ -68,16 +79,21 @@ const Telefonia = () => {
     );
   };
 
-  const abrirModal = (telefono) => {
-    navigate(`/Formularios/telefonia/${telefono.id}`);
+  const abrirModal = (id) => {
+    navigate(`/Formularios/telefonia/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas desactivar este usuario?");
+    if (!confirmacion) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      obtenerTelefonos();
+      await axios.delete(API_URL, {
+        data: { id: id }
+      });
+      obtenerTelefonos(); // Recargar datos
     } catch (error) {
-      console.error("Error al eliminar teléfono:", error);
+      console.error("Error al desactivar telefono:", error);
     }
   };
 
@@ -123,7 +139,8 @@ const Telefonia = () => {
         <input type="text" name="lugar" placeholder="Filtrar por lugar" value={filtros.lugar} onChange={handleInputChange} />
         <input type="text" name="extension" placeholder="Filtrar por extensión" value={filtros.extension} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Rtelefonia")}>+ Teléfono</button>
+        {user.permite_insertar === "Y" &&
+          <button className="btn-estilo" onClick={() => navigate("/Rtelefonia")}>+ Teléfono</button>}
       </div>
 
       {telefonos.length === 0 && <p>No se encontraron teléfonos o no hay datos aún.</p>}
@@ -142,25 +159,35 @@ const Telefonia = () => {
         </thead>
         <tbody>
           {currentItems.map((telefono) => (
-            <React.Fragment key={telefono.id}>
+            <React.Fragment key={telefono.telefonia_id}>
               <tr className="fila-con-linea">
-                <td>{telefono.TELEFONIA_ID}</td>
-                <td>{telefono.NOMBRE_USUARIO}</td>
-                <td>{telefono.EMPRESA}</td>
-                <td>{telefono.CIUDAD}</td>
-                <td>{telefono.LUGAR}</td>
-                <td>{telefono.EXTENSION}</td>
+                <td>{telefono.telefonia_id}</td>
+                <td>{telefono.nombre_usuario}</td>
+                <td>{telefono.empresa}</td>
+                <td>{telefono.ciudad}</td>
+                <td>{telefono.lugar}</td>
+                <td>{telefono.extension}</td>
                 <td>
                   <div className="botones-acciones">
-                    <button className="btn-ver" onClick={() => toggleFila(telefono.id)}><FaEye /></button>
-                    <button className="btn-editar" onClick={() => abrirModal(telefono)}><FaEdit /></button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(telefono.id)}><FaTrash /></button>
+                    <button className="btn-ver" onClick={() => toggleFila(telefono.telefonia_id)}>
+                      <FaEye />
+                    </button>
+                    {user.permite_modificar === "Y" && (
+                      <button className="btn-editar" onClick={() => abrirModal(telefono.telefonia_id)}>
+                        <FaEdit />
+                      </button>
+                    )}
+                    {user.permite_desactivar === "Y" && (
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(telefono.telefonia_id)}>
+                        <FaTrash />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
 
-              {filasExpandida.includes(telefono.id) && (
-                <tr className="fila-expandida" key={`expandida-${telefono.id}`}>
+              {filasExpandida.includes(telefono.telefonia_id) && (
+                <tr className="fila-expandida" key={`expandida-${telefono.telefonia_id}`}>
                   <td colSpan="9">
                     <table className="info-expandida">
                       <tbody className="tablaExpandida">
