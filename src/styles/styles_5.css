@@ -226,3 +226,31 @@
   font-weight: bold;
   cursor: pointer;
 }
+.fila1-expandida td {
+  background-color: white;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  transition: all 0.3s ease-in-out;
+}
+
+.info1-expandida {
+  margin: 0 auto;              /* Centra la tabla dentro del td */
+  width: 100%;                 /* Usa todo el ancho disponible */ 
+  border-spacing: 10px 10px;   /* Espaciado entre columnas (40px) y filas (10px) */
+  text-align: left;            /* Justifica el texto a la izquierda */
+}
+
+.info1-expandida p {
+  vertical-align: top;
+}
+.info1-expandida p strong {
+  font-weight: 600;
+}
+.tabla1Expandida td{
+  padding: 8px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.tableExpandida td, .tablaExpandida th, .tablaExpandida tr {
+  border: none;
+}

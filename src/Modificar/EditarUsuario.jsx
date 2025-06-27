@@ -1,12 +1,13 @@
+// EditarUsuario.jsx
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/EditarUsuario.css";
+import "../styles/EditarUsuario.css"; // Nuevo nombre
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
 
 const EditarUsuario = () => {
-  const { id } = useParams(); // ID del usuario desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState({
     nombre: "",
@@ -14,7 +15,6 @@ const EditarUsuario = () => {
     empresas: "",
     unidades_negocio: ""
   });
-
 
   const handleChange = (e) => {
     setUsuario({ ...usuario, [e.target.name]: e.target.value });
@@ -35,9 +35,9 @@ const EditarUsuario = () => {
   };
 
   return (
-    <div className="for-container">
-      <h2>Editar Usuario</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="editar-usuario-container">
+      <h2 className="editar-usuario-titulo">Editar Usuario</h2>
+      <form className="editar-usuario-form" onSubmit={handleSubmit}>
         <label>Nombre:</label>
         <input type="text" name="nombre" value={usuario.nombre} onChange={handleChange} />
 
@@ -50,8 +50,8 @@ const EditarUsuario = () => {
         <label>Unidad de Negocio:</label>
         <input type="text" name="unidades_negocio" value={usuario.unidades_negocio} onChange={handleChange} />
 
-        <button type="submit">Guardar Cambios</button>
-        <button type="button" onClick={() => navigate("/usuarios")}>Cancelar</button>
+        <button className="btn-guardar" type="submit">Guardar Cambios</button>
+        <button className="btn-cancelar" type="button" onClick={() => navigate("/usuarios")}>Cancelar</button>
       </form>
     </div>
   );
