@@ -223,32 +223,32 @@ tbody tr:hover {
   position: relative;
 }
 
-.fila-expandida td {
+.filass-expandida td {
   background-color: white;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   transition: all 0.3s ease-in-out;
 }
 
-.info-expandida {
+.infoss-expandida {
   margin: 0 auto;              /* Centra la tabla dentro del td */
   width: 100%;                 /* Usa todo el ancho disponible */ 
   border-spacing: 10px 10px;   /* Espaciado entre columnas (40px) y filas (10px) */
   text-align: left;            /* Justifica el texto a la izquierda */
 }
 
-.info-expandida p {
+.infoss-expandida p {
   vertical-align: top;
 }
-.info-expandida p strong {
+.infoss-expandida p strong {
   font-weight: 600;
 }
-.tablaExpandida td{
+.tableExpandida td{
   padding: 8px 15px;
   border-bottom: 1px solid #eee;
 }
 
-.tablaExpandida td, .tablaExpandida th, .tablaExpandida tr {
+.tableExpandida td, .tablaExpandida th, .tablaExpandida tr {
   border: none;
 }
 

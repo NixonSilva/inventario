@@ -138,8 +138,8 @@ const Equipos = () => {
         </thead>
         <tbody>
           {currentItems.map((equipo) => (
-            <React.Fragment key={equipo.id}>
-              <tr className="fila-con-linea">
+            <React.Fragment key={`equipo-${equipo.EQUIPO_ID}`}>
+                <tr key={`main-${equipo.EQUIPO_ID}`} className="fila-con-linea">
                 <td>{equipo.EQUIPO_ID}</td>
                 <td>{equipo.USUARIO}</td>
                 <td>{equipo.UBICACION}</td>
@@ -150,18 +150,18 @@ const Equipos = () => {
                 <td>{equipo.ANYDESK}</td>
                 <td>
                   <div className="botones-acciones">
-                    <button className="btn-ver" onClick={() => toggleFila(equipo.id)}><FaEye /></button>
+                    <button className="btn-ver" onClick={() => toggleFila(equipo.EQUIPO_ID)}><FaEye /></button>
                     <button className="btn-editar" onClick={() => abrirModal(equipo)}><FaEdit /></button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.id)}><FaTrash /></button>
+                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(equipo.EQUIPO_ID)}><FaTrash /></button>
                   </div>
                 </td>
               </tr>
 
-              {filasExpandida.includes(equipo.id) && (
-                <tr className="fila-expandida" key={`expandida-${equipo.id}`}>
+              {filasExpandida.includes(equipo.EQUIPO_ID) && (
+                <tr className="filass-expandida" key={`expandida-${equipo.EQUIPO_ID}`}>
                   <td colSpan="9">
-                    <table className="info-expandida">
-                      <tbody className="tablaExpandida">
+                    <table className="infoss-expandida">
+                      <tbody className="tableExpandida">
                         <tr>
                           <td><strong>RAM:</strong></td>
                           <td>{equipo.memoria_ram || "No especificado"}</td>

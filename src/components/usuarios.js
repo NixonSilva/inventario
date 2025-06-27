@@ -38,7 +38,9 @@ const Usuarios = () => {
   }, []);
 
   const usuariosFiltrados = useMemo(() => {
-    return usuarios.filter((usuario) => {
+    return usuarios
+    .filter((usuario) => usuario.activo === 'Y') // ✅ Solo activos
+    .filter((usuario) => {
       return (
         (usuario.nombre_usuario || "").toLowerCase().includes(filtros.nombre.toLowerCase()) &&
         (usuario.ubicaciones || "").toLowerCase().includes(filtros.ubicacion.toLowerCase()) &&
@@ -82,11 +84,16 @@ const Usuarios = () => {
   };
 
   const handleEliminarDesdeFila = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas desactivar este usuario?");
+    if (!confirmacion) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      obtenerUsuarios();
+      await axios.delete(API_URL, {
+        data: { id: id }
+      });
+      obtenerUsuarios(); // Recarga lista y ya no se verá el usuario
     } catch (error) {
-      console.error("Error al eliminar usuarios:", error);
+      console.error("Error al desactivar usuario:", error);
     }
   };
 
@@ -124,7 +131,7 @@ const Usuarios = () => {
         <input type="text" name="unidades_negocio" placeholder="Filtrar por unidad de negocio" value={filtros.unidades_negocio} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
         {user.permite_insertar === "Y" && 
-        <button className="btn-estilo" onClick={() => navigate("/Rusuarios")} disabled={user.permite_insertar === "Y"}>+ Usuario</button>}
+        <button className="btn-estilo" onClick={() => navigate("/Rusuarios")}>+ Usuario</button>}
       </div>
 
       {usuarios.length === 0 && <p>No se encontraron usuarios o no hay datos aún.</p>}
@@ -160,7 +167,7 @@ const Usuarios = () => {
                       </button>
                     )}
                     {user.permite_desactivar === "Y" && (
-                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(usuario.id)}>
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(usuario.usuario_id)}>
                         <FaTrash />
                       </button>
                     )}
