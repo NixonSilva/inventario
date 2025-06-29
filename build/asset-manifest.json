@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.06ee8a60.css",
+    "main.js": "/static/js/main.959168e7.js",
+    "static/media/Logo_navemar.jpg": "/static/media/Logo_navemar.271379cc17b68a439cf1.jpg",
+    "static/media/Icono-informacion-azul.svg": "/static/media/Icono-informacion-azul.06ae7f2ace828bff46fd17078a4b32ed.svg",
+    "static/media/Icono-error-azul.svg": "/static/media/Icono-error-azul.bd37ad939ec8f2c79b8684814031f744.svg",
+    "static/media/Icono-Check-azul.svg": "/static/media/Icono-Check-azul.fd941a643b23cbe229e01c44a8427628.svg",
+    "static/media/Icono-advertencia-Azul.svg": "/static/media/Icono-advertencia-Azul.df106bf6babfe0cdfd9481f262f30778.svg",
+    "index.html": "/index.html",
+    "main.06ee8a60.css.map": "/static/css/main.06ee8a60.css.map",
+    "main.959168e7.js.map": "/static/js/main.959168e7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.06ee8a60.css",
+    "static/js/main.959168e7.js"
+  ]
+}
