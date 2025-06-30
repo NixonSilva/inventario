@@ -11,6 +11,7 @@ const RegistroEquipos = () => {
 
   const [formData, setFormData] = useState({
     id: "",
+    cedula: "",
     usuario: "",
     ubicacion: "",
     lugar_uso: "",
@@ -38,7 +39,7 @@ const RegistroEquipos = () => {
     if (cedula && usuarioNombre) {
       setFormData((prev) => ({
         ...prev,
-        id: cedula,
+        cedula: cedula,
         usuario: usuarioNombre
       }));
     }
@@ -52,7 +53,16 @@ const RegistroEquipos = () => {
   const handleGuardar = async () => {
     setActiveButton("guardar");
     try {
-      const response = await axios.post("http://localhost/api/insertar_equipo.php", formData);
+      const response = await axios.post(
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
+        JSON.stringify(formData), // Enviar como JSON string
+        {
+          headers: {
+            "Content-Type": "application/json" // Muy importante
+          }
+        }
+      );
+
       if (response.data.success) {
         setMensaje("Equipo registrado exitosamente");
         // Mantener ID y Usuario después de guardar
@@ -76,7 +86,7 @@ const RegistroEquipos = () => {
           observacion: ""
         }));
       } else {
-        setMensaje(`Error: ${response.data.message}`);
+        setMensaje(`Error: ${response.data.message || "Error inesperado del servidor"}`);
       }
     } catch (error) {
       console.error("Error al registrar equipo:", error);
@@ -84,13 +94,14 @@ const RegistroEquipos = () => {
     }
   };
 
+
   const handleVerRegistros = () => {
     setActiveButton("ver");
     navigate("/equipos");
   };
 
   return (
-    <div className="form-containeer">
+    <div className="form32-containeer">
       <h2 className="form-title">Registro de equipos</h2>
       {mensaje && <p style={{ color: mensaje.startsWith("Error") ? "red" : "green" }}>{mensaje}</p>}
       <form className="forms-grid">
@@ -104,23 +115,23 @@ const RegistroEquipos = () => {
               value={value}
               onChange={handleChange}
               placeholder={`Ingrese ${key.replace(/_/g, " ")}`}
-              disabled={key === "id" || key === "usuario"} // desactivar estos campos
+              disabled={key === "cedula" || key === "usuario"} // desactivar estos campos
             />
           </div>
         ))}
       </form>
-      <div className="form-buttons">
+      <div className="form14-buttons">
         <button
-          type="button"
+          type="button6"
           onClick={handleVerRegistros}
-          className={`custom-btn ${activeButton === "ver" ? "selected" : ""}`}
+          className={`custom2-btn ${activeButton === "ver" ? "selected" : ""}`}
         >
           Ver Registros
         </button>
         <button
-          type="button"
+          type="button6"
           onClick={handleGuardar}
-          className={`custom-btn ${activeButton === "guardar" ? "selected" : ""}`}
+          className={`custom2-btn ${activeButton === "guardar" ? "selected" : ""}`}
         >
           Guardar
         </button>

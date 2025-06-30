@@ -1,5 +1,5 @@
 /* Contenedor principal del formulario */
-.form-containeer {
+.form32-containeer {
   max-width: 1200px !important; /* Ampliado para acomodar 3 columnas */
   margin: 40px auto;
   padding: 30px;
@@ -51,7 +51,7 @@
 }
 
 /* Botonera */
-.form-buttons {
+.form14-buttons {
   display: flex;
   justify-content: center;
   margin-top: 30px;
@@ -60,7 +60,7 @@
 }
 
 /* Botones estilo moderno */
-.custom-btn {
+.custom2-btn {
   border: 2px solid #007bdb;
   background-color: white;
   color: #007bdb;
@@ -75,7 +75,7 @@
   outline: none;
 }
 
-.custom-btn:hover {
+.custom2-btn:hover {
   background-color: #007bdb;
   color: white;
   box-shadow: 0px 4px 8px rgba(0, 123, 219, 0.3);

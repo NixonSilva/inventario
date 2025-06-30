@@ -49,7 +49,7 @@ const LoginInterno = () => {
   };
 
   return (
-    <div class="login-wrapper">
+    <div className="login-wrapper">
       <div className="login-container">
       <h2>Iniciar Sesión</h2>
       {error && <p className="error-message">{error}</p>}

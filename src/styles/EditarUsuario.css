@@ -1,63 +1,102 @@
-.editar-usuario-container {
-  max-width: 400px;
-  margin: 60px auto;
+.form-container {
+  max-width: 1000px;
+  margin: 30px auto;
   padding: 30px;
   background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-  font-family: "Segoe UI", sans-serif;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.editar-usuario-titulo {
+.form-container h2 {
   text-align: center;
-  margin-bottom: 25px;
   color: #007bff;
+  margin-bottom: 25px;
 }
 
-.editar-usuario-form {
+form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
-.editar-usuario-form label {
-  font-weight: bold;
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
-.editar-usuario-form input {
-  padding: 8px;
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
   font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
+  color: #333;
 }
 
-.btn-guardar {
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 25px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"] {
   background-color: #007bff;
   color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
 }
 
-.btn-guardar:hover {
+button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
-.btn-cancelar {
-  background-color: #ddd;
-  color: #333;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+button[type="button"] {
+  background-color: #6c757d;
+  color: white;
 }
 
-.btn-cancelar:hover {
-  background-color: #bbb;
+button[type="button"]:hover {
+  background-color: #495057;
+}
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

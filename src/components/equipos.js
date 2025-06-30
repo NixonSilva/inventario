@@ -68,8 +68,10 @@ const Equipos = () => {
     );
   };
 
-  const abrirModal = (equipo) => {
-    navigate(`/Modificar/EditarEquipo/${equipo.id}`);
+  // ✅ FUNCIÓN CORREGIDA
+  const abrirModal = (equipoId) => {
+    console.log("ID del equipo al hacer clic en editar:", equipoId);
+    navigate(`/Modificar/EditarEquipo/${equipoId}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
@@ -80,7 +82,7 @@ const Equipos = () => {
       await axios.delete(API_URL, {
         data: { id: id }
       });
-      obtenerEquipos(); // Recarga lista y ya no se verá el equipo
+      obtenerEquipos();
     } catch (error) {
       console.error("Error al desactivar equipo:", error);
     }
@@ -184,25 +186,29 @@ const Equipos = () => {
                       <tbody className="tableExpandida">
                         <tr>
                           <td><strong>RAM:</strong></td>
-                          <td>{equipo.memoria_ram || "No especificado"}</td>
+                          <td>{equipo.MEMORIA_RAM || "No especificado"}</td>
                           <td><strong>Estado:</strong></td>
-                          <td>{equipo.estado || "No especificado"}</td>
+                          <td>{equipo.ESTADO || "No especificado"}</td>
                           <td><strong>Propietario:</strong></td>
-                          <td>{equipo.propietario || "No especificado"}</td>
-                        </tr>
-                        <tr>
+                          <td>{equipo.PROPIETARIO || "No especificado"}</td>
                           <td><strong>HDD:</strong></td>
-                          <td>{equipo.disco_mecanico || "No especificado"}</td>
-                          <td><strong>Observación:</strong></td>
-                          <td>{equipo.observacion || "No especificado"}</td>
-                          <td><strong>Fecha Entrega:</strong></td>
-                          <td>{equipo.fecha_entrega || "No especificado"}</td>
+                          <td>{equipo.DISCO_MECANICO || "No especificado"}</td>
                         </tr>
                         <tr>
-                          <td><strong>SSD:</strong></td>
-                          <td>{equipo.disco_solido || "No especificado"}</td>
                           <td><strong>SERIAL:</strong></td>
                           <td>{equipo.SERIAL || "No especificado"}</td>
+                          <td><strong>SSD:</strong></td>
+                          <td>{equipo.DISCO_SSD || "No especificado"}</td>
+                          <td><strong>Observación:</strong></td>
+                          <td>{equipo.OBSERVACION || "No especificado"}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Fecha Entrega:</strong></td>
+                          <td>{equipo.FECHA_ENTREGA || "No especificado"}</td>
+                          <td><strong>Fecha Devolución:</strong></td>
+                          <td>{equipo.FECHA_DEVOLUCION || "No especificado"}</td>
+                          <td><strong>Fecha Mantenimiento:</strong></td>
+                          <td>{equipo.FECHA_MANTENIMIENTO || "No especificado"}</td>
                         </tr>
                       </tbody>
                     </table>
