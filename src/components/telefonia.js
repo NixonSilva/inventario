@@ -80,7 +80,7 @@ const Telefonia = () => {
   };
 
   const abrirModal = (id) => {
-    navigate(`/Formularios/telefonia/${id}`);
+    navigate(`/Modificar/EditarTelefonia/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
@@ -140,7 +140,7 @@ const Telefonia = () => {
         <input type="text" name="extension" placeholder="Filtrar por extensión" value={filtros.extension} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
         {user.permite_insertar === "Y" &&
-          <button className="btn-estilo" onClick={() => navigate("/Rtelefonia")}>+ Teléfono</button>}
+          <button className="btn-estilo" onClick={() => navigate("/BuscarUsuarioT")}>+ Teléfono</button>}
       </div>
 
       {telefonos.length === 0 && <p>No se encontraron teléfonos o no hay datos aún.</p>}
