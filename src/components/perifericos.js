@@ -3,14 +3,16 @@ import axios from "axios";
 import "../styles/styles_5.css";
 import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useAuth } from "../AutoContext";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/perifericos.php";
 
 const Perifericos = () => {
+  const { user } = useAuth();
   const [perifericos, setPerifericos] = useState([]);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
-    usuario: "",
+    usuario_responsable: "",
     pantalla1: "",
     pantalla2: "",
     mouse: "",
@@ -18,7 +20,6 @@ const Perifericos = () => {
   });
 
   const navigate = useNavigate();
-
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -36,13 +37,14 @@ const Perifericos = () => {
   }, []);
 
   const perifericosFiltrados = useMemo(() => {
-    return perifericos.filter((item) => (
-      (item.usuario_responsable || "").toLowerCase().includes(filtros.usuario.toLowerCase()) &&
-      (item.pantalla_1_marca_modelo || "").toLowerCase().includes(filtros.pantalla1.toLowerCase()) &&
-      (item.pantalla_2_marca_modelo || "").toLowerCase().includes(filtros.pantalla2.toLowerCase()) &&
-      (item.mouse || "").toLowerCase().includes(filtros.mouse.toLowerCase()) &&
-      (item.teclado || "").toLowerCase().includes(filtros.teclado.toLowerCase())
-    ));
+    return perifericos
+      .filter((item) => (
+        (item.usuario_responsable || "").toLowerCase().includes(filtros.usuario_responsable.toLowerCase()) &&
+        (item.pantalla_1_marca_modelo || "").toLowerCase().includes(filtros.pantalla1.toLowerCase()) &&
+        (item.pantalla_2_marca_modelo || "").toLowerCase().includes(filtros.pantalla2.toLowerCase()) &&
+        (item.mouse || "").toLowerCase().includes(filtros.mouse.toLowerCase()) &&
+        (item.teclado || "").toLowerCase().includes(filtros.teclado.toLowerCase())
+      ));
   }, [perifericos, filtros]);
 
   const totalPages = Math.ceil(perifericosFiltrados.length / itemsPerPage);
@@ -75,7 +77,7 @@ const Perifericos = () => {
   };
 
   const limpiarFiltros = () => {
-    setFiltros({ usuario: "", pantalla1: "", pantalla2: "", mouse: "", teclado: "" });
+    setFiltros({ usuario_responsable: "", pantalla1: "", pantalla2: "", mouse: "", teclado: "" });
     setCurrentPage(1);
   };
 
@@ -90,16 +92,19 @@ const Perifericos = () => {
     );
   };
 
-  const abrirModal = (item) => {
-    navigate(`/Formularios/perifericos/${item.id}`);
+  const abrirModal = (id) => {
+    navigate(`/Formularios/perifericos/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas desactivar este periférico?");
+    if (!confirmacion) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(API_URL, { data: { id } });
       obtenerPerifericos();
     } catch (error) {
-      console.error("Error al eliminar periférico:", error);
+      console.error("Error al desactivar periférico:", error);
     }
   };
 
@@ -109,28 +114,24 @@ const Perifericos = () => {
       <div className="texto_explicativo">
         <p>En esta sección encontrarás toda la información relacionada a la asignación de cada uno de los periféricos.</p>
       </div>
-      
+
       <div className="contenedor-centro">
         <button className="boton-estilo" onClick={() => navigate("/")}>Inicio</button>
       </div>
 
       <div className="filtros-container">
-        <input type="text" name="usuario" placeholder="Filtrar por usuario" value={filtros.usuario} onChange={handleInputChange} />
+        <input type="text" name="usuario_responsable" placeholder="Filtrar por usuario" value={filtros.usuario_responsable} onChange={handleInputChange} />
         <input type="text" name="pantalla1" placeholder="Filtrar por Pantalla 1" value={filtros.pantalla1} onChange={handleInputChange} />
         <input type="text" name="pantalla2" placeholder="Filtrar por Pantalla 2" value={filtros.pantalla2} onChange={handleInputChange} />
         <input type="text" name="mouse" placeholder="Filtrar por Mouse" value={filtros.mouse} onChange={handleInputChange} />
         <input type="text" name="teclado" placeholder="Filtrar por Teclado" value={filtros.teclado} onChange={handleInputChange} />
-
-        <button className="btn-estilo" onClick={limpiarFiltros}>
-          Limpiar <FaFilter className="icono-filtro" />
-        </button>
-        <button className="btn-estilo" onClick={() => navigate("/Rperifericos")}>
-          + Periferico
-        </button>
+        <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
+        {user.permite_insertar === "Y" &&
+          <button className="btn-estilo" onClick={() => navigate("/Rperifericos")}>+ Periférico</button>}
       </div>
 
-      {perifericosFiltrados.length === 0 ? (
-        <p>No se encontraron periféricos.</p>
+      {perifericos.length === 0 ? (
+        <p>No se encontraron periféricos o no hay datos aún.</p>
       ) : (
         <table>
           <thead>
@@ -149,24 +150,29 @@ const Perifericos = () => {
               <React.Fragment key={item.id}>
                 <tr className="fila-con-linea">
                   <td>{item.id}</td>
-                  <td>{item.USUARIO_RESPONSABLE}</td>
-                  <td>{item.PANTALLA_1_MARCA_MODELO || "No especificado"}</td>
-                  <td>{item.PANTALLA_2_MARCA_MODELO || "No especificado"}</td>
-                  <td>{item.MOUSE}</td>
-                  <td>{item.TECLADO}</td>
+                  <td>{item.usuario_responsable}</td>
+                  <td>{item.pantalla_1_marca_modelo || "No especificado"}</td>
+                  <td>{item.pantalla_2_marca_modelo || "No especificado"}</td>
+                  <td>{item.mouse}</td>
+                  <td>{item.teclado}</td>
                   <td>
                     <div className="botones-acciones">
                       <button className="btn-ver" onClick={() => toggleFila(item.id)}><FaEye /></button>
-                      <button className="btn-editar" onClick={() => abrirModal(item)}><FaEdit /></button>
-                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(item.id)}><FaTrash /></button>
+                      {user.permite_modificar === "Y" && (
+                        <button className="btn-editar" onClick={() => abrirModal(item.id)}><FaEdit /></button>
+                      )}
+                      {user.permite_desactivar === "Y" && (
+                        <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(item.id)}><FaTrash /></button>
+                      )}
                     </div>
                   </td>
                 </tr>
+
                 {filasExpandida.includes(item.id) && (
-                  <tr className="fila1-expandida">
-                    <td colSpan="9">
-                      <table className="info1-expandida">
-                        <tbody className="tabla1Expandida">
+                  <tr className="fila-expandida">
+                    <td colSpan="7">
+                      <table className="info-expandida">
+                        <tbody className="tablaExpandida">
                           <tr>
                             <td><strong>Diadema:</strong></td>
                             <td>{item.diadema || "No especificado"}</td>
@@ -182,10 +188,6 @@ const Perifericos = () => {
                           <tr>
                             <td><strong>Cámara:</strong></td>
                             <td>{item.camara_desktop || "No especificado"}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>IP:</strong></td>
-                            <td>{item.ip || "No especificado"}</td>
                           </tr>
                         </tbody>
                       </table>

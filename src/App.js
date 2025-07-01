@@ -27,6 +27,7 @@ import LoginInventario from "./LoginValidate/loginInterno.jsx";
 import RegistroLogin from "./LoginValidate/RegistrarLogin.jsx";
 import BuscarUsuario from "./Formularios/BuscarUsuario.jsx";
 import BuscarUsuarioT from "./Formularios/BuscarUsuarioT.jsx";
+import BuscarUsuarioi from "./Formularios/BuscarUsuarioi.jsx";
 
 //Modificar Datos
 import EditarUsuario from "./Modificar/EditarUsuario.jsx";
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/Rimpresoras" element={<Registroimpresoras />} />
                 <Route path="/BuscarUsuario" element= {<BuscarUsuario />} />
                 <Route path="/BuscarUsuarioT" element= {<BuscarUsuarioT />} />
+                <Route path="/BuscarUsuarioi" element= {<BuscarUsuarioi />} />
                 <Route path="/Modificar/EditarUsuario/:id" element={<EditarUsuario />} />
                 <Route path="/Modificar/EditarEquipo/:id" element={<EditarEquipo />} />
                 <Route path="/Modificar/EditarTelefonia/:id" element={<EditarTelefonia />} />

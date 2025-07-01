@@ -3,17 +3,19 @@ import axios from "axios";
 import "../styles/styles_6.css";
 import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useAuth } from "../AutoContext";
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/impresoras.php";
 
 const Impresoras = () => {
+  const { user } = useAuth();
   const [impresoras, setImpresoras] = useState([]);
   const [filasExpandida, setFilasExpandida] = useState([]);
   const [filtros, setFiltros] = useState({
     ciudad: "",
     empresa: "",
-    usuarioResponsable: "",
-    marcaModelo: "",
+    usuario_responsable: "",
+    marca_modelo: "",
     serial: "",
     estado: "",
   });
@@ -37,16 +39,18 @@ const Impresoras = () => {
   }, []);
 
   const impresorasFiltradas = useMemo(() => {
-    return impresoras.filter((impresora) => {
-      return (
-        (impresora.ciudad || "").toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
-        (impresora.empresa || "").toLowerCase().includes(filtros.empresa.toLowerCase()) &&
-        (impresora.usuarioResponsable || "").toLowerCase().includes(filtros.usuarioResponsable.toLowerCase()) &&
-        (impresora.marcaModelo || "").toLowerCase().includes(filtros.marcaModelo.toLowerCase()) &&
-        (impresora.serial || "").toLowerCase().includes(filtros.serial.toLowerCase()) &&
-        (impresora.estado || "").toLowerCase().includes(filtros.estado.toLowerCase())
-      );
-    });
+    return impresoras
+      .filter((imp) => imp.activo === 'Y') // ✅ solo activas
+      .filter((imp) => {
+        return (
+          (imp.ciudad || "").toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
+          (imp.empresa || "").toLowerCase().includes(filtros.empresa.toLowerCase()) &&
+          (imp.usuario_responsable || "").toLowerCase().includes(filtros.usuario_responsable.toLowerCase()) &&
+          (imp.marca_modelo || "").toLowerCase().includes(filtros.marca_modelo.toLowerCase()) &&
+          (imp.serial || "").toLowerCase().includes(filtros.serial.toLowerCase()) &&
+          (imp.estado || "").toLowerCase().includes(filtros.estado.toLowerCase())
+        );
+      });
   }, [impresoras, filtros]);
 
   const totalPages = Math.ceil(impresorasFiltradas.length / itemsPerPage);
@@ -58,8 +62,8 @@ const Impresoras = () => {
     setFiltros({
       ciudad: "",
       empresa: "",
-      usuarioResponsable: "",
-      marcaModelo: "",
+      usuario_responsable: "",
+      marca_modelo: "",
       serial: "",
       estado: "",
     });
@@ -77,16 +81,19 @@ const Impresoras = () => {
     );
   };
 
-  const abrirModal = (impresora) => {
-    navigate(`/Formularios/impresoras/${impresora.id}`);
+  const abrirModal = (id) => {
+    navigate(`/Formularios/impresoras/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas desactivar esta impresora?");
+    if (!confirmacion) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(API_URL, { data: { id } });
       obtenerImpresoras();
     } catch (error) {
-      console.error("Error al eliminar impresora:", error);
+      console.error("Error al desactivar impresora:", error);
     }
   };
 
@@ -118,7 +125,7 @@ const Impresoras = () => {
     <div className="container">
       <h2>Lista de Impresoras</h2>
       <div className="texto_explicativo">
-        <p>En esta sección encontrarás las impresoras registradas con sus detalles</p>
+        <p>En esta sección encontrarás las impresoras registradas con sus detalles.</p>
       </div>
 
       <div className="contenedor-centro">
@@ -128,12 +135,14 @@ const Impresoras = () => {
       <div className="filtros-container">
         <input type="text" name="ciudad" placeholder="Filtrar por ciudad" value={filtros.ciudad} onChange={handleInputChange} />
         <input type="text" name="empresa" placeholder="Filtrar por empresa" value={filtros.empresa} onChange={handleInputChange} />
-        <input type="text" name="usuarioResponsable" placeholder="Filtrar por usuario responsable" value={filtros.usuarioResponsable} onChange={handleInputChange} />
-        <input type="text" name="marcaModelo" placeholder="Filtrar por marca/modelo" value={filtros.marcaModelo} onChange={handleInputChange} />
+        <input type="text" name="usuario_responsable" placeholder="Filtrar por usuario responsable" value={filtros.usuario_responsable} onChange={handleInputChange} />
+        <input type="text" name="marca_modelo" placeholder="Filtrar por marca/modelo" value={filtros.marca_modelo} onChange={handleInputChange} />
         <input type="text" name="serial" placeholder="Filtrar por serial" value={filtros.serial} onChange={handleInputChange} />
         <input type="text" name="estado" placeholder="Filtrar por estado" value={filtros.estado} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
-        <button className="btn-estilo" onClick={() => navigate("/Rimpresoras")}>+ Impresora</button>
+        {user.permite_insertar === "Y" &&
+          <button className="btn-estilo" onClick={() => navigate("/BuscarUsuarioi")}>+ Impresora</button>
+        }
       </div>
 
       {impresoras.length === 0 && <p>No se encontraron impresoras o no hay datos aún.</p>}
@@ -156,17 +165,21 @@ const Impresoras = () => {
             <React.Fragment key={impresora.id}>
               <tr className="fila-con-linea">
                 <td>{impresora.id}</td>
-                <td>{impresora.CIUDAD}</td>
-                <td>{impresora.EMPRESA}</td>
-                <td>{impresora.USUARIO_RESPONSABLE}</td>
-                <td>{impresora.MARCA_MODELO}</td>
-                <td>{impresora.SERIAL}</td>
-                <td>{impresora.ESTADO}</td>
+                <td>{impresora.ciudad}</td>
+                <td>{impresora.empresa}</td>
+                <td>{impresora.usuario_responsable}</td>
+                <td>{impresora.marca_modelo}</td>
+                <td>{impresora.serial}</td>
+                <td>{impresora.estado}</td>
                 <td>
                   <div className="botones-acciones">
                     <button className="btn-ver" onClick={() => toggleFila(impresora.id)}><FaEye /></button>
-                    <button className="btn-editar" onClick={() => abrirModal(impresora)}><FaEdit /></button>
-                    <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(impresora.id)}><FaTrash /></button>
+                    {user.permite_modificar === "Y" && (
+                      <button className="btn-editar" onClick={() => abrirModal(impresora.id)}><FaEdit /></button>
+                    )}
+                    {user.permite_desactivar === "Y" && (
+                      <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(impresora.id)}><FaTrash /></button>
+                    )}
                   </div>
                 </td>
               </tr>
