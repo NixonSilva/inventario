@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/LoginModal.css";
 import { useNavigate } from "react-router-dom";
-import config from "http://172.20.158.193/inventario_navesoft//backend/config/configuration.php";
+import config from "http://172.20.158.193172.20.158.193/inventario_navesoft//backend/config/configuration.php";
 import Alert from "@mui/material/Alert";
 import BeatLoader from "react-spinners/BeatLoader";
 import MessageModal from "../MessageModal";

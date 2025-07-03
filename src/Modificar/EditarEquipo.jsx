@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarEquipos.css";
 
-const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarEquipo.php";
-const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerEquipo.php";
+const API_URL = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/actualizarEquipo.php";
+const CONSULTA_API = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/obtenerEquipo.php";
 
 const EditarEquipo = () => {
   const { id } = useParams();

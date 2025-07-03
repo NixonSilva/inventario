@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarUsuario.css";
 
-const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
+const API_URL = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
 
 const EditarUsuario = () => {
   const { id } = useParams();

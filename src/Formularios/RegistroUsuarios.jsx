@@ -29,7 +29,7 @@ const NuevoUsuario = () => {
   const handleRegistrar = async () => {
     try {
       await axios.post(
-        "http://172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php",
+        "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php",
         formData
       );
 

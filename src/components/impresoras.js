@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useAuth } from "../AutoContext";
 
-const API_URL = "http://172.20.158.193/inventario_navesoft/backend/impresoras.php";
+const API_URL = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/impresoras.php";
 
 const Impresoras = () => {
   const { user } = useAuth();

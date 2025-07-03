@@ -102,10 +102,10 @@ const RegistroEquipos = () => {
       };
 
       console.log("📤 Datos a enviar:", dataToSend);
-      console.log("🌐 URL destino:", "http://172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php");
+      console.log("🌐 URL destino:", "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php");
 
       const response = await axios.post(
-        "http://172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
+        "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
         dataToSend,
         {
           headers: {

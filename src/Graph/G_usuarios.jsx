@@ -27,7 +27,7 @@ export default function GraficasUsuarios() {
 
   useEffect(() => {
     console.log("Llamando a la API...");
-    axios.get('http://172.20.158.193/inventario_navesoft/backend/usuarios.php') // Reemplaza con tu URL real
+    axios.get('http://172.20.158.193172.20.158.193/inventario_navesoft/backend/usuarios.php') // Reemplaza con tu URL real
       .then(res => {
         console.log("Datos recibidos de la API:", res.data);
         setData(res.data);
