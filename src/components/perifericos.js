@@ -93,7 +93,7 @@ const Perifericos = () => {
   };
 
   const abrirModal = (id) => {
-    navigate(`/Formularios/perifericos/${id}`);
+    navigate(`/Modificar/EditarPerifericos/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {
