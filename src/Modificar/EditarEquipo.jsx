@@ -2,14 +2,24 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarEquipos.css";
+import MessageModal from "../MessageModal";
 
-const API_URL = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/actualizarEquipo.php";
-const CONSULTA_API = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/obtenerEquipo.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarEquipo.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerEquipo.php";
 
 const EditarEquipo = () => {
   const { id } = useParams();
   console.log("ID desde useParams:", id);
   const navigate = useNavigate();
+
+  // Estados para el modal
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check", // "check" o "fail"
+    buttons: [],
+  });
 
   const [formData, setFormData] = useState({
     id: "",
@@ -130,22 +140,47 @@ const EditarEquipo = () => {
         }
       } catch (error) {
         console.error("Error al cargar el equipo:", error);
+        let mensajeError = "Error desconocido al cargar los datos";
+        
         if (error.code === 'ECONNABORTED') {
-          setError("Tiempo de espera agotado. Verifica tu conexión.");
+          mensajeError = "Tiempo de espera agotado. Verifica tu conexión.";
         } else if (error.response) {
-          setError(`Error del servidor: ${error.response.status} - ${error.response.data?.mensaje || error.response.statusText}`);
+          mensajeError = `Error del servidor: ${error.response.status} - ${error.response.data?.mensaje || error.response.statusText}`;
         } else if (error.request) {
-          setError("No se pudo conectar con el servidor. Verifica que el backend esté funcionando.");
+          mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando.";
         } else {
-          setError(error.message || "Error desconocido al cargar los datos");
+          mensajeError = error.message || "Error desconocido al cargar los datos";
         }
+        
+        setModalConfig({
+          titulo: "Error al cargar datos",
+          texto: mensajeError,
+          icono: "fail",
+          buttons: [
+            {
+              label: "Volver a Equipos",
+              onClick: () => {
+                setShowModal(false);
+                navigate("/equipos");
+              },
+            },
+            {
+              label: "Reintentar",
+              onClick: () => {
+                setShowModal(false);
+                window.location.reload();
+              },
+            },
+          ],
+        });
+        setShowModal(true);
       } finally {
         setLoading(false);
       }
     };
 
     cargarEquipo();
-  }, [id]);
+  }, [id, navigate]);
 
   // Actualizar campos del formulario
   const handleChange = (e) => {
@@ -181,7 +216,18 @@ const EditarEquipo = () => {
     e.preventDefault();
 
     if (!formData.id) {
-      alert("Error: ID del equipo no encontrado");
+      setModalConfig({
+        titulo: "Error de validación",
+        texto: "ID del equipo no encontrado.",
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
+      setShowModal(true);
       return;
     }
 
@@ -212,7 +258,18 @@ const EditarEquipo = () => {
       // Validar datos
       const errores = validarDatos(datosParaEnviar);
       if (errores.length > 0) {
-        alert("Errores de validación:\n" + errores.join("\n"));
+        setModalConfig({
+          titulo: "Error de validación",
+          texto: "Errores encontrados:\n" + errores.join("\n"),
+          icono: "fail",
+          buttons: [
+            {
+              label: "Cerrar",
+              onClick: () => setShowModal(false),
+            },
+          ],
+        });
+        setShowModal(true);
         return;
       }
 
@@ -228,8 +285,21 @@ const EditarEquipo = () => {
       console.log("Respuesta de actualización:", response.data);
       
       if (response.data.success || response.data.mensaje) {
-        alert(response.data.mensaje || "Equipo actualizado correctamente.");
-        navigate("/equipos");
+        setModalConfig({
+          titulo: "Actualización exitosa",
+          texto: response.data.mensaje || "El equipo fue actualizado correctamente.",
+          icono: "check",
+          buttons: [
+            {
+              label: "Aceptar",
+              onClick: () => {
+                setShowModal(false);
+                navigate("/equipos");
+              },
+            },
+          ],
+        });
+        setShowModal(true);
       } else {
         throw new Error("Respuesta inesperada del servidor");
       }
@@ -262,7 +332,18 @@ const EditarEquipo = () => {
         mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando.";
       }
       
-      alert("Error al actualizar equipo:\n" + mensajeError);
+      setModalConfig({
+        titulo: "Error en la actualización",
+        texto: mensajeError,
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
+      setShowModal(true);
     }
   };
 
@@ -280,7 +361,7 @@ const EditarEquipo = () => {
       <div className="form2-container">
         <h2>Error</h2>
         <p style={{color: 'red', marginBottom: '20px'}}>{error}</p>
-        <div className="form-buttons">
+        <div className="form25-buttons">
           <button onClick={() => navigate("/equipos")}>Volver a Equipos</button>
           <button onClick={() => window.location.reload()}>Reintentar</button>
         </div>
@@ -476,11 +557,20 @@ const EditarEquipo = () => {
           </label>
         </div>
         
-        <div className="form-buttons">
-          <button type="submit">Guardar Cambios</button>
-          <button type="button" onClick={() => navigate("/equipos")}>Cancelar</button>
+        <div className="form25-buttons">
+          <button type="submit241">Guardar Cambios</button>
+          <button type="button241" onClick={() => navigate("/equipos")}>Cancelar</button>
         </div>
       </form>
+
+      {/* Modal */}
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

@@ -11,7 +11,7 @@ function BuscarUsuario() {
   const buscarUsuario = async () => {
     try {
         const response = await axios.get(
-        `http://172.20.158.193172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombre)}`
+        `http://172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombre)}`
         );
 
         if (response.data.success && response.data.usuarios.length > 0) {

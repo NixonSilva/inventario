@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../styles/Styles_F3.css";
+import MessageModal from "../MessageModal"; // ✅ IMPORTANTE
 
 const RegistroEquipos = () => {
   const navigate = useNavigate();
@@ -31,8 +32,16 @@ const RegistroEquipos = () => {
   });
 
   const [activeButton, setActiveButton] = useState("");
-  const [mensaje, setMensaje] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // ✅ Estado para el modal
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check",
+    buttons: []
+  });
 
   useEffect(() => {
     if (cedula && usuarioNombre) {
@@ -47,40 +56,42 @@ const RegistroEquipos = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (mensaje) setMensaje("");
   };
 
   const validateForm = () => {
-    // Campos requeridos según el PHP
     const requiredFields = [
-      'usuario', 'ubicacion', 'lugar_uso', 'tipo_equipo', 
-      'marca', 'cpu', 'serial', 'memoria_ram', 'disco_mecanico', 
+      'usuario', 'ubicacion', 'lugar_uso', 'tipo_equipo',
+      'marca', 'cpu', 'serial', 'memoria_ram', 'disco_mecanico',
       'disco_ssd', 'ip', 'estado', 'propietario'
     ];
-    
+
     const missingFields = requiredFields.filter(field => !formData[field]?.trim());
 
     if (missingFields.length > 0) {
-      setMensaje(`Error: Los siguientes campos son obligatorios: ${missingFields.join(', ')}`);
+      setModalConfig({
+        titulo: "Campos faltantes",
+        texto: `Faltan los siguientes campos: ${missingFields.join(', ')}`,
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false)
+          }
+        ]
+      });
+      setShowModal(true);
       return false;
     }
     return true;
   };
 
   const handleGuardar = async () => {
-    console.log("🚀 Iniciando proceso de guardado...");
-
-    if (!validateForm()) {
-      console.log("❌ Validación falló");
-      return;
-    }
+    if (!validateForm()) return;
 
     setActiveButton("guardar");
     setIsLoading(true);
-    setMensaje("");
 
     try {
-      // Preparar datos para enviar (sin campos de fecha ya que el PHP no los usa)
       const dataToSend = {
         usuario: formData.usuario,
         ubicacion: formData.ubicacion,
@@ -101,11 +112,8 @@ const RegistroEquipos = () => {
         activo: formData.activo || 'Y'
       };
 
-      console.log("📤 Datos a enviar:", dataToSend);
-      console.log("🌐 URL destino:", "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php");
-
       const response = await axios.post(
-        "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
         dataToSend,
         {
           headers: {
@@ -116,15 +124,20 @@ const RegistroEquipos = () => {
         }
       );
 
-      console.log("✅ Respuesta recibida!");
-      console.log("📥 Status HTTP:", response.status);
-      console.log("📥 Datos respuesta:", response.data);
-
       if (response.data && response.data.success) {
-        setMensaje("Equipo registrado exitosamente");
-        console.log("🎉 Registro exitoso!");
+        setModalConfig({
+          titulo: "Registro exitoso",
+          texto: "El equipo fue registrado correctamente.",
+          icono: "check",
+          buttons: [
+            {
+              label: "Aceptar",
+              onClick: () => setShowModal(false)
+            }
+          ]
+        });
+        setShowModal(true);
 
-        // Limpiar formulario manteniendo usuario y cédula
         setFormData((prev) => ({
           cedula: prev.cedula,
           usuario: prev.usuario,
@@ -146,48 +159,39 @@ const RegistroEquipos = () => {
           activo: "Y"
         }));
       } else {
-        const errorMessage = response.data?.error ||
-                             response.data?.message ||
-                             "Error inesperado del servidor";
-        setMensaje(`Error: ${errorMessage}`);
+        throw new Error(response.data?.error || "Error inesperado");
       }
     } catch (error) {
-      console.error("💥 Error completo capturado:", error);
-      let errorMessage = "Error de conexión con el servidor";
+      let errorMessage = "Error al registrar el equipo.";
 
       if (error.response) {
-        if (error.response.status === 400) {
-          // El PHP devuelve 400 para errores de negocio
-          const serverError = error.response.data?.error || error.response.data?.message;
-          if (serverError && serverError.includes('Ya existe un equipo')) {
-            errorMessage = "Ya existe un equipo con ese SERIAL o IP. Verifique los datos.";
-          } else if (serverError && serverError.includes('unique constraint')) {
-            errorMessage = "Error: SERIAL o IP duplicados. Verifique los datos.";
-          } else {
-            errorMessage = `Error: ${serverError}`;
-          }
-        } else if (error.response.status === 404) {
-          errorMessage = "El endpoint del servidor no fue encontrado (404)";
-        } else if (error.response.status === 500) {
-          errorMessage = `Error interno del servidor (500): ${error.response.data?.error || 'Sin detalles'}`;
-        } else if (error.response.status === 0) {
-          errorMessage = "Error de CORS - El servidor rechaza peticiones desde este origen";
+        const serverError = error.response.data?.error || error.response.data?.message;
+        if (serverError?.includes("Ya existe un equipo")) {
+          errorMessage = "Ya existe un equipo con ese SERIAL o IP. Verifique los datos.";
+        } else if (serverError?.includes("unique constraint")) {
+          errorMessage = "Error: SERIAL o IP duplicados. Verifique los datos.";
         } else {
-          errorMessage = `Error HTTP ${error.response.status}: ${error.response.data?.error || error.response.statusText}`;
+          errorMessage = `Error: ${serverError}`;
         }
-      } else if (error.request) {
-        errorMessage = "No se pudo conectar con el servidor. Verifique la URL y su conexión.";
-      } else if (error.code === 'ECONNABORTED') {
-        errorMessage = "Timeout: El servidor tardó demasiado en responder";
-      } else {
-        errorMessage = `Error: ${error.message}`;
+      } else if (error.message?.includes("timeout")) {
+        errorMessage = "Timeout: El servidor tardó demasiado en responder.";
       }
 
-      setMensaje(errorMessage);
+      setModalConfig({
+        titulo: "Error",
+        texto: errorMessage,
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false)
+          }
+        ]
+      });
+      setShowModal(true);
     } finally {
       setIsLoading(false);
       setActiveButton("");
-      console.log("🏁 Proceso finalizado");
     }
   };
 
@@ -196,7 +200,6 @@ const RegistroEquipos = () => {
     navigate("/equipos");
   };
 
-  // Campos a mostrar en el formulario (sin fechas ya que el PHP no las maneja)
   const formFields = [
     { key: 'cedula', label: 'CÉDULA', disabled: true },
     { key: 'usuario', label: 'USUARIO', disabled: true, required: true },
@@ -222,20 +225,6 @@ const RegistroEquipos = () => {
     <div className="form32-containeer">
       <h2 className="form-title">Registro de equipos</h2>
 
-      {mensaje && (
-        <div style={{
-          padding: "10px",
-          marginBottom: "15px",
-          borderRadius: "4px",
-          backgroundColor: mensaje.startsWith("Error") ? "#ffe6e6" : "#e6ffe6",
-          border: `1px solid ${mensaje.startsWith("Error") ? "#ff9999" : "#99ff99"}`,
-          color: mensaje.startsWith("Error") ? "#cc0000" : "#006600",
-          fontWeight: "bold"
-        }}>
-          {mensaje}
-        </div>
-      )}
-
       <form className="forms21-grid">
         {formFields.map(({ key, label, disabled = false, required = false }) => (
           <div key={key} className="form14-group">
@@ -257,7 +246,7 @@ const RegistroEquipos = () => {
         ))}
       </form>
 
-      <div className="form14-buttons">
+      <div className="form142-buttons">
         <button
           type="button1"
           onClick={handleVerRegistros}
@@ -275,6 +264,15 @@ const RegistroEquipos = () => {
           {isLoading ? "Guardando..." : "Guardar"}
         </button>
       </div>
+
+      {/* ✅ Modal de mensajes */}
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

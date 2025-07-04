@@ -6,15 +6,15 @@ import axios from "axios";
 
 const Registrotelefonia = () => {
   const navigate = useNavigate();
-  
+
   const [showModal, setShowModal] = useState(false);
-    const [modalConfig, setModalConfig] = useState({
-      titulo: "",
-      texto: "",
-      icono: "check", // o "fail"
-      buttons: [],
-    });
-  
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check", // "check" o "fail"
+    buttons: [],
+  });
+
   const [formData, setFormData] = useState({
     id: "",
     usuarios: "",
@@ -26,7 +26,7 @@ const Registrotelefonia = () => {
     zoyper: "",
     marca: "",
     modelo: "",
-    ip: ""
+    ip: "",
   });
 
   const [activeButton, setActiveButton] = useState(""); // controla qué botón fue presionado
@@ -39,13 +39,13 @@ const Registrotelefonia = () => {
   const handleRegistrar = async () => {
     try {
       await axios.post(
-        "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/RegistroTelefonia.php",
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroTelefonia.php",
         formData
       );
 
       setModalConfig({
         titulo: "Registro exitoso",
-        texto: "El telefono fue registrado correctamente.",
+        texto: "El teléfono fue registrado correctamente.",
         icono: "check",
         buttons: [
           {
@@ -59,11 +59,11 @@ const Registrotelefonia = () => {
       });
       setShowModal(true);
     } catch (error) {
-      console.error("Error al registrar telefono:", error);
+      console.error("Error al registrar teléfono:", error);
 
       setModalConfig({
         titulo: "Error en el registro",
-        texto: "No se pudo registrar el telefono.",
+        texto: "No se pudo registrar el teléfono.",
         icono: "fail",
         buttons: [
           {
@@ -83,7 +83,7 @@ const Registrotelefonia = () => {
 
   return (
     <div className="form-container">
-      <h2 className="form-title">Registro de telefonia</h2>
+      <h2 className="form-title">Registro de Telefonía</h2>
       <form className="form-grid">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="form-group">
@@ -102,7 +102,7 @@ const Registrotelefonia = () => {
         ))}
       </form>
       <div className="form-buttons">
-      <button
+        <button
           type="button"
           onClick={handleVerRegistros}
           className={`custom-btn ${activeButton === "ver" ? "selected" : ""}`}
@@ -117,14 +117,15 @@ const Registrotelefonia = () => {
           Guardar
         </button>
       </div>
+
       {/* Modal */}
-        <MessageModal
-          show={showModal}
-          title={modalConfig.titulo}
-          body={modalConfig.texto}
-          buttons={modalConfig.buttons}
-          imageType={modalConfig.icono}
-        />
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

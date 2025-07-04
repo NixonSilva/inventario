@@ -50,7 +50,7 @@ input:focus {
   border-color: #007bff;
 }
 
-.form-buttons {
+.form25-buttons {
   display: flex;
   justify-content: center;
   gap: 15px;
@@ -66,13 +66,21 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"] {
+button[type="submit241"] {
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
   background-color: #007bff;
   color: white;
+    border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-button[type="submit"]:hover {
-  background-color: #0056b3;
+button[type="submit241"]:hover {
+  background-color: #007dc5;
 }
 
 
@@ -87,7 +95,7 @@ button[type="submit"]:hover {
     grid-template-columns: 1fr;
   }
 
-  .form-buttons {
+  .form25-buttons {
     flex-direction: column;
     gap: 10px;
   }

@@ -20,8 +20,13 @@ const LoginInterno = () => {
     e.preventDefault();
     setError("");
 
+    if (!email || !clave) {
+      setError("Por favor, complete todos los campos.");
+      return;
+    }
+
     try {
-      const response = await fetch("http://172.20.158.193172.20.158.193/inventario_navesoft/backend/login.php", {
+      const response = await fetch("http://172.20.158.193/inventario_navesoft/backend/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, clave }),
@@ -39,44 +44,52 @@ const LoginInterno = () => {
           permite_desactivar: usuario.permite_desactivar,
           permite_insertar: usuario.permite_insertar,
         });
-        navigate("/"); // Redirección a la página principal protegida
+        navigate("/");
       } else {
-        setError(data.respuesta || "Credenciales inválidas");
+        setError("Correo o contraseña incorrectos.");
       }
     } catch (err) {
-      setError("Error al conectar con el servidor");
+      setError("No se pudo conectar con el servidor. Intente más tarde.");
     }
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-container">
-      <h2>Iniciar Sesión</h2>
-      {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={clave}
-          onChange={(e) => setClave(e.target.value)}
-          required
-        />
-        <button type="submit">Entrar</button>
-      </form>
-      <div className="extra-links">
-        <Link to="/olvide-clave">¿Olvidó su contraseña?</Link>
-        <br />
-        <span>¿No tiene cuenta?</span>
-        <Link to="/RegistroLogin">Regístrese</Link>
+        <h2>Iniciar Sesión</h2>
+
+        {/* Mensaje de error directo */}
+        {error && (
+          <div className="alert-error">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            required
+          />
+          <button type="submit">Entrar</button>
+        </form>
+
+        <div className="extra-links">
+          <Link to="/olvide-clave">¿Olvidó su contraseña?</Link>
+          <br />
+          <span>¿No tiene cuenta?</span>
+          <Link to="/RegistroLogin"> Regístrese</Link>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

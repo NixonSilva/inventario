@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarTelefonia.css";
 
-const API_URL = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/actualizarTelefonia.php";
-const CONSULTA_API = "http://172.20.158.193172.20.158.193/inventario_navesoft/backend/obtenerTelefonia.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarTelefonia.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerTelefonia.php";
 
 const EditarTelefonia = () => {
   const { id } = useParams();
