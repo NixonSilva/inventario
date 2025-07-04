@@ -82,7 +82,7 @@ const Impresoras = () => {
   };
 
   const abrirModal = (id) => {
-    navigate(`/Formularios/impresoras/${id}`);
+    navigate(`/Modificar/Editarimpresoras/${id}`);
   };
 
   const handleEliminarDesdeFila = async (id) => {

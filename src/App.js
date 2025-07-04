@@ -34,6 +34,7 @@ import BuscarUsuarioi from "./Formularios/BuscarUsuarioi.jsx";
 import EditarUsuario from "./Modificar/EditarUsuario.jsx";
 import EditarEquipo from "./Modificar/EditarEquipo.jsx";
 import EditarTelefonia from "./Modificar/EditarTelefonia.jsx";
+import Editarimpresoras from "./Modificar/Editarimpresoras.jsx";
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
                 <Route path="/Modificar/EditarUsuario/:id" element={<EditarUsuario />} />
                 <Route path="/Modificar/EditarEquipo/:id" element={<EditarEquipo />} />
                 <Route path="/Modificar/EditarTelefonia/:id" element={<EditarTelefonia />} />
+                <Route path="/Modificar/Editarimpresoras/:id" element={<Editarimpresoras />} />
               {/*</Route>*/}
 
               {/* Ruta para páginas no encontradas */}
