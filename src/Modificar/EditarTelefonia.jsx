@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarTelefonia.css";
+import MessageModal from "../MessageModal"; // ✅ Importación del modal
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarTelefonia.php";
 const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerTelefonia.php";
@@ -26,6 +27,14 @@ const EditarTelefonia = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [showModal, setShowModal] = useState(false); // ✅ Modal visible o no
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check", // "check" o "fail"
+    buttons: [],
+  });
 
   useEffect(() => {
     const cargarTelefonia = async () => {
@@ -95,15 +104,40 @@ const EditarTelefonia = () => {
       });
 
       if (response.data.mensaje || response.data.success) {
-        alert(response.data.mensaje || "Teléfono actualizado correctamente.");
-        navigate("/telefonia");
+        setModalConfig({
+          titulo: "Actualización exitosa",
+          texto: response.data.mensaje || "Teléfono actualizado correctamente.",
+          icono: "check",
+          buttons: [
+            {
+              label: "Aceptar",
+              onClick: () => {
+                setShowModal(false);
+                navigate("/telefonia");
+              },
+            },
+          ],
+        });
       } else {
         throw new Error("Respuesta inesperada del servidor");
       }
     } catch (error) {
       console.error("Error al actualizar:", error);
-      alert("Error al actualizar teléfono: " + (error.response?.data?.mensaje || error.message));
+
+      setModalConfig({
+        titulo: "Error al actualizar",
+        texto: error.response?.data?.mensaje || error.message || "Error desconocido.",
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
     }
+
+    setShowModal(true);
   };
 
   if (loading) {
@@ -180,6 +214,15 @@ const EditarTelefonia = () => {
           <button type="button" onClick={() => navigate("/telefonia")}>Cancelar</button>
         </div>
       </form>
+
+      {/* ✅ Modal */}
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

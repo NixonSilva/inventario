@@ -46,17 +46,19 @@ const EditarEquipo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para convertir fecha de DD/MM/YYYY a YYYY-MM-DD (para input date)
+  // Función para convertir fecha de formato Oracle/DD-MM-YYYY a YYYY-MM-DD (para input date)
   const convertirFechaParaInput = (fecha) => {
     if (!fecha) return "";
     
+    console.log("Fecha recibida para convertir:", fecha);
+    
     // Si ya está en formato YYYY-MM-DD, devolverla tal como está
-    if (fecha.includes("-") && fecha.length === 10) {
+    if (fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
       return fecha;
     }
     
-    // Si está en formato DD/MM/YYYY, convertir a YYYY-MM-DD
-    if (fecha.includes("/")) {
+    // Si está en formato DD/MM/YYYY
+    if (fecha.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
       const partes = fecha.split("/");
       if (partes.length === 3) {
         const [dia, mes, año] = partes;
@@ -64,20 +66,41 @@ const EditarEquipo = () => {
       }
     }
     
-    return fecha;
+    // Si está en formato DD-MM-YYYY
+    if (fecha.match(/^\d{2}-\d{2}-\d{4}$/)) {
+      const partes = fecha.split("-");
+      if (partes.length === 3) {
+        const [dia, mes, año] = partes;
+        return `${año}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+      }
+    }
+    
+    // Si viene de Oracle como timestamp, extraer solo la fecha
+    if (fecha.includes("T")) {
+      return fecha.split("T")[0];
+    }
+    
+    // Si es un objeto Date
+    if (fecha instanceof Date) {
+      return fecha.toISOString().split('T')[0];
+    }
+    
+    return "";
   };
 
   // Función para convertir fecha de YYYY-MM-DD a DD/MM/YYYY (para enviar al backend)
   const convertirFechaParaBackend = (fecha) => {
     if (!fecha) return "";
     
+    console.log("Fecha para backend:", fecha);
+    
     // Si ya está en formato DD/MM/YYYY, devolverla tal como está
-    if (fecha.includes("/")) {
+    if (fecha.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
       return fecha;
     }
     
     // Si está en formato YYYY-MM-DD, convertir a DD/MM/YYYY
-    if (fecha.includes("-")) {
+    if (fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
       const partes = fecha.split("-");
       if (partes.length === 3) {
         const [año, mes, dia] = partes;
@@ -86,6 +109,37 @@ const EditarEquipo = () => {
     }
     
     return fecha;
+  };
+
+  // Función para validar datos antes de enviar - VERSIÓN CORREGIDA
+  const validarDatos = (datos) => {
+    const errores = [];
+    
+    if (!datos.id || isNaN(parseInt(datos.id))) {
+      errores.push("ID del equipo inválido");
+    }
+    
+    // Validar formato de IP si está presente
+    if (datos.ip && datos.ip.trim()) {
+      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (!ipRegex.test(datos.ip.trim())) {
+        errores.push("Formato de IP inválido");
+      }
+    }
+    
+    // Validar fechas - ANTES de convertir al formato del backend
+    const fechas = ['fecha_entrega', 'fecha_devolucion', 'fecha_mantenimiento'];
+    fechas.forEach(campo => {
+      if (datos[campo] && datos[campo].trim()) {
+        const fechaInput = datos[campo];
+        // Validar formato YYYY-MM-DD (formato del input date)
+        if (!fechaInput.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          errores.push(`Formato de ${campo.replace('_', ' ')} inválido`);
+        }
+      }
+    });
+    
+    return errores;
   };
 
   // Cargar datos del equipo al iniciar
@@ -192,26 +246,7 @@ const EditarEquipo = () => {
     console.log(`Campo ${name} actualizado:`, value);
   };
 
-  // Validar datos antes de enviar
-  const validarDatos = (datos) => {
-    const errores = [];
-    
-    if (!datos.id || isNaN(parseInt(datos.id))) {
-      errores.push("ID del equipo inválido");
-    }
-    
-    // Validar formato de IP si está presente
-    if (datos.ip && datos.ip.trim()) {
-      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
-      if (!ipRegex.test(datos.ip.trim())) {
-        errores.push("Formato de IP inválido");
-      }
-    }
-    
-    return errores;
-  };
-
-  // Guardar cambios
+  // Guardar cambios - VERSIÓN CORREGIDA
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -232,11 +267,29 @@ const EditarEquipo = () => {
     }
 
     try {
-      // Preparar datos para envío
+      // PRIMERO: Validar datos ANTES de convertir fechas
+      const errores = validarDatos(formData);
+      if (errores.length > 0) {
+        setModalConfig({
+          titulo: "Error de validación",
+          texto: "Errores encontrados:\n" + errores.join("\n"),
+          icono: "fail",
+          buttons: [
+            {
+              label: "Cerrar",
+              onClick: () => setShowModal(false),
+            },
+          ],
+        });
+        setShowModal(true);
+        return;
+      }
+
+      // SEGUNDO: Preparar datos para envío (DESPUÉS de validar)
       const datosParaEnviar = {
         ...formData,
         id: parseInt(formData.id, 10),
-        // Convertir fechas al formato esperado por el backend
+        // Convertir fechas al formato esperado por el backend (DD/MM/YYYY)
         fecha_entrega: convertirFechaParaBackend(formData.fecha_entrega),
         fecha_devolucion: convertirFechaParaBackend(formData.fecha_devolucion),
         fecha_mantenimiento: convertirFechaParaBackend(formData.fecha_mantenimiento),
@@ -254,24 +307,6 @@ const EditarEquipo = () => {
         observacion: (formData.observacion || "").trim(),
         anydesk: (formData.anydesk || "").trim()
       };
-
-      // Validar datos
-      const errores = validarDatos(datosParaEnviar);
-      if (errores.length > 0) {
-        setModalConfig({
-          titulo: "Error de validación",
-          texto: "Errores encontrados:\n" + errores.join("\n"),
-          icono: "fail",
-          buttons: [
-            {
-              label: "Cerrar",
-              onClick: () => setShowModal(false),
-            },
-          ],
-        });
-        setShowModal(true);
-        return;
-      }
 
       console.log("Datos a enviar:", datosParaEnviar);
 
@@ -317,16 +352,16 @@ const EditarEquipo = () => {
         
         switch (status) {
           case 400:
-            mensajeError = `Error de datos: ${data?.mensaje || 'Datos inválidos enviados al servidor'}`;
+            mensajeError = `Error de datos: ${data?.mensaje || data?.error || 'Datos inválidos enviados al servidor'}`;
             break;
           case 404:
             mensajeError = "Endpoint no encontrado. Verifica la URL del backend.";
             break;
           case 500:
-            mensajeError = `Error interno del servidor: ${data?.mensaje || 'Error en el backend'}`;
+            mensajeError = `Error interno del servidor: ${data?.mensaje || data?.error || 'Error en el backend'}`;
             break;
           default:
-            mensajeError = `Error ${status}: ${data?.mensaje || error.response.statusText}`;
+            mensajeError = `Error ${status}: ${data?.mensaje || data?.error || error.response.statusText}`;
         }
       } else if (error.request) {
         mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando.";
@@ -558,8 +593,8 @@ const EditarEquipo = () => {
         </div>
         
         <div className="form25-buttons">
-          <button type="submit241">Guardar Cambios</button>
-          <button type="button241" onClick={() => navigate("/equipos")}>Cancelar</button>
+          <button type="submit">Guardar Cambios</button>
+          <button type="button" onClick={() => navigate("/equipos")}>Cancelar</button>
         </div>
       </form>
 

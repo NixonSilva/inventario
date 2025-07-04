@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarUsuario.css";
+import MessageModal from "../MessageModal"; // ✅ Importa tu modal aquí
 
 const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
 
 const EditarUsuario = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [usuario, setUsuario] = useState({
     nombre: "",
     ubicacion: "",
@@ -15,26 +17,59 @@ const EditarUsuario = () => {
     unidades_negocio: ""
   });
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    titulo: "",
+    texto: "",
+    icono: "check", // "check" o "fail"
+    buttons: [],
+  });
+
   const handleChange = (e) => {
     setUsuario({ ...usuario, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    axios.post(API_URL, {
-      id: id,
-      nombre: usuario.nombre,
-      ubicacion: usuario.ubicacion,
-      empresas: usuario.empresas,
-      unidades_negocio: usuario.unidades_negocio
-    })
-    .then((res) => {
-      alert(res.data.mensaje || "Usuario actualizado correctamente");
-      navigate("/usuarios");
-    })
-    .catch((err) => {
-      console.error("Error al actualizar usuario", err);
-      alert("Error al actualizar usuario.");
-    });
+  const handleSubmit = async () => {
+    try {
+      await axios.post(API_URL, {
+        id: id,
+        nombre: usuario.nombre,
+        ubicacion: usuario.ubicacion,
+        empresas: usuario.empresas,
+        unidades_negocio: usuario.unidades_negocio
+      });
+
+      setModalConfig({
+        titulo: "Actualización Exitosa",
+        texto: "El usuario fue actualizado correctamente.",
+        icono: "check",
+        buttons: [
+          {
+            label: "Aceptar",
+            onClick: () => {
+              setShowModal(false);
+              navigate("/usuarios");
+            },
+          },
+        ],
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error al actualizar usuario", error);
+
+      setModalConfig({
+        titulo: "Error en la Actualización",
+        texto: "No se pudo actualizar el usuario.",
+        icono: "fail",
+        buttons: [
+          {
+            label: "Cerrar",
+            onClick: () => setShowModal(false),
+          },
+        ],
+      });
+      setShowModal(true);
+    }
   };
 
   return (
@@ -91,6 +126,15 @@ const EditarUsuario = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal de mensaje */}
+      <MessageModal
+        show={showModal}
+        title={modalConfig.titulo}
+        body={modalConfig.texto}
+        buttons={modalConfig.buttons}
+        imageType={modalConfig.icono}
+      />
     </div>
   );
 };

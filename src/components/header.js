@@ -1,19 +1,27 @@
 import React, { useState } from "react";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { useAuth } from "../AutoContext"; // Asegúrate que esta ruta sea correcta
+import { useNavigate } from "react-router-dom"; 
+import { FiUser } from "react-icons/fi";
+import { useAuth } from "../AutoContext"; // Asegúrate de que la ruta sea correcta
 import "../styles/Header.css";
 import logo from "../assets/Logo_navemar.jpg";
 
 const Header = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const { logout } = useAuth(); // 👈 Aquí usamos tu logout del contexto
+  const { logout } = useAuth();
+  const navigate = useNavigate(); // ✅ Aquí obtenemos navigate correctamente
 
   const toggleMenu = () => {
-  setMenuAbierto((prev) => {
-    console.log("menuAbierto:", !prev);
-    return !prev;
-  });
- };
+    setMenuAbierto((prev) => {
+      console.log("menuAbierto:", !prev);
+      return !prev;
+    });
+  };
+
+  const handleVerPerfil = () => {
+    console.log("Navegando al perfil...");
+    navigate("/miPerfil"); // ✅ Funciona ahora correctamente
+    setMenuAbierto(false);
+  };
 
   return (
     <header>
@@ -30,12 +38,17 @@ const Header = () => {
 
         <div className="user-menu-container">
           <button onClick={toggleMenu} className="icon-button">
-            {menuAbierto ? <FiChevronUp /> : <FiChevronDown />}
+            <FiUser size={20} />
           </button>
 
           {menuAbierto && (
             <div className="dropdown-menus">
-              <button className="logouts-button" onClick={logout}>Cerrar sesión</button>
+              <button className="profile-button" onClick={handleVerPerfil}>
+                Ver mi perfil
+              </button>
+              <button className="logouts-button" onClick={logout}>
+                Cerrar sesión
+              </button>
             </div>
           )}
         </div>

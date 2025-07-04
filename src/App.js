@@ -24,6 +24,7 @@ import Registroequipos from "./Formularios/RegistroEquipos";
 import Registroperifericos from "./Formularios/RegistroPerifericos";
 import Registroimpresoras from "./Formularios/Registroimpresoras";
 import LoginInventario from "./LoginValidate/loginInterno.jsx";
+import MiPerfil from "./LoginValidate/Mi_perfil.jsx";
 import RegistroLogin from "./LoginValidate/RegistrarLogin.jsx";
 import BuscarUsuario from "./Formularios/BuscarUsuario.jsx";
 import BuscarUsuarioT from "./Formularios/BuscarUsuarioT.jsx";
@@ -58,6 +59,7 @@ function App() {
                 <Route path="/proveedores" element={<p>Proveedores en construcción</p>} />
                 <Route path="/usuarios" element={<TablaUsuarios />} />
                 <Route path="/LoginInventario" element={<LoginInventario />} />
+                <Route path="/miPerfil" element={<MiPerfil />} />
                 <Route path="/RegistroLogin" element={<RegistroLogin />} />
                 <Route path="/equipos" element={<TablaEquipos />} />
                 <Route path="/telefonia" element={<TablaTelefonia />} />
