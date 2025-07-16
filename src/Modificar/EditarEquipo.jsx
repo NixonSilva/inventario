@@ -405,7 +405,7 @@ const EditarEquipo = () => {
   }
 
   return (
-    <div className="form2-container">
+    <div className="form231-container">
       <h2>Editar Equipo (ID: {formData.id})</h2>
       <form onSubmit={handleSubmit}>
         {/* Campo ID oculto */}

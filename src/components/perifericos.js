@@ -169,10 +169,10 @@ const Perifericos = () => {
                 </tr>
 
                 {filasExpandida.includes(item.id) && (
-                  <tr className="fila-expandida">
+                  <tr className="fila25-expandida">
                     <td colSpan="7">
-                      <table className="info-expandida">
-                        <tbody className="tablaExpandida">
+                      <table className="info125-expandida">
+                        <tbody className="tabla1Expandida">
                           <tr>
                             <td><strong>Diadema:</strong></td>
                             <td>{item.diadema || "No especificado"}</td>

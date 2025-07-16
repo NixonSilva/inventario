@@ -1,4 +1,4 @@
-.form2-container {
+.form231-container {
   max-width: 1000px;
   margin: 30px auto;
   padding: 30px;
@@ -7,7 +7,7 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.form2-container h2 {
+.form231-container h2 {
   text-align: center;
   color: #007bff;
   margin-bottom: 25px;
@@ -85,13 +85,13 @@ button[type="submit241"]:hover {
 
 
 @media (max-width: 900px) {
-  .form-grid {
+  .form872-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
-  .form-grid {
+  .form872-grid {
     grid-template-columns: 1fr;
   }
 
