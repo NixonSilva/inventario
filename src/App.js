@@ -14,7 +14,7 @@ import TablaEquipos from "./components/equipos";
 import TablaTelefonia from "./components/telefonia";
 import TablaPerifericos from "./components/perifericos";
 import TablaImpresoras from "./components/impresoras";
-import GraficasUsuarios from "./Graph/G_usuarios";
+import GraficasUsuarios from "./Graph/Prueba";
 //import UsuariosPorEmpresa from "./Graph/UsuariosPorEmpresa";
 
 // Formularios protegidos
