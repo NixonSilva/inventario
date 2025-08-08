@@ -20,7 +20,7 @@ const Registrarse = () => {
   const handleRegistro = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("hhttps://inventario.navesoft.com/backend/RegisterLogin.php", formData);
+      const response = await axios.post("hhttp://172.20.158.193/inventario_navesoft/backend/RegisterLogin.php", formData);
       if (response.data.success) {
         setMensaje("Usuario registrado con éxito");
       } else {

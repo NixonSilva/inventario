@@ -55,7 +55,7 @@ const Dashboard = () => {
       setError(null);
       
       // Cambia esta URL por la de tu servidor PHP
-      const response = await fetch('https://inventario.navesoft.com/backend/DashboardUsuarios.php');
+      const response = await fetch('http://172.20.158.193/inventario_navesoft/backend/DashboardUsuarios.php');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

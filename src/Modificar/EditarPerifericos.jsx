@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarPeriferico.css";
 import MessageModal from "../MessageModal";
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarPeriferico.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerPeriferico.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarPeriferico.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerPeriferico.php";
 
 const EditarPeriferico = () => {
   const { id } = useParams();
