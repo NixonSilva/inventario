@@ -132,7 +132,7 @@ const Registroimpresoras = () => {
       };
 
       const response = await axios.post(
-        "http://172.20.158.193/inventario_navesoft/backend/RegistroImpresoras.php",
+        "https://inventario.navesoft.com/backend/RegistroImpresoras.php",
         dataToSend,
         {
           headers: {

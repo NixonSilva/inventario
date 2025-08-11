@@ -15,6 +15,7 @@ import TablaTelefonia from "./components/telefonia";
 import TablaPerifericos from "./components/perifericos";
 import TablaImpresoras from "./components/impresoras";
 import GraficasUsuarios from "./Graph/Prueba";
+import ProveedoresNavemar from "./components/proveedores.jsx"
 //import UsuariosPorEmpresa from "./Graph/UsuariosPorEmpresa";
 
 // Formularios protegidos
@@ -58,7 +59,7 @@ function App() {
               {/*<Route element={<ProtectedRouteInternal />}>*/}
                 <Route path="/informes" element={<GraficasUsuarios />} />
                 <Route path="/contacto" element={<p>Contacto en construcción</p>} />
-                <Route path="/proveedores" element={<p>Proveedores en construcción</p>} />
+                <Route path="/proveedores" element={<ProveedoresNavemar />} />
                 <Route path="/usuarios" element={<TablaUsuarios />} />
                 <Route path="/LoginInventario" element={<LoginInventario />} />
                 <Route path="/miPerfil" element={<MiPerfil />} />
