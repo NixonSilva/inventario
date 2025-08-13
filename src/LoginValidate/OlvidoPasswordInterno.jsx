@@ -87,7 +87,7 @@ const OlvidoPasswordInterno = ({ isOpen, onClose }) => {
                   Aceptar
                 </button>
               ) : (
-                <BeatLoader color="#0082c6" size={15} margin={5} />
+                <BeatLoader color="#1A8BE8" size={15} margin={5} />
               )}
               {resetButton ? (
                 <button type="button" onClick={handleClose} className="login-button-cancelar mb-4">

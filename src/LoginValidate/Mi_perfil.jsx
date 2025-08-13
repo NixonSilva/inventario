@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, Briefcase, Save, Edit2, X, Check } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Briefcase, Edit2, X, Check } from 'lucide-react';
 import '../styles/MiPerfil.css'
+
 const MiPerfil = () => {
   const [userData, setUserData] = useState({
     id: '',
@@ -38,7 +39,7 @@ const MiPerfil = () => {
     try {
       setLoading(true);
       // Aquí debes reemplazar con tu endpoint real
-      const response = await fetch('https://inventario.navesoft.com/backend/miPerfil.php', {
+      const response = await fetch('http://172.20.158.193/inventario_navesoft/backend/miPerfil.php', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ const MiPerfil = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json(); // Procesamos la respuesta pero no la almacenamos si no la necesitamos
         setMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
         setIsEditing(false);
         setOriginalData({ ...userData });

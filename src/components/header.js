@@ -33,7 +33,7 @@ const Header = () => {
         <ul>
           <li><a href="/informes">Informes</a></li>
           <li><a href="#">Contacto</a></li>
-          <li><a href="#">Proveedores</a></li>
+          <li><a href="/proveedores">Proveedores</a></li>
         </ul>
 
         <div className="user-menu-container">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../styles/AuthForm.css"; // Usamos los mismos estilos
+import "../styles/AuthForm.css"; // Cambiado a RegisterForm.css
 
 const Registrarse = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const Registrarse = () => {
   const handleRegistro = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("hhttps://inventario.navesoft.com/backend/RegisterLogin.php", formData);
+      const response = await axios.post("http://172.20.158.193/inventario_navesoft/backend/RegisterLogin.php", formData);
       if (response.data.success) {
         setMensaje("Usuario registrado con éxito");
       } else {
@@ -32,8 +32,8 @@ const Registrarse = () => {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleRegistro}>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleRegistro}>
         <h2>Registrarse</h2>
         <input
           type="email"
@@ -60,7 +60,7 @@ const Registrarse = () => {
           required
         />
         <button type="submit">Crear Cuenta</button>
-        {mensaje && <p className="mensaje">{mensaje}</p>}
+        {mensaje && <p className="register-mensaje">{mensaje}</p>}
         <p>
           ¿Ya tiene cuenta? <a href="/">Iniciar Sesión</a>
         </p>

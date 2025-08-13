@@ -4,7 +4,7 @@ import axios from "axios";
 import "../styles/EditarUsuario.css";
 import MessageModal from "../MessageModal"; // ✅ Importa tu modal aquí
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarUsuario.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
 
 const EditarUsuario = () => {
   const { id } = useParams();

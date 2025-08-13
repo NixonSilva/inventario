@@ -32,12 +32,15 @@ nav ul li a {
     max-width: 1200px; /* Ancho máximo para controlar el diseño */
     margin: 0 auto; /* Centrar en la página */
     min-height: auto;
+    transform: scale(0.9); /* Reduce todo al 90% */
+    transform-origin: center;
 }
 .titulo {
     text-align: center;
     font-size: 38px;
     font-weight: bold;
-    margin-bottom: 30px; /* Espaciado entre el título y los servicios */
+    margin-top: 16px;
+    margin-bottom: 6px; /* Espaciado entre el título y los servicios */
     color: #333; /* Color oscuro para mejor contraste */
 }
 /* Tarjetas de servicio */
@@ -106,7 +109,7 @@ nav ul li a {
 footer {
     text-align: center;
     padding: 10px;
-    background: #0082C6;
+    background: #1A8BE8;
     color: white;
     position: fixed;
     width: 100%;
