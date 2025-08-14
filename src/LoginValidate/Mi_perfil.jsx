@@ -39,7 +39,7 @@ const MiPerfil = () => {
     try {
       setLoading(true);
       // Aquí debes reemplazar con tu endpoint real
-      const response = await fetch('http://172.20.158.193/inventario_navesoft/backend/miPerfil.php', {
+      const response = await fetch('https://inventario.navesoft.com/backend/miPerfil.php', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

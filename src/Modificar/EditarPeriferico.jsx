@@ -4,13 +4,20 @@ import axios from "axios";
 import "../styles/EditarPeriferico.css";
 import MessageModal from "../MessageModal";
 
-const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarPeriferico.php";
-const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerPeriferico.php";
+const API_URL = "https://inventario.navesoft.com/backend/actualizarPeriferico.php";
+const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerPeriferico.php";
 
 const EditarPeriferico = () => {
   const { id } = useParams();
-  console.log("ID desde useParams:", id);
   const navigate = useNavigate();
+
+  // DEBUGGING TEMPORAL - Agregar estos logs
+  console.log("=== DEBUGGING EDITARPERIFERICO ===");
+  console.log("1. useParams completo:", { id }); // Cambio aquí
+  console.log("2. ID extraído:", id);
+  console.log("3. Tipo de ID:", typeof id);
+  console.log("4. URL actual:", window.location.pathname);
+  console.log("===============================");
 
   // Estados para el modal
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +43,6 @@ const EditarPeriferico = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Función para validar datos antes de enviar
   const validarDatos = (datos) => {
@@ -67,8 +73,35 @@ const EditarPeriferico = () => {
   // Cargar datos del periférico al iniciar
   useEffect(() => {
     const cargarPeriferico = async () => {
-      if (!id) {
-        setError("ID de periférico no encontrado");
+      console.log("ID desde useParams:", id);
+      
+      // VALIDACIÓN MEJORADA DEL ID
+      if (!id || id === 'undefined' || id === 'null') {
+        console.error("ERROR: ID no válido recibido");
+        console.error("- ID recibido:", id);
+        console.error("- URL actual:", window.location.pathname);
+        console.error("- Parámetros disponibles:", { id }); // Cambio aquí
+        
+        setModalConfig({
+          titulo: "Error de parámetros",
+          texto: `No se proporcionó un ID válido en la URL. 
+                 ID recibido: "${id}"
+                 URL actual: "${window.location.pathname}"
+                 
+                 Asegúrate de acceder desde la lista de periféricos o usar una URL como:
+                 /perifericos/editar/197`,
+          icono: "fail",
+          buttons: [
+            {
+              label: "Volver a Periféricos",
+              onClick: () => {
+                setShowModal(false);
+                navigate("/perifericos");
+              },
+            },
+          ],
+        });
+        setShowModal(true);
         setLoading(false);
         return;
       }
@@ -79,8 +112,8 @@ const EditarPeriferico = () => {
         
         const idNumerico = parseInt(id, 10);
         
-        if (isNaN(idNumerico)) {
-          throw new Error("El ID debe ser un número válido");
+        if (isNaN(idNumerico) || idNumerico <= 0) {
+          throw new Error(`El ID '${id}' no es un número válido`);
         }
 
         const response = await axios.post(CONSULTA_API, 
@@ -95,11 +128,11 @@ const EditarPeriferico = () => {
 
         console.log("Respuesta del servidor:", response.data);
 
-        if (response.data && response.data.periferico) {
+        if (response.data && response.data.success && response.data.periferico) {
           const perifericoData = {
             ...response.data.periferico,
             id: idNumerico.toString(),
-            // Mapear campos del backend al frontend
+            // Mapear campos del backend al frontend - CORREGIDO
             pantalla_1_marca_modelo: response.data.periferico.pantalla_1 || "",
             pantalla_2_marca_modelo: response.data.periferico.pantalla_2 || "",
             // Asegurar que todos los campos sean strings
@@ -116,7 +149,7 @@ const EditarPeriferico = () => {
           setFormData(perifericoData);
           console.log("Datos cargados correctamente:", perifericoData);
         } else {
-          throw new Error("No se encontraron datos del periférico en la respuesta");
+          throw new Error("No se encontraron datos del periférico en la respuesta del servidor");
         }
       } catch (error) {
         console.error("Error al cargar el periférico:", error);
@@ -125,7 +158,7 @@ const EditarPeriferico = () => {
         if (error.code === 'ECONNABORTED') {
           mensajeError = "Tiempo de espera agotado. Verifica tu conexión.";
         } else if (error.response) {
-          mensajeError = `Error del servidor: ${error.response.status} - ${error.response.data?.mensaje || error.response.statusText}`;
+          mensajeError = `Error del servidor: ${error.response.status} - ${error.response.data?.mensaje || error.response.data?.error || error.response.statusText}`;
         } else if (error.request) {
           mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando.";
         } else {
@@ -306,19 +339,6 @@ const EditarPeriferico = () => {
       <div className="form2-container">
         <h2>Cargando datos del periférico...</h2>
         <p>Por favor espera mientras se cargan los datos.</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="form2-container">
-        <h2>Error</h2>
-        <p style={{color: 'red', marginBottom: '20px'}}>{error}</p>
-        <div className="form25-buttons">
-          <button onClick={() => navigate("/perifericos")}>Volver a Periféricos</button>
-          <button onClick={() => window.location.reload()}>Reintentar</button>
-        </div>
       </div>
     );
   }

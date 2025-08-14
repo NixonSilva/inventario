@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useAuth } from "../AutoContext";
 
-const API_URL = "http://172.20.158.193/inventario_navesoft/backend/perifericos.php";
+const API_URL = "https://inventario.navesoft.com/backend/perifericos.php";
 
 const Perifericos = () => {
   const { user } = useAuth();
@@ -26,6 +26,17 @@ const Perifericos = () => {
   const obtenerPerifericos = async () => {
     try {
       const response = await axios.get(API_URL);
+      
+      // DEBUGGING API RESPONSE
+      console.log("=== DEBUGGING API RESPONSE ===");
+      console.log("Response completa:", response.data);
+      console.log("Periféricos array:", response.data.perifericos);
+      console.log("Primer periférico:", response.data.perifericos?.[0]);
+      console.log("Props del primer periférico:", response.data.perifericos?.[0] ? Object.keys(response.data.perifericos[0]) : "No hay datos");
+      console.log("ID del primer periférico (.id):", response.data.perifericos?.[0]?.id);
+      console.log("ID del primer periférico (.ID):", response.data.perifericos?.[0]?.ID);
+      console.log("===============================");
+      
       setPerifericos(response.data.perifericos || []);
     } catch (error) {
       console.error("Error al obtener periféricos:", error);
@@ -92,8 +103,28 @@ const Perifericos = () => {
     );
   };
 
-  const abrirModal = (id) => {
-    navigate(`/Modificar/EditarPerifericos/${id}`);
+  // FUNCIÓN MODIFICADA CON DEBUGGING
+  const abrirModal = (item) => {
+    console.log("=== DEBUGGING ABRIR MODAL ===");
+    console.log("Item completo:", item);
+    console.log("Todas las propiedades:", Object.keys(item));
+    console.log("ID (.id):", item.id);
+    console.log("ID (.ID):", item.ID);
+    console.log("ID (.periferico_id):", item.periferico_id);
+    console.log("ID (.PERIFERICO_ID):", item.PERIFERICO_ID);
+    console.log("===============================");
+    
+    // Intentar diferentes posibles nombres del campo ID
+    const id = item.id || item.ID || item.periferico_id || item.PERIFERICO_ID;
+    
+    if (id) {
+      console.log("✅ ID encontrado:", id);
+      navigate(`/Modificar/EditarPeriferico/${id}`);
+    } else {
+      alert("❌ Error: No se pudo encontrar el ID del periférico");
+      console.error("❌ No se encontró ID en ninguno de los campos esperados");
+      console.error("Campos disponibles:", Object.keys(item));
+    }
   };
 
   const handleEliminarDesdeFila = async (id) => {
@@ -147,9 +178,9 @@ const Perifericos = () => {
           </thead>
           <tbody>
             {currentItems.map((item) => (
-              <React.Fragment key={item.id}>
+              <React.Fragment key={item.id || item.ID}>
                 <tr className="fila-con-linea">
-                  <td>{item.id}</td>
+                  <td>{item.id || item.ID}</td>
                   <td>{item.usuario_responsable}</td>
                   <td>{item.pantalla_1_marca_modelo || "No especificado"}</td>
                   <td>{item.pantalla_2_marca_modelo || "No especificado"}</td>
@@ -157,18 +188,18 @@ const Perifericos = () => {
                   <td>{item.teclado}</td>
                   <td>
                     <div className="botones-acciones">
-                      <button className="btn-ver" onClick={() => toggleFila(item.id)}><FaEye /></button>
+                      <button className="btn-ver" onClick={() => toggleFila(item.id || item.ID)}><FaEye /></button>
                       {user.permite_modificar === "Y" && (
-                        <button className="btn-editar" onClick={() => abrirModal(item.id)}><FaEdit /></button>
+                        <button className="btn-editar" onClick={() => abrirModal(item)}><FaEdit /></button>
                       )}
                       {user.permite_desactivar === "Y" && (
-                        <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(item.id)}><FaTrash /></button>
+                        <button className="btn-eliminar" onClick={() => handleEliminarDesdeFila(item.id || item.ID)}><FaTrash /></button>
                       )}
                     </div>
                   </td>
                 </tr>
 
-                {filasExpandida.includes(item.id) && (
+                {filasExpandida.includes(item.id || item.ID) && (
                   <tr className="fila25-expandida">
                     <td colSpan="7">
                       <table className="info125-expandida">
