@@ -84,7 +84,7 @@ const LoginInterno = () => {
         </form>
 
         <div className="extra-links">
-          <Link to="/olvide-clave">¿Olvidó su contraseña?</Link>
+          <Link to="/olvidoClave">¿Olvidó su contraseña?</Link>
           <br />
           <span>¿No tiene cuenta?</span>
           <Link to="/RegistroLogin"> Regístrese</Link>

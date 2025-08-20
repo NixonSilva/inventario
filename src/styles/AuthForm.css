@@ -75,14 +75,27 @@
   text-decoration: underline;
 }
 
-.register-mensaje {
-  text-align: center;
-  margin-top: 10px;
-  color: #dc3545;
-  padding: 8px;
+.register-mensaje.success {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
   border-radius: 4px;
+  margin-top: 10px;
+}
+
+.register-mensaje.error {
+  color: #dc3545;
   background-color: #f8d7da;
   border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Responsividad para pantallas pequeñas */
