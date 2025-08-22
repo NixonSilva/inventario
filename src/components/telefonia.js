@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useAuth } from "../AutoContext";
 
-const API_URL = "https://inventario.navesoft.com/backend/telefonia.php";
+const API_URL = "https://inventario.navesoft.com/backend/backend/telefonia.php";
 
 const Telefonia = () => {
   const { user } = useAuth();

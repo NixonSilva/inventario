@@ -39,7 +39,7 @@ const Registrotelefonia = () => {
   const handleRegistrar = async () => {
     try {
       await axios.post(
-        "https://inventario.navesoft.com/backend/RegistroTelefonia.php",
+        "https://inventario.navesoft.com/backend/backend/RegistroTelefonia.php",
         formData
       );
 

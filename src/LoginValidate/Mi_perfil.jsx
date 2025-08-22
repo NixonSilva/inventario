@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, Briefcase, Edit2, X, Check } from 'lucide-react';
+import { User, Mail, Lock, Edit2, X, Check, Info } from 'lucide-react';
 import '../styles/MiPerfil.css'
 
 const MiPerfil = () => {
@@ -12,16 +12,7 @@ const MiPerfil = () => {
     ultimaConexion: '',
     usuarioCreacion: '',
     usuarioModificacion: '',
-    fechaModificacion: '',
-    tipoUsuario: '',
-    cedula: '',
-    nombres: '',
-    apellidos: '',
-    genero: '',
-    fechaNacimiento: '',
-    telefono: '',
-    celular: '',
-    cargo: ''
+    fechaModificacion: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +20,7 @@ const MiPerfil = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [showPassword, setShowPassword] = useState(false);
 
   // Obtener datos del perfil al cargar el componente
   useEffect(() => {
@@ -38,8 +30,7 @@ const MiPerfil = () => {
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
-      // Aquí debes reemplazar con tu endpoint real
-      const response = await fetch('https://inventario.navesoft.com/backend/miPerfil.php', {
+      const response = await fetch('https://inventario.navesoft.com/backend/backend/miPerfil.php', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -83,20 +74,30 @@ const MiPerfil = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
+      // Solo enviamos los campos que pueden ser editados
+      const dataToUpdate = {
+        id: userData.id,
+        email: userData.email,
+        nombreCompleto: userData.nombreCompleto,
+        clave: userData.clave
+      };
+
       const response = await fetch('/api/perfil.php', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(dataToUpdate)
       });
 
       if (response.ok) {
-        await response.json(); // Procesamos la respuesta pero no la almacenamos si no la necesitamos
+        await response.json();
         setMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
         setIsEditing(false);
         setOriginalData({ ...userData });
+        // Recargar datos para obtener campos actualizados por el servidor
+        await fetchUserProfile();
       } else {
         throw new Error('Error al actualizar el perfil');
       }
@@ -104,6 +105,15 @@ const MiPerfil = () => {
       setMessage({ type: 'error', text: 'Error al actualizar el perfil' });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      return new Date(dateString).toLocaleString('es-ES');
+    } catch {
+      return dateString;
     }
   };
 
@@ -159,7 +169,7 @@ const MiPerfil = () => {
       )}
 
       <div className="perfil-grid">
-        {/* Información Personal */}
+        {/* Información Personal Editable */}
         <div className="perfil-seccion">
           <h2 className="seccion-titulo">
             <User size={20} />
@@ -167,81 +177,20 @@ const MiPerfil = () => {
           </h2>
           
           <div className="form-group">
-            <label className="form-label">Cédula</label>
+            <label className="form-label">ID de Usuario</label>
             <input
               type="text"
-              name="cedula"
-              value={userData.cedula}
-              onChange={handleInputChange}
-              disabled={!isEditing}
+              value={userData.id}
+              disabled
               className="form-input"
             />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Nombres</label>
-            <input
-              type="text"
-              name="nombres"
-              value={userData.nombres}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Apellidos</label>
-            <input
-              type="text"
-              name="apellidos"
-              value={userData.apellidos}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Género</label>
-            <select
-              name="genero"
-              value={userData.genero}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-select"
-            >
-              <option value="">Seleccionar...</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
-            </select>
           </div>
 
           <div className="form-group">
             <label className="form-label">
-              <Calendar size={16} className="icon-inline" />
-              Fecha de Nacimiento
+              <Mail size={16} className="icon-inline" />
+              Email
             </label>
-            <input
-              type="date"
-              name="fechaNacimiento"
-              value={userData.fechaNacimiento}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-input"
-            />
-          </div>
-        </div>
-
-        {/* Información de Contacto */}
-        <div className="perfil-seccion">
-          <h2 className="seccion-titulo">
-            <Mail size={20} />
-            Información de Contacto
-          </h2>
-          
-          <div className="form-group">
-            <label className="form-label">Email</label>
             <input
               type="email"
               name="email"
@@ -253,77 +202,99 @@ const MiPerfil = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">
-              <Phone size={16} className="icon-inline" />
-              Teléfono
-            </label>
-            <input
-              type="tel"
-              name="telefono"
-              value={userData.telefono}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Celular</label>
-            <input
-              type="tel"
-              name="celular"
-              value={userData.celular}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">
-              <Briefcase size={16} className="icon-inline" />
-              Cargo
-            </label>
+            <label className="form-label">Nombre Completo</label>
             <input
               type="text"
-              name="cargo"
-              value={userData.cargo}
+              name="nombreCompleto"
+              value={userData.nombreCompleto}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="form-input"
             />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <Lock size={16} className="icon-inline" />
+              Contraseña
+            </label>
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="clave"
+                value={userData.clave}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+                placeholder={isEditing ? "Ingrese nueva contraseña" : "••••••••"}
+              />
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="password-toggle-btn"
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Estado</label>
+            <span className={`estado-badge ${
+              userData.estado === 'Activo' ? 'estado-activo' : 'estado-inactivo'
+            }`}>
+              {userData.estado}
+            </span>
           </div>
         </div>
 
-        {/* Información del Sistema */}
+        {/* Información del Sistema (Solo Lectura) */}
         <div className="perfil-seccion sistema-seccion">
-          <h2 className="seccion-titulo">Información del Sistema</h2>
+          <h2 className="seccion-titulo">
+            <Info size={20} />
+            Información del Sistema
+          </h2>
           
           <div className="sistema-grid">
             <div className="form-group">
-              <label className="form-label">Tipo de Usuario</label>
+              <label className="form-label">
+                Última Conexión
+              </label>
               <input
                 type="text"
-                value={userData.tipoUsuario}
+                value={formatDate(userData.ultimaConexion)}
                 disabled
                 className="form-input"
               />
             </div>
 
             <div className="form-group">
-              <label className="form-label">Estado</label>
-              <span className={`estado-badge ${
-                userData.estado === 'Activo' ? 'estado-activo' : 'estado-inactivo'
-              }`}>
-                {userData.estado}
-              </span>
+              <label className="form-label">Usuario de Creación</label>
+              <input
+                type="text"
+                value={userData.usuarioCreacion}
+                disabled
+                className="form-input"
+              />
             </div>
 
             <div className="form-group">
-              <label className="form-label">Última Conexión</label>
+              <label className="form-label">Usuario de Modificación</label>
               <input
                 type="text"
-                value={userData.ultimaConexion}
+                value={userData.usuarioModificacion}
+                disabled
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Fecha de Modificación</label>
+              <input
+                type="text"
+                value={formatDate(userData.fechaModificacion)}
                 disabled
                 className="form-input"
               />

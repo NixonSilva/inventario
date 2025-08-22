@@ -27,27 +27,86 @@ const ForgotPassword = () => {
     setMessage('');
 
     try {
-      const response = await fetch('https://inventario.navesoft.com/backend/forgot-password.php', {
+      console.log('Enviando solicitud de reset para:', email);
+      
+      const response = await fetch('https://inventario.navesoft.com/backend/backend/forgot-password.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ 
+          email: email.trim().toLowerCase() 
+        }),
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setMessage('Se ha enviado un enlace de recuperación a su correo electrónico');
-        setMessageType('success');
-        setEmail('');
-      } else {
-        setMessage(data.message || 'Error al procesar la solicitud');
-        setMessageType('error');
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers.get('content-type'));
+      
+      // Obtener el texto crudo de la respuesta primero
+      const responseText = await response.text();
+      console.log('Raw response text:', responseText);
+      
+      // Si el status es 200 y el correo funciona, asumir éxito
+      if (response.status === 200) {
+        // Intentar parsear JSON, pero no fallar si no se puede
+        let data = null;
+        try {
+          if (responseText.trim()) {
+            data = JSON.parse(responseText);
+            console.log('Parsed data:', data);
+          }
+        } catch (jsonError) {
+          console.log('JSON Parse Error (but status 200, assuming success):', jsonError);
+        }
+        
+        // Si tenemos data válida, usar su mensaje, sino usar mensaje por defecto
+        if (data && data.success !== false) {
+          setMessage(
+            data.message || 
+            'Se ha enviado un enlace de recuperación a su correo electrónico. Revise su bandeja de entrada y carpeta de spam.'
+          );
+          setMessageType('success');
+          setEmail('');
+          
+          if (data.user_name) {
+            console.log('Usuario encontrado:', data.user_name);
+          }
+        } else if (data && data.success === false) {
+          // Respuesta válida pero con error
+          setMessage(data.message || 'Error al procesar la solicitud');
+          setMessageType('error');
+        } else {
+          // No hay JSON válida pero status 200, asumir éxito
+          setMessage('Se ha enviado un enlace de recuperación a su correo electrónico. Revise su bandeja de entrada y carpeta de spam.');
+          setMessageType('success');
+          setEmail('');
+        }
+        
+        console.log('Email enviado exitosamente a:', email);
+        return;
       }
+      
+      // Si el status no es 200, es un error
+      throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+      
     } catch (error) {
-      setMessage('Error de conexión. Inténtelo nuevamente');
+      console.error('Error en handleSubmit:', error);
+      
+      // Manejar diferentes tipos de errores de red/conexión
+      let errorMessage = 'Error de conexión. Inténtelo nuevamente';
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        errorMessage = 'No se pudo conectar al servidor. Verifique su conexión a internet.';
+      } else if (error.message.includes('JSON')) {
+        errorMessage = 'Error de comunicación con el servidor. Contacte al administrador.';
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'La solicitud tardó demasiado. Por favor inténtelo nuevamente.';
+      }
+      
+      setMessage(errorMessage);
       setMessageType('error');
+      
     } finally {
       setIsLoading(false);
     }
@@ -56,6 +115,14 @@ const ForgotPassword = () => {
   const handleBackToLogin = () => {
     // Redirigir al login principal
     window.location.href = '/LoginInventario';
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    // Limpiar mensaje cuando el usuario empiece a escribir
+    if (message) {
+      setMessage('');
+    }
   };
 
   // Estilos CSS como objeto JavaScript
@@ -135,7 +202,8 @@ const ForgotPassword = () => {
       borderRadius: '8px',
       marginBottom: '16px',
       fontSize: '14px',
-      textAlign: 'center'
+      textAlign: 'center',
+      lineHeight: '1.4'
     },
     alertSuccess: {
       backgroundColor: '#f0fdf4',
@@ -159,6 +227,13 @@ const ForgotPassword = () => {
     },
     linkHover: {
       textDecoration: 'underline'
+    },
+    helpText: {
+      fontSize: '12px',
+      color: '#6b7280',
+      textAlign: 'center',
+      marginTop: '12px',
+      lineHeight: '1.4'
     }
   };
 
@@ -178,10 +253,12 @@ const ForgotPassword = () => {
               type="email"
               placeholder="Correo electrónico"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
+              onChange={handleEmailChange}
+              onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSubmit(e)}
               style={styles.input}
               disabled={isLoading}
+              maxLength={255}
+              autoComplete="email"
               onFocus={(e) => {
                 e.target.style.borderColor = '#3b82f6';
                 e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
@@ -195,18 +272,18 @@ const ForgotPassword = () => {
 
           <button
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || !email.trim()}
             style={{
               ...styles.button,
-              ...(isLoading ? styles.buttonDisabled : {})
+              ...((isLoading || !email.trim()) ? styles.buttonDisabled : {})
             }}
             onMouseEnter={(e) => {
-              if (!isLoading) {
+              if (!isLoading && email.trim()) {
                 e.target.style.backgroundColor = '#2563eb';
               }
             }}
             onMouseLeave={(e) => {
-              if (!isLoading) {
+              if (!isLoading && email.trim()) {
                 e.target.style.backgroundColor = '#3b82f6';
               }
             }}
@@ -221,6 +298,13 @@ const ForgotPassword = () => {
             ...(messageType === 'success' ? styles.alertSuccess : styles.alertError)
           }}>
             {message}
+          </div>
+        )}
+
+        {messageType === 'success' && (
+          <div style={styles.helpText}>
+            <p>📧 Revise su bandeja de entrada y carpeta de spam</p>
+            <p>🔒 El enlace expirará en 2 horas por seguridad</p>
           </div>
         )}
 

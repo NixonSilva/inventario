@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarImpresoras.css";
 import MessageModal from "../MessageModal";
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarimpresoras.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerimpresora.php";
+const API_URL = "https://inventario.navesoft.com/backend/backend/actualizarimpresoras.php";
+const CONSULTA_API = "https://inventario.navesoft.com/backend/backend/obtenerimpresora.php";
 
 const EditarImpresora = () => {
   const { id } = useParams();

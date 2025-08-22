@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   // Configuración base de la API
-  const API_BASE = 'https://inventario.navesoft.com/backend/';
+  const API_BASE = 'https://inventario.navesoft.com/backend/backend/';
 
   // **FUNCIÓN MEJORADA** para filtrar solo registros activos con más flexibilidad
   const filtrarSoloActivos = (datos) => {

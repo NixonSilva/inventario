@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarEquipos.css";
 import MessageModal from "../MessageModal";
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarEquipo.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerEquipo.php";
+const API_URL = "https://inventario.navesoft.com/backend/backend/actualizarEquipo.php";
+const CONSULTA_API = "https://inventario.navesoft.com/backend/backend/obtenerEquipo.php";
 
 const EditarEquipo = () => {
   const { id } = useParams();

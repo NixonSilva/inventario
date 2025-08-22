@@ -4,7 +4,7 @@ import axios from "axios";
 import "../styles/EditarUsuario.css";
 import MessageModal from "../MessageModal"; // ✅ Importa tu modal aquí
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarUsuario.php";
+const API_URL = "https://inventario.navesoft.com/backend/backend/actualizarUsuario.php";
 
 const EditarUsuario = () => {
   const { id } = useParams();
@@ -77,10 +77,19 @@ const EditarUsuario = () => {
       <div className="form-editar-usuario-form">
         <h2 className="form-editar-usuario-titulo">Editar Usuario</h2>
 
-        <label className="form-editar-usuario-label">Nombre:</label>
+        <label className="form-editar-usuario-label">Nombre completo:</label>
         <input
           type="text"
           name="nombre"
+          value={usuario.nombre}
+          onChange={handleChange}
+          className="form-editar-usuario-input"
+        />
+
+        <label className="form-editar-usuario-label">Correo:</label>
+        <input
+          type="text"
+          name="correo"
           value={usuario.nombre}
           onChange={handleChange}
           className="form-editar-usuario-input"

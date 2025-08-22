@@ -107,7 +107,7 @@ const Registrarse = () => {
       console.log("Enviando datos:", datosRegistro); // Para debug
       
       const response = await axios.post(
-        "https://inventario.navesoft.com/backend/RegisterLogin.php", 
+        "https://inventario.navesoft.com/backend/backend/RegisterLogin.php", 
         datosRegistro,
         {
           headers: {
