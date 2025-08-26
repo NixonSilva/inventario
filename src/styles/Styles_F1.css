@@ -12,7 +12,7 @@
   .form-title {
     text-align: center;
     font-size: 24px;
-    color: #007bdb;
+    color:  #304173;
     margin-bottom: 30px;
   }
   
@@ -46,7 +46,7 @@
   }
   
   .form-group input:focus {
-    border-color: #007bdb;
+    border-color:  #304173;
     outline: none;
   }
   
@@ -61,9 +61,9 @@
   
   /* Botones estilo moderno */
   .custom-btn {
-    border: 2px solid #007bdb;
+    border: 2px solid  #304173;
     background-color: white;
-    color: #007bdb;
+    color:  #304173;
     padding: 10px 24px;
     font-size: 14px;
     font-weight: 500;
@@ -76,13 +76,13 @@
   }
   
   .custom-btn:hover {
-    background-color: #007bdb;
+    background-color:  #304173;
     color: white;
     box-shadow: 0px 4px 8px rgba(0, 123, 219, 0.3);
   }
   
   .custom-btn.selected {
-    background-color: #007bdb;
+    background-color:  #304173;
     color: white;
     box-shadow: 0px 4px 8px rgba(0, 123, 219, 0.3);
   }

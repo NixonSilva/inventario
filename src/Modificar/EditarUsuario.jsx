@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditarUsuario.css";
-import MessageModal from "../MessageModal"; // ✅ Importa tu modal aquí
+import MessageModal from "../MessageModal";
 
-const API_URL = "https://inventario.navesoft.com/backend/backend/actualizarUsuario.php";
+const API_URL_UPDATE = "http://172.20.158.193/inventario_navesoft/backend/actualizarUsuario.php";
+const API_URL_GET = "http://172.20.158.193/inventario_navesoft/backend/obtenerUsuario.php";
 
 const EditarUsuario = () => {
   const { id } = useParams();
@@ -12,11 +13,13 @@ const EditarUsuario = () => {
 
   const [usuario, setUsuario] = useState({
     nombre: "",
+    correo: "",
     ubicacion: "",
     empresas: "",
     unidades_negocio: ""
   });
 
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [modalConfig, setModalConfig] = useState({
     titulo: "",
@@ -25,13 +28,55 @@ const EditarUsuario = () => {
     buttons: [],
   });
 
+  // Cargar datos del usuario al montar el componente
+  useEffect(() => {
+    if (!id) return;
+
+    const cargarUsuario = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_URL_GET}?id=${id}`);
+        
+        setUsuario({
+          nombre: response.data.nombre || "",
+          correo: response.data.correo || "",
+          ubicacion: response.data.ubicacion || "",
+          empresas: response.data.empresas || "",
+          unidades_negocio: response.data.unidades_negocio || ""
+        });
+      } catch (error) {
+        console.error("Error al cargar usuario", error);
+        
+        setModalConfig({
+          titulo: "Error al Cargar Usuario",
+          texto: "No se pudo cargar la información del usuario.",
+          icono: "fail",
+          buttons: [
+            {
+              label: "Volver",
+              onClick: () => {
+                setShowModal(false);
+                navigate("/usuarios");
+              },
+            },
+          ],
+        });
+        setShowModal(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarUsuario();
+  }, [id, navigate]);
+
   const handleChange = (e) => {
     setUsuario({ ...usuario, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     try {
-      await axios.post(API_URL, {
+      await axios.post(API_URL_UPDATE, {
         id: id,
         nombre: usuario.nombre,
         ubicacion: usuario.ubicacion,
@@ -72,6 +117,17 @@ const EditarUsuario = () => {
     }
   };
 
+  // Mostrar loading mientras se cargan los datos
+  if (loading) {
+    return (
+      <div className="form-editar-usuario-container">
+        <div className="form-editar-usuario-form">
+          <h2 className="form-editar-usuario-titulo">Cargando datos...</h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="form-editar-usuario-container">
       <div className="form-editar-usuario-form">
@@ -88,11 +144,12 @@ const EditarUsuario = () => {
 
         <label className="form-editar-usuario-label">Correo:</label>
         <input
-          type="text"
+          type="email"
           name="correo"
-          value={usuario.nombre}
+          value={usuario.correo}
           onChange={handleChange}
           className="form-editar-usuario-input"
+          disabled // El correo generalmente no se edita
         />
 
         <label className="form-editar-usuario-label">Ubicación:</label>

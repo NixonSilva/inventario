@@ -29,7 +29,7 @@ const ForgotPassword = () => {
     try {
       console.log('Enviando solicitud de reset para:', email);
       
-      const response = await fetch('https://inventario.navesoft.com/backend/backend/forgot-password.php', {
+      const response = await fetch('http://172.20.158.193/inventario_navesoft/backend/forgot-password.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -9,7 +9,7 @@
 
 .form231-container h2 {
   text-align: center;
-  color: #007bff;
+  color:   #304173;
   margin-bottom: 25px;
 }
 
@@ -47,7 +47,7 @@ input[type="password"] {
 
 input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color:   #304173;
 }
 
 .form25-buttons {
@@ -70,7 +70,7 @@ button[type="submit241"] {
   padding: 16px;
   font-size: 18px;
   font-weight: bold;
-  background-color: #007bff;
+  background-color:   #304173;
   color: white;
     border: none;
   border-radius: 10px;
@@ -80,7 +80,7 @@ button[type="submit241"] {
 }
 
 button[type="submit241"]:hover {
-  background-color: #007dc5;
+  background-color:  #304173;
 }
 
 

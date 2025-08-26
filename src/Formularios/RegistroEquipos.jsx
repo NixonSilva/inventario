@@ -8,7 +8,8 @@ const RegistroEquipos = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { usuarioNombre, cedula } = location.state || {};
+  // ✅ Agregada ubicación a la destructuración
+  const { usuarioNombre, cedula, ubicacion } = location.state || {};
 
   const [formData, setFormData] = useState({
     cedula: "",
@@ -43,15 +44,23 @@ const RegistroEquipos = () => {
     buttons: []
   });
 
+  // ✅ Actualizado useEffect para incluir ubicación
   useEffect(() => {
+    // ✅ Debug: Ver qué datos están llegando
+    console.log("Datos recibidos en location.state:", location.state);
+    console.log("cedula:", cedula);
+    console.log("usuarioNombre:", usuarioNombre);
+    console.log("ubicacion:", ubicacion);
+
     if (cedula && usuarioNombre) {
       setFormData((prev) => ({
         ...prev,
         cedula: cedula,
-        usuario: usuarioNombre
+        usuario: usuarioNombre,
+        ubicacion: ubicacion || "" // ✅ Agregada ubicación
       }));
     }
-  }, [cedula, usuarioNombre]);
+  }, [cedula, usuarioNombre, ubicacion, location.state]); // ✅ Agregada location.state a las dependencias
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -113,7 +122,7 @@ const RegistroEquipos = () => {
       };
 
       const response = await axios.post(
-        "https://inventario.navesoft.com/backend/backend/RegistroEquipos.php",
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroEquipos.php",
         dataToSend,
         {
           headers: {
@@ -138,10 +147,11 @@ const RegistroEquipos = () => {
         });
         setShowModal(true);
 
+        // ✅ Actualizado para mantener ubicación al limpiar formulario
         setFormData((prev) => ({
           cedula: prev.cedula,
           usuario: prev.usuario,
-          ubicacion: "",
+          ubicacion: prev.ubicacion, // ✅ Mantener ubicación
           lugar_uso: "",
           tipo_equipo: "",
           marca: "",
@@ -200,10 +210,11 @@ const RegistroEquipos = () => {
     navigate("/equipos");
   };
 
+  // ✅ Actualizada configuración de campos para deshabilitar ubicación
   const formFields = [
     { key: 'cedula', label: 'CÉDULA', disabled: true },
     { key: 'usuario', label: 'USUARIO', disabled: true, required: true },
-    { key: 'ubicacion', label: 'UBICACIÓN', required: true },
+    { key: 'ubicacion', label: 'UBICACIÓN', disabled: true, required: true }, // ✅ Agregado disabled: true
     { key: 'lugar_uso', label: 'LUGAR DE USO', required: true },
     { key: 'tipo_equipo', label: 'TIPO DE EQUIPO', required: true },
     { key: 'marca', label: 'MARCA', required: true },

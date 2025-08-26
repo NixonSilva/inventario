@@ -12,7 +12,7 @@
 
 .editar-impresora-title {
   text-align: center;
-  color: #007bff;
+  color:   #304173;
   font-size: 1.8rem;
   margin-bottom: 30px;
   font-weight: 600;
@@ -78,14 +78,14 @@
 .editar-impresora-input:focus,
 .editar-impresora-textarea:focus {
   outline: none;
-  border-color: #007bff;
+  border-color:   #304173;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   background-color: #ffffff;
 }
 
 /* Estilo especial para campos requeridos */
 .editar-impresora-input[required] {
-  border-left: 3px solid #007bff;
+  border-left: 3px solid   #304173;
 }
 
 /* Placeholder */
@@ -101,7 +101,7 @@
 }
 
 .editar-impresora-date::-webkit-calendar-picker-indicator {
-  color: #007bff;
+  color:   #304173;
   cursor: pointer;
 }
 
@@ -138,7 +138,7 @@
 
 /* Botón primario (Guardar) */
 .editar-impresora-btn-primary {
-  background-color: #007bff;
+  background-color:   #304173;
   color: white;
 }
 

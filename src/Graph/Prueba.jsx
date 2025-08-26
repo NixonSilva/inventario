@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   // Configuración base de la API
-  const API_BASE = 'https://inventario.navesoft.com/backend/backend/';
+  const API_BASE = 'http://172.20.158.193/inventario_navesoft/backend/';
 
   // **FUNCIÓN MEJORADA** para filtrar solo registros activos con más flexibilidad
   const filtrarSoloActivos = (datos) => {
@@ -619,18 +619,18 @@ const Dashboard = () => {
     doc.rect(0, 0, 210, 60, 'F');
     
     try {
-      doc.addImage('./Logo_Navemar.jpg', 'JPEG', 15, 16, 63, 15);
-      console.log('✅ Logo Navemar importado exitosamente');
+      doc.addImage('../assets/NAVESOFT LOGO-02.png', 'JPEG', 15, 16, 63, 15);
+      console.log('✅ Logo Navesoft importado exitosamente');
     } catch (error) {
       try {
-        doc.addImage('./Logo_Navemar.png', 'PNG', 15, 16, 63, 15);
-        console.log('✅ Logo Navemar PNG importado exitosamente');
+        doc.addImage('../assets/NAVESOFT LOGO-02.png', 'PNG', 15, 16, 63, 15);
+        console.log('✅ Logo Navesoft PNG importado exitosamente');
       } catch (error2) {
-        console.log('⚠️ Logo Logo_Navemar.jpg no encontrado');
+        console.log('⚠️ Logo Logo_Navesoft.jpg no encontrado');
         doc.setTextColor(100, 100, 100);
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.text('NAVEMAR', 15, 26);
+        doc.text('Navesoft', 15, 26);
       }
     }
     
@@ -645,7 +645,7 @@ const Dashboard = () => {
     
     doc.setTextColor(60, 60, 60);
     doc.setFontSize(8);
-    doc.text('Sistema de Gestión de Inventario Navemar', 75, 33);
+    doc.text('Sistema de Gestión de Inventario Navesoft', 75, 33);
     
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(9);
@@ -676,7 +676,7 @@ const Dashboard = () => {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
-    doc.text('Sistema de Gestión de Inventario Navemar | Departamento de TI', 15, pageHeight - 14);
+    doc.text('Sistema de Gestión de Inventario Navesoft | Departamento de TI', 15, pageHeight - 14);
     doc.text('Email: primer.nivel@navesoft.com | Tel: +57 311 5793986', 15, pageHeight - 9);
     
     doc.setTextColor(71, 85, 105);
@@ -910,7 +910,7 @@ const Dashboard = () => {
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.text('Sistema de Gestión de Inventario Navemar', 20, currentY + 4);
+    doc.text('Sistema de Gestión de Inventario Navesoft', 20, currentY + 4);
     
     return currentY + 8;
   };
@@ -1560,7 +1560,7 @@ const Dashboard = () => {
           marginBottom: '24px'
         }}></div>
         <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '8px', color: '#1e293b' }}>Conectando a Base de datos</h2>
-        <p style={{ fontSize: '16px', color: '#64748b' }}>Sincronizando datos de inventario Navemar...</p>
+        <p style={{ fontSize: '16px', color: '#64748b' }}>Sincronizando datos de inventario Navesoft...</p>
       </div>
     );
   }
@@ -1615,7 +1615,7 @@ const Dashboard = () => {
             color: '#1e293b',
             letterSpacing: '-0.025em'
           }}>
-            Inventario Navemar
+            Inventario Navesoft
           </h1>
           <div style={{
             display: 'flex',

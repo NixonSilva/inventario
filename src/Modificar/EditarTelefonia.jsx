@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarTelefonia.css";
 import MessageModal from "../MessageModal"; // ✅ Importación del modal
 
-const API_URL = "https://inventario.navesoft.com/backend/backend/actualizarTelefonia.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/backend/obtenerTelefonia.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarTelefonia.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerTelefonia.php";
 
 const EditarTelefonia = () => {
   const { id } = useParams();
@@ -106,7 +106,7 @@ const EditarTelefonia = () => {
       if (response.data.mensaje || response.data.success) {
         setModalConfig({
           titulo: "Actualización exitosa",
-          texto: response.data.mensaje || "Teléfono actualizado correctamente.",
+          texto: response.data.mensaje || "Telefono actualizado correctamente.",
           icono: "check",
           buttons: [
             {

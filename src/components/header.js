@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { useAuth } from "../AutoContext"; // Asegúrate de que la ruta sea correcta
 import "../styles/Header.css";
-import logo from "../assets/Logo_navemar.jpg";
+import logo from "../assets/NAVESOFT LOGO-02.png";
 
 const Header = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);

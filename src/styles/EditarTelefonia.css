@@ -9,7 +9,7 @@
 
 .form2-container h2 {
   text-align: center;
-  color: #007bff;
+  color:   #304173;
   margin-bottom: 25px;
 }
 
@@ -47,7 +47,7 @@ input[type="password"] {
 
 input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color:   #304173;
 }
 
 .form-buttons {
@@ -67,7 +67,7 @@ button {
 }
 
 button[type="submit"] {
-  background-color: #007bff;
+  background-color:   #304173;
   color: white;
 }
 

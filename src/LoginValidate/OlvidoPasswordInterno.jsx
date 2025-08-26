@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/LoginModal.css";
 import { useNavigate } from "react-router-dom";
-import config from "https://inventario.navesoft.com/backend//backend/config/configuration.php";
+import config from "http://172.20.158.193/inventario_navesoft/backend//backend/config/configuration.php";
 import Alert from "@mui/material/Alert";
 import BeatLoader from "react-spinners/BeatLoader";
 import MessageModal from "../MessageModal";
@@ -87,7 +87,7 @@ const OlvidoPasswordInterno = ({ isOpen, onClose }) => {
                   Aceptar
                 </button>
               ) : (
-                <BeatLoader color="#1A8BE8" size={15} margin={5} />
+                <BeatLoader color="  #304173" size={15} margin={5} />
               )}
               {resetButton ? (
                 <button type="button" onClick={handleClose} className="login-button-cancelar mb-4">

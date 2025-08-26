@@ -215,7 +215,7 @@ input[type="hidden"] {
 
 .form-grid input[type="text"]:valid,
 .form-grid input[type="number"]:valid {
-  border-color: #007dc5;
+  border-color:  #304173;
 }
 
 /* Loading state para botones */

@@ -70,7 +70,7 @@ nav ul li a {
 /* Estilo para los íconos */
 .icon {
     font-size: 55px; /* Aumentar tamaño */
-    color: #007bff; /* Color azul */
+    color: #304673; /* Color azul */
     margin-bottom: 10px;
 }
 
@@ -109,7 +109,7 @@ nav ul li a {
 footer {
     text-align: center;
     padding: 10px;
-    background: #1A8BE8;
+    background:   #304173;
     color: white;
     position: fixed;
     width: 100%;

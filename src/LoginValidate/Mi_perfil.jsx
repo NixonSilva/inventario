@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { User, Mail, Lock, Edit2, X, Check, Info } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../AutoContext";
+import { User, Mail, Lock, Edit2, X, Check, Info, ArrowLeft } from 'lucide-react';
 import '../styles/MiPerfil.css'
 
 const MiPerfil = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth(); // Obtener usuario del contexto
   const [userData, setUserData] = useState({
-    id: '',
-    email: '',
-    nombreCompleto: '',
-    clave: '',
-    estado: '',
-    ultimaConexion: '',
-    usuarioCreacion: '',
-    usuarioModificacion: '',
-    fechaModificacion: ''
+    ID: '',
+    EMAIL: '',
+    NOMBRE_COMPLETO: '',
+    CLAVE: '',
+    ESTADO: '',
+    ULTIMA_CONEXION: '',
+    USUARIO_CREACION: '',
+    USUARIO_MODIFICACION: '',
+    FECHA_MODIFICACION: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -22,35 +26,106 @@ const MiPerfil = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showPassword, setShowPassword] = useState(false);
 
-  // Obtener datos del perfil al cargar el componente
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+  // URL base consistente
+  const API_BASE_URL = 'http://172.20.158.193/inventario_navesoft/backend/miPerfil.php';
 
-  const fetchUserProfile = async () => {
+  // Función para obtener datos del perfil (memoizada para evitar re-renders)
+  const fetchUserProfile = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://inventario.navesoft.com/backend/backend/miPerfil.php', {
+      
+      // VERIFICAR que hay usuario autenticado
+      if (!user || !user.email) {
+        setMessage({ 
+          type: 'error', 
+          text: 'No se encontraron datos del usuario autenticado. Por favor, inicie sesión nuevamente.' 
+        });
+        setLoading(false);
+        navigate('/login');
+        return;
+      }
+      
+      console.log('Obteniendo perfil para usuario:', user);
+      
+      // USAR DATOS DEL CONTEXTO DE AUTENTICACIÓN
+      const userEmail = user.email;
+      
+      // Preparar headers
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // ESTRATEGIA 1: Enviar email como parámetro en URL (más confiable)
+      const url = `${API_BASE_URL}?email=${encodeURIComponent(userEmail)}`;
+      
+      // ESTRATEGIA 2: También enviar como headers (backup)
+      headers['X-User-Email'] = userEmail;
+      headers['Authorization'] = `Bearer ${userEmail}`;
+      
+      console.log('Request URL:', url);
+      console.log('Request headers:', headers);
+      
+      const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        headers: headers
       });
 
       if (response.ok) {
         const data = await response.json();
-        setUserData(data);
-        setOriginalData(data);
+        console.log('Respuesta del servidor:', data);
+        
+        // Manejar la respuesta según el formato del PHP
+        let serverUserData;
+        if (data.usuario) {
+          serverUserData = data.usuario;
+        } else if (data.Consulta && data.Consulta.length > 0) {
+          serverUserData = data.Consulta[0];
+        } else {
+          serverUserData = data;
+        }
+        
+        // Convertir a formato esperado por el frontend
+        const formattedData = {
+          ID: serverUserData.id || serverUserData.ID || '',
+          EMAIL: serverUserData.email || serverUserData.EMAIL || user.email,
+          NOMBRE_COMPLETO: serverUserData.nombre_completo || serverUserData.NOMBRE_COMPLETO || user.nombre || '',
+          CLAVE: '', // Por seguridad, no mostrar la contraseña
+          ESTADO: serverUserData.estado || serverUserData.ESTADO || '',
+          ULTIMA_CONEXION: serverUserData.ultima_conexion || serverUserData.ULTIMA_CONEXION || '',
+          USUARIO_CREACION: serverUserData.usuario_creacion || serverUserData.USUARIO_CREACION || '',
+          USUARIO_MODIFICACION: serverUserData.usuario_modificacion || serverUserData.USUARIO_MODIFICACION || '',
+          FECHA_MODIFICACION: serverUserData.fecha_modificacion || serverUserData.FECHA_MODIFICACION || ''
+        };
+        
+        console.log('Datos formateados:', formattedData);
+        
+        setUserData(formattedData);
+        setOriginalData(formattedData);
       } else {
-        throw new Error('Error al cargar el perfil');
+        const errorData = await response.json();
+        console.error('Error del servidor:', errorData);
+        throw new Error(errorData.error || errorData.respuesta || 'Error al cargar el perfil');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error al cargar los datos del perfil' });
+      console.error('Error completo:', error);
+      setMessage({ type: 'error', text: 'Error al cargar los datos del perfil: ' + error.message });
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, navigate, API_BASE_URL]); // Dependencias del useCallback
+
+  // Verificar autenticación y obtener datos del perfil
+  useEffect(() => {
+    // Si no hay usuario autenticado, redirigir al login
+    if (!user) {
+      console.log('Usuario no autenticado, redirigiendo al login');
+      navigate('/login');
+      return;
+    }
+
+    console.log('Usuario autenticado:', user);
+    fetchUserProfile();
+  }, [user, navigate, fetchUserProfile]); // Ahora fetchUserProfile está memoizada
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,35 +149,75 @@ const MiPerfil = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      // Solo enviamos los campos que pueden ser editados
-      const dataToUpdate = {
-        id: userData.id,
-        email: userData.email,
-        nombreCompleto: userData.nombreCompleto,
-        clave: userData.clave
+      
+      // VERIFICAR que hay usuario autenticado
+      if (!user || !user.email) {
+        setMessage({ 
+          type: 'error', 
+          text: 'No se encontraron datos del usuario autenticado. Por favor, inicie sesión nuevamente.' 
+        });
+        navigate('/login');
+        return;
+      }
+      
+      console.log('Actualizando perfil para usuario:', user);
+      
+      // USAR EMAIL DEL CONTEXTO DE AUTENTICACIÓN
+      const userEmail = user.email;
+      
+      // Preparar headers
+      const headers = {
+        'Content-Type': 'application/json'
       };
+      
+      // ESTRATEGIA 1: Enviar como parámetro en URL
+      const url = `${API_BASE_URL}?email=${encodeURIComponent(userEmail)}`;
+      
+      // ESTRATEGIA 2: También enviar como headers (backup)
+      headers['X-User-Email'] = userEmail;
+      headers['Authorization'] = `Bearer ${userEmail}`;
+      
+      // Enviar datos actualizados del formulario
+      const dataToUpdate = {
+        email: userData.EMAIL,
+        nombre_completo: userData.NOMBRE_COMPLETO
+      };
+      
+      // Solo agregar clave si se proporcionó una nueva
+      if (userData.CLAVE && userData.CLAVE.trim() !== '') {
+        dataToUpdate.clave = userData.CLAVE;
+      }
+      
+      console.log('Datos a actualizar:', dataToUpdate);
+      console.log('URL de actualización:', url);
 
-      const response = await fetch('/api/perfil.php', {
+      const response = await fetch(url, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
+        headers: headers,
         body: JSON.stringify(dataToUpdate)
       });
 
       if (response.ok) {
-        await response.json();
+        const result = await response.json();
+        console.log('Respuesta de actualización:', result);
         setMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
         setIsEditing(false);
-        setOriginalData({ ...userData });
+        
+        // Limpiar la contraseña después de guardar
+        const updatedUserData = { ...userData, CLAVE: '' };
+        setUserData(updatedUserData);
+        setOriginalData(updatedUserData);
+        
         // Recargar datos para obtener campos actualizados por el servidor
         await fetchUserProfile();
       } else {
-        throw new Error('Error al actualizar el perfil');
+        const errorData = await response.json();
+        console.error('Error de actualización:', errorData);
+        throw new Error(errorData.error || errorData.respuesta || 'Error al actualizar el perfil');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error al actualizar el perfil' });
+      console.error('Error en handleSave:', error);
+      setMessage({ type: 'error', text: error.message || 'Error al actualizar el perfil' });
     } finally {
       setSaving(false);
     }
@@ -110,11 +225,7 @@ const MiPerfil = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    try {
-      return new Date(dateString).toLocaleString('es-ES');
-    } catch {
-      return dateString;
-    }
+    return dateString; // Ya viene formateado del procedimiento almacenado
   };
 
   if (loading) {
@@ -125,10 +236,37 @@ const MiPerfil = () => {
     );
   }
 
+  // Si no hay usuario autenticado, mostrar mensaje de redirección
+  if (!user) {
+    return (
+      <div className="loading-container">
+        <div className="auth-message">
+          <h3>Acceso restringido</h3>
+          <p>Debe iniciar sesión para ver esta página.</p>
+          <p>Redirigiendo al login...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mi-perfil-container navemar-theme">
+      {/* Botón Volver al Inicio */}
+      <div className="back-navigation">
+        <button 
+          className="back-button" 
+          onClick={() => navigate("/")}
+        >
+          <ArrowLeft size={16} />
+          Volver al Inicio
+        </button>
+      </div>
+
       <div className="perfil-header">
         <h1 className="perfil-titulo">Mi Perfil</h1>
+        <div className="user-info">
+          <small>Sesión activa: {user.email}</small>
+        </div>
         <div className="btn-group">
           {!isEditing ? (
             <button
@@ -180,7 +318,7 @@ const MiPerfil = () => {
             <label className="form-label">ID de Usuario</label>
             <input
               type="text"
-              value={userData.id}
+              value={userData.ID}
               disabled
               className="form-input"
             />
@@ -193,8 +331,8 @@ const MiPerfil = () => {
             </label>
             <input
               type="email"
-              name="email"
-              value={userData.email}
+              name="EMAIL"
+              value={userData.EMAIL}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="form-input"
@@ -205,8 +343,8 @@ const MiPerfil = () => {
             <label className="form-label">Nombre Completo</label>
             <input
               type="text"
-              name="nombreCompleto"
-              value={userData.nombreCompleto}
+              name="NOMBRE_COMPLETO"
+              value={userData.NOMBRE_COMPLETO}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="form-input"
@@ -221,8 +359,8 @@ const MiPerfil = () => {
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
-                name="clave"
-                value={userData.clave}
+                name="CLAVE"
+                value={userData.CLAVE}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="form-input"
@@ -243,9 +381,9 @@ const MiPerfil = () => {
           <div className="form-group">
             <label className="form-label">Estado</label>
             <span className={`estado-badge ${
-              userData.estado === 'Activo' ? 'estado-activo' : 'estado-inactivo'
+              userData.ESTADO === 'Activo' ? 'estado-activo' : 'estado-inactivo'
             }`}>
-              {userData.estado}
+              {userData.ESTADO}
             </span>
           </div>
         </div>
@@ -264,7 +402,7 @@ const MiPerfil = () => {
               </label>
               <input
                 type="text"
-                value={formatDate(userData.ultimaConexion)}
+                value={formatDate(userData.ULTIMA_CONEXION)}
                 disabled
                 className="form-input"
               />
@@ -274,7 +412,7 @@ const MiPerfil = () => {
               <label className="form-label">Usuario de Creación</label>
               <input
                 type="text"
-                value={userData.usuarioCreacion}
+                value={userData.USUARIO_CREACION}
                 disabled
                 className="form-input"
               />
@@ -284,7 +422,7 @@ const MiPerfil = () => {
               <label className="form-label">Usuario de Modificación</label>
               <input
                 type="text"
-                value={userData.usuarioModificacion}
+                value={userData.USUARIO_MODIFICACION}
                 disabled
                 className="form-input"
               />
@@ -294,7 +432,7 @@ const MiPerfil = () => {
               <label className="form-label">Fecha de Modificación</label>
               <input
                 type="text"
-                value={formatDate(userData.fechaModificacion)}
+                value={formatDate(userData.FECHA_MODIFICACION)}
                 disabled
                 className="form-input"
               />

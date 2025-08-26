@@ -243,14 +243,14 @@ const ProveedoresDirectory = () => {
         .divider {
           width: 80px;
           height: 3px;
-          background: linear-gradient(90deg, #3182ce, #4299e1);
+          background: linear-gradient(90deg,  #304173, #4299e1);
           margin: 0 auto 30px;
           border-radius: 2px;
           box-shadow: 0 2px 4px rgba(49, 130, 206, 0.2);
         }
 
         .back-button {
-          background: linear-gradient(135deg, #3182ce 0%, #4299e1 100%);
+          background: linear-gradient(135deg,  #304173 0%, #4299e1 100%);
           color: white;
           border: none;
           padding: 12px 24px;
@@ -268,7 +268,7 @@ const ProveedoresDirectory = () => {
         .back-button:hover {
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
-          background: linear-gradient(135deg, #2c5aa0 0%, #3182ce 100%);
+          background: linear-gradient(135deg, #2c5aa0 0%,  #304173 100%);
         }
 
         .back-button:active {
@@ -297,7 +297,7 @@ const ProveedoresDirectory = () => {
           top: 0;
           width: 4px;
           height: 100%;
-          background: linear-gradient(180deg, #3182ce, #4299e1);
+          background: linear-gradient(180deg,  #304173, #4299e1);
           border-radius: 2px;
         }
 
@@ -324,7 +324,7 @@ const ProveedoresDirectory = () => {
 
         .service-type {
           font-size: 0.9rem;
-          color: #3182ce;
+          color:  #304173;
           font-weight: 500;
           background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
           padding: 8px 18px;
@@ -359,14 +359,14 @@ const ProveedoresDirectory = () => {
           left: 0;
           width: 100%;
           height: 3px;
-          background: linear-gradient(90deg, #3182ce, #4299e1, #63b3ed);
+          background: linear-gradient(90deg,  #304173, #4299e1, #63b3ed);
           transform: scaleX(0);
           transform-origin: left;
           transition: transform 0.3s ease;
         }
 
         .contact-card:hover {
-          border-color: #3182ce;
+          border-color:  #304173;
           box-shadow: 0 8px 25px rgba(49, 130, 206, 0.12);
           transform: translateY(-2px);
         }
@@ -433,7 +433,7 @@ const ProveedoresDirectory = () => {
           content: '•';
           position: absolute;
           left: 0;
-          color: #3182ce;
+          color:  #304173;
           font-weight: bold;
         }
 

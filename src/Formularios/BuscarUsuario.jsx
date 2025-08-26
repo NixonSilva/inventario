@@ -1,55 +1,203 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/BuscarUsuario.css";
 
 function BuscarUsuario() {
   const [nombre, setNombre] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
   const [error, setError] = useState("");
+  const [mostrarDropdown, setMostrarDropdown] = useState(false);
+  const [cargando, setCargando] = useState(false);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  const buscarUsuario = async () => {
+  // Función para buscar usuarios
+  const buscarUsuarios = async (nombreBusqueda) => {
+    if (nombreBusqueda.length < 3) {
+      setUsuarios([]);
+      setMostrarDropdown(false);
+      return;
+    }
+
+    setCargando(true);
+    setError("");
+
     try {
-        const response = await axios.get(
-        `https://inventario.navesoft.com/backend/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombre)}`
-        );
+      // Convertir a mayúsculas para que coincida con la BD
+      const nombreMayuscula = nombreBusqueda.toUpperCase();
+      
+      const response = await axios.get(
+        `http://172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
+      );
 
-        if (response.data.success && response.data.usuarios.length > 0) {
-        const usuario = response.data.usuarios[0];
-        navigate("/Requipos", {
-            state: {
-            usuarioNombre: usuario.NOMBRE,
-            cedula: usuario.ID, // o USUARIO_ID según corresponda
-            },
-        });
-        } else {
-        setError("Usuario no encontrado");
+      if (response.data.success) {
+        setUsuarios(response.data.usuarios);
+        setMostrarDropdown(response.data.usuarios.length > 0);
+        
+        if (response.data.usuarios.length === 0) {
+          setError("No se encontraron usuarios");
         }
-        } catch (error) {
-            setError("Error al buscar el usuario");
-            console.error(error);
-        }
-   };
+      } else {
+        setError("Error en la búsqueda");
+        setUsuarios([]);
+        setMostrarDropdown(false);
+      }
+    } catch (error) {
+      setError("Error al buscar usuarios");
+      setUsuarios([]);
+      setMostrarDropdown(false);
+      console.error(error);
+    } finally {
+      setCargando(false);
+    }
+  };
 
+  // Efecto para buscar automáticamente cuando cambia el nombre
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (nombre.trim()) {
+        buscarUsuarios(nombre);
+      } else {
+        setUsuarios([]);
+        setMostrarDropdown(false);
+        setError("");
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [nombre]);
+
+  // Cerrar dropdown al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setMostrarDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Función para seleccionar un usuario
+  const seleccionarUsuario = (usuario) => {
+    // ✅ DEBUG: Ver TODOS los campos del usuario
+    console.log("Todos los campos del usuario:", usuario);
+    console.log("Campos disponibles:", Object.keys(usuario));
+    
+    setUsuarioSeleccionado(usuario);
+    setNombre(usuario.NOMBRE);
+    setMostrarDropdown(false);
+    setError("");
+  };
+
+  // ✅ Función ACTUALIZADA para proceder con el usuario seleccionado
+  const procederConUsuario = () => {
+    if (usuarioSeleccionado) {
+      navigate("/Requipos", {
+        state: {
+          usuarioNombre: usuarioSeleccionado.NOMBRE,
+          cedula: usuarioSeleccionado.ID,
+          ubicacion: usuarioSeleccionado.UBICACION || usuarioSeleccionado.ubicacion || "", // ✅ Agregada ubicación
+        },
+      });
+    } else {
+      setError("Por favor seleccione un usuario de la lista");
+    }
+  };
+
+  // Función para manejar el cambio en el input
+  const handleInputChange = (e) => {
+    const valor = e.target.value;
+    setNombre(valor);
+    setUsuarioSeleccionado(null);
+    
+    if (valor.length < 3) {
+      setMostrarDropdown(false);
+      setError("");
+    }
+  };
+
+  // Función para manejar el foco en el input
+  const handleInputFocus = () => {
+    if (usuarios.length > 0 && nombre.length >= 3) {
+      setMostrarDropdown(true);
+    }
+  };
 
   return (
     <div className="page-center">
       <div className="buscar-usuario-container">
         <h2>Buscar usuario por nombre</h2>
 
-        <input
-          type="text"
-          placeholder="Ingrese nombre del usuario"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
+        <div className="dropdown-wrapper" ref={dropdownRef}>
+          <input
+            type="text"
+            placeholder="Ingrese nombre del usuario (mínimo 3 caracteres)"
+            value={nombre}
+            onChange={handleInputChange}
+            onFocus={handleInputFocus}
+            className={usuarioSeleccionado ? 'usuario-seleccionado-input' : ''}
+          />
+          
+          {cargando && <div className="loading-indicator">Buscando...</div>}
+
+          {/* ✅ Lista desplegable ACTUALIZADA para mostrar ubicación */}
+          {mostrarDropdown && usuarios.length > 0 && (
+            <div className="usuarios-dropdown">
+              <div className="dropdown-header">
+                Usuarios encontrados ({usuarios.length})
+              </div>
+              {usuarios.map((usuario, index) => (
+                <div
+                  key={index}
+                  className={`dropdown-item ${usuarioSeleccionado?.ID === usuario.ID ? 'item-selected' : ''}`}
+                  onClick={() => seleccionarUsuario(usuario)}
+                >
+                  <div className="item-nombre">{usuario.NOMBRE}</div>
+                  {/* ✅ Mostrar ubicación si está disponible */}
+                  {(usuario.UBICACION || usuario.ubicacion) && (
+                    <div className="item-ubicacion" style={{ fontSize: '0.9em', color: '#666', marginTop: '2px' }}>
+                      📍 {usuario.UBICACION || usuario.ubicacion}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div>
           <button onClick={() => navigate("/equipos")}>Ver registros</button>
-          <button onClick={buscarUsuario}>Buscar</button>
+          <button 
+            onClick={procederConUsuario}
+            disabled={!usuarioSeleccionado}
+            className={usuarioSeleccionado ? '' : 'btn-disabled'}
+          >
+            Continuar con usuario
+          </button>
         </div>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
+        
+        {nombre.length > 0 && nombre.length < 3 && (
+          <p style={{ color: "  #304173" }}>
+            Ingrese al menos 3 caracteres para buscar
+          </p>
+        )}
+
+        {/* ✅ Confirmación ACTUALIZADA para mostrar ubicación */}
+        {usuarioSeleccionado && (
+          <div className="confirmacion-usuario">
+            <p style={{ color: "#28a745", fontWeight: "bold" }}>
+              ✓ Usuario seleccionado: {usuarioSeleccionado.NOMBRE}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
