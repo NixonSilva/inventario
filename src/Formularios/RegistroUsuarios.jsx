@@ -38,19 +38,19 @@ const NuevoUsuario = () => {
         
         // Cargar ubicaciones
         const ubicacionesResponse = await axios.get(
-          "http://172.20.158.193/inventario_navesoft/backend/ObtenerOpciones.php?tipo=ubicaciones"
+          "https://inventario.navesoft.com/backend/ObtenerOpciones.php?tipo=ubicaciones"
         );
         setUbicaciones(ubicacionesResponse.data);
 
         // Cargar empresas
         const empresasResponse = await axios.get(
-          "http://172.20.158.193/inventario_navesoft/backend/ObtenerOpciones.php?tipo=empresas"
+          "https://inventario.navesoft.com/backend/ObtenerOpciones.php?tipo=empresas"
         );
         setEmpresas(empresasResponse.data);
 
         // Cargar unidades de negocio
         const unidadesResponse = await axios.get(
-          "http://172.20.158.193/inventario_navesoft/backend/ObtenerOpciones.php?tipo=unidades_negocio"
+          "https://inventario.navesoft.com/backend/ObtenerOpciones.php?tipo=unidades_negocio"
         );
         setUnidadesNegocio(unidadesResponse.data);
 
@@ -120,7 +120,7 @@ const NuevoUsuario = () => {
 
     try {
       await axios.post(
-        "http://172.20.158.193/inventario_navesoft/backend/RegistroUsuarios.php",
+        "https://inventario.navesoft.com/backend/RegistroUsuarios.php",
         formData
       );
 

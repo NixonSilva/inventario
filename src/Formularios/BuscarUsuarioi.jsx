@@ -29,7 +29,7 @@ function BuscarUsuario() {
       const nombreMayuscula = nombreBusqueda.toUpperCase();
       
       const response = await axios.get(
-        `http://172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
+        `https://inventario.navesoft.com/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
       );
 
       if (response.data.success) {
