@@ -1,14 +1,18 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 
-  
 const ProveedoresDirectory = () => {
-    const navigate = useNavigate();
+  const navigate = () => {
+    // Navegar a la página principal
+    window.location.href = '/';
+  };
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const proveedores = [
     {
       id: 1,
       category: "COMPONENTES POR COLOMBIA (IMCORPSA)",
       service: "IMPRESORAS",
+      icon: "🖨️",
       contacts: [
         { name: "MARCELA OCAMPO", email: "lm.ocampo@componentescolombia.com" },
         { name: "ANDRES RAMIREZ", email: "a.ramirez@componentescolombia.com", phone: "+57 317 7658206" }
@@ -18,6 +22,7 @@ const ProveedoresDirectory = () => {
       id: 2,
       category: "TECNOLOGIA INFORMATICA (TECINF)",
       service: "COTIZACIONES Y REPARACIONES",
+      icon: "🔧",
       contacts: [
         { name: "PAOLA AMAYA", email: "pamaya@tinformatica.com", phone: "+57 314 3960268" },
         { name: "SANDRA SIERRA", email: "ssierra@tinformatica.com" },
@@ -29,6 +34,7 @@ const ProveedoresDirectory = () => {
       id: 3,
       category: "MANTENIMICROS",
       service: "COTIZACIONES Y REPARACIONES",
+      icon: "⚙️",
       contacts: [
         { name: "GLADYS VILLAMIZAR", email: "gladys@mantenimicros.com", phone: "+57 317 4239746" }
       ]
@@ -37,6 +43,7 @@ const ProveedoresDirectory = () => {
       id: 4,
       category: "TRANS INTERNATIONAL COURIER (TRANSINTCO)",
       service: "ENVIOS",
+      icon: "📦",
       contacts: [
         { name: "JHON PUERTA", email: "comercial@transintco.com", phone: "+57 311 5190002" }
       ]
@@ -45,6 +52,7 @@ const ProveedoresDirectory = () => {
       id: 5,
       category: "EVERGREEN",
       service: "SOPORTE CON SOL",
+      icon: "🌲",
       contacts: [
         { name: "ALEJANDRO DIMAS", email: "alejandrodimas@evergreen-shipping.com.co", phone: "+57 318 215 3668" },
         { name: "CARLOS GARZON", email: "carlosgarzon@evergreen-shipping.com.co", phone: "+57 317 5061376" }
@@ -54,6 +62,7 @@ const ProveedoresDirectory = () => {
       id: 6,
       category: "INGENIERIA Y TECNOLOGIA INTEGRAL (COMSEIN)",
       service: "AIRE ACONDICIONADO DATACENTER BOGOTA",
+      icon: "❄️",
       contacts: [
         { name: "SANTIAGO", email: "comseiningenieria@gmail.com", phone: "+57 320 9847005" }
       ]
@@ -62,6 +71,7 @@ const ProveedoresDirectory = () => {
       id: 7,
       category: "AATELCOM",
       service: "SOPORTE TECNICO BUENAVENTURA",
+      icon: "🔌",
       contacts: [
         { name: "ARIS ARIAS", phone: "+57 300 6830828" }
       ]
@@ -70,6 +80,7 @@ const ProveedoresDirectory = () => {
       id: 8,
       category: "TECNOLOGIA Y SOLUCIONES DEL CARIBE",
       service: "SOPORTE TECNICO CARTAGENA HAPAG",
+      icon: "💻",
       contacts: [
         { name: "KEVIN", email: "tyscsas@gmail.com", phone: "+57 305 3734554" }
       ]
@@ -78,6 +89,7 @@ const ProveedoresDirectory = () => {
       id: 9,
       category: "LT SEGURIDAD ELECTRONICA",
       service: "SOPORTE BIOMETRICO CARTAGENA HAPAG",
+      icon: "🔐",
       contacts: [
         { name: "GERENCIA", email: "gerencia@ltseguridadelectronica.com", phone: "+57 318 8706147" }
       ]
@@ -86,6 +98,7 @@ const ProveedoresDirectory = () => {
       id: 10,
       category: "DISTRIBUIDORA REPPLICTRNCÓN",
       service: "AIRE ACONDICIONADO CARTAGENA HAPAG",
+      icon: "🌡️",
       contacts: [
         { name: "JORGE AYALA", phone: "+57 350 7457159" }
       ]
@@ -94,6 +107,7 @@ const ProveedoresDirectory = () => {
       id: 11,
       category: "SOLUCIONES INTEGRALES DE TECNOLOGIA (SOINDETEC DR)",
       service: "SOPORTE TECNICO BARRANQUILLA",
+      icon: "🛠️",
       contacts: [
         { name: "DIOSCAR ROJAS", email: "soindetec@gmail.com", phone: "+57 300 7210534" }
       ]
@@ -102,6 +116,7 @@ const ProveedoresDirectory = () => {
       id: 12,
       category: "IFX",
       service: "SERVICIOS TECNOLOGICOS",
+      icon: "📡",
       contacts: [
         { name: "JHON GOMEZ", phone: "+57 316 5278058", alt_phone: "(601) 3693024" }
       ]
@@ -110,6 +125,7 @@ const ProveedoresDirectory = () => {
       id: 13,
       category: "CLARO",
       service: "TELECOMUNICACIONES",
+      icon: "📱",
       contacts: [
         { name: "GINA NOVOA", email: "jgomez@ifxcorp.com", alt_email: "care@ifxcorp.com", phone: "310 2013937" }
       ]
@@ -118,6 +134,7 @@ const ProveedoresDirectory = () => {
       id: 14,
       category: "ETB",
       service: "TELECOMUNICACIONES",
+      icon: "☎️",
       contacts: [
         { name: "LIBIA YISETH SANTOS CHARRY", email: "libia.santosc.pr@etb.com.co", phone: "6013777777" }
       ]
@@ -126,6 +143,7 @@ const ProveedoresDirectory = () => {
       id: 15,
       category: "TIGO",
       service: "TELECOMUNICACIONES",
+      icon: "📞",
       contacts: [
         { name: "EDWIN MOVIL", email: "Edwin.Movil@tigo.com.co", phone: "+57 315 8885764" }
       ]
@@ -134,66 +152,121 @@ const ProveedoresDirectory = () => {
       id: 16,
       category: "DIALNET COLOMBIA S.A.",
       service: "CONTRATO DE INTERNET SANTA MARTA",
+      icon: "🌐",
       contacts: [
         { name: "OSCAR EDUARDO QUINTANA", email: "comercialhogar7@dialnet.net.co", phone: "+57 301 4893601" }
       ]
     }
   ];
 
+  const filteredProveedores = proveedores.filter(proveedor =>
+    proveedor.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    proveedor.service.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="container">
-      <div className="header-section">
-        <h1 className="main-title">DIRECTORIO DE PROVEEDORES</h1>
-        <div className="divider"></div>
-        <button className="back-button" onClick={() => navigate("/")}>
-          ← Volver al Inicio
-        </button>
-      </div>
-      
-      <div className="content">
-        {proveedores.map((proveedor) => (
-          <div key={proveedor.id} className="provider-section">
-            <div className="provider-header">
-              <h2 className="provider-name">{proveedor.category}</h2>
-              <span className="service-type">{proveedor.service}</span>
-            </div>
-            
-            <div className="contacts-grid">
-              {proveedor.contacts.map((contact, index) => (
-                <div key={index} className="contact-card">
-                  <div className="contact-name">{contact.name}</div>
-                  <div className="contact-details">
-                    {contact.email && (
-                      <div className="contact-item">
-                        <span className="label">Email:</span>
-                        <span className="value">{contact.email}</span>
-                      </div>
-                    )}
-                    {contact.alt_email && (
-                      <div className="contact-item">
-                        <span className="label">Email Alt:</span>
-                        <span className="value">{contact.alt_email}</span>
-                      </div>
-                    )}
-                    {contact.phone && (
-                      <div className="contact-item">
-                        <span className="label">Teléfono:</span>
-                        <span className="value">{contact.phone}</span>
-                      </div>
-                    )}
-                    {contact.alt_phone && (
-                      <div className="contact-item">
-                        <span className="label">Tel. Alt:</span>
-                        <span className="value">{contact.alt_phone}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+    <div className="app-container">
+      {/* Header similar al de la página principal */}
+      <header className="header">
+        <div className="header-content">
+          <div className="logo-section">
+            <div className="logo">
+              <div className="logo-icon">N</div>
+              <div className="logo-text">
+                <span className="logo-name">Navesoft</span>
+                <span className="logo-subtitle">Tecnología y servicios</span>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+          
+
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="main-content">
+        <div className="content-wrapper">
+          <div className="page-header">
+            <h1 className="page-title">Directorio Proveedores</h1>
+            <button className="back-button" onClick={() => navigate("/")}>
+              ← Volver al Inicio
+            </button>
+          </div>
+
+          {/* Search bar */}
+          <div className="search-section">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Buscar proveedor o servicio..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+          </div>
+
+          {/* Providers grid */}
+          <div className="providers-grid">
+            {filteredProveedores.map((proveedor) => (
+              <div key={proveedor.id} className="provider-card">
+                <div className="card-header">
+                  <div className="icon-container">
+                    <span className="provider-icon">{proveedor.icon}</span>
+                  </div>
+                  <div className="card-title-section">
+                    <h3 className="card-title">{proveedor.category}</h3>
+                    <span className="card-subtitle">{proveedor.service}</span>
+                  </div>
+                </div>
+                
+                <div className="card-content">
+                  <div className="contacts-section">
+                    <h4 className="contacts-title">Contactos</h4>
+                    {proveedor.contacts.map((contact, index) => (
+                      <div key={index} className="contact-item">
+                        <div className="contact-name">{contact.name}</div>
+                        {contact.email && (
+                          <div className="contact-detail">
+                            <span className="detail-icon">📧</span>
+                            <span className="detail-text">{contact.email}</span>
+                          </div>
+                        )}
+                        {contact.alt_email && (
+                          <div className="contact-detail">
+                            <span className="detail-icon">📧</span>
+                            <span className="detail-text">{contact.alt_email}</span>
+                          </div>
+                        )}
+                        {contact.phone && (
+                          <div className="contact-detail">
+                            <span className="detail-icon">📱</span>
+                            <span className="detail-text">{contact.phone}</span>
+                          </div>
+                        )}
+                        {contact.alt_phone && (
+                          <div className="contact-detail">
+                            <span className="detail-icon">☎️</span>
+                            <span className="detail-text">{contact.alt_phone}</span>
+                          </div>
+                        )}
+                        {index < proveedor.contacts.length - 1 && <div className="contact-divider"></div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          © 2025 Navesoft. Todos los derechos reservados.
+        </div>
+      </footer>
 
       <style jsx>{`
         * {
@@ -202,339 +275,356 @@ const ProveedoresDirectory = () => {
           box-sizing: border-box;
         }
 
-        .container {
+        .app-container {
           min-height: 100vh;
-          background: #ffffff;
+          background-color: #f8fafc;
           font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-          color: #2c3e50;
-          line-height: 1.6;
+          display: flex;
+          flex-direction: column;
         }
 
-        .header-section {
-          padding: 60px 40px 40px;
-          text-align: center;
-          background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
-          border-bottom: 1px solid #e1e8ed;
-          position: relative;
-          overflow: hidden;
+        /* Header Styles */
+        .header {
+          background: #304173;
+          color: white;
+          padding: 0 2rem;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .header-section::before {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: radial-gradient(circle at center, rgba(49, 130, 206, 0.03) 0%, transparent 70%);
-          pointer-events: none;
+        .header-content {
+          max-width: 1400px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 70px;
         }
 
-        .main-title {
+        .logo-section {
+          display: flex;
+          align-items: center;
+        }
+
+        .logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .logo-icon {
+          width: 40px;
+          height: 40px;
+          background: #264163;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: white;
+        }
+
+        .logo-text {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .logo-name {
+          font-size: 1.4rem;
+          font-weight: 600;
+          line-height: 1;
+        }
+
+        .logo-subtitle {
+          font-size: 0.75rem;
+          opacity: 0.8;
+          line-height: 1;
+        }
+
+        /* Main Content */
+        .main-content {
+          flex: 1;
+          padding: 2rem 0;
+        }
+
+        .content-wrapper {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 2rem;
+        }
+
+        .page-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+        }
+
+        .page-title {
           font-size: 2.5rem;
-          font-weight: 400;
-          color: #1a202c;
-          letter-spacing: 2px;
-          margin-bottom: 20px;
-          position: relative;
-          z-index: 1;
-        }
-
-        .divider {
-          width: 80px;
-          height: 3px;
-          background: linear-gradient(90deg,  #304173, #4299e1);
-          margin: 0 auto 30px;
-          border-radius: 2px;
-          box-shadow: 0 2px 4px rgba(49, 130, 206, 0.2);
+          font-weight: 600;
+          color: #2d3748;
+          margin: 0;
         }
 
         .back-button {
-          background: linear-gradient(135deg,  #304173 0%, #4299e1 100%);
+          background: #304173;
           color: white;
           border: none;
-          padding: 12px 24px;
+          padding: 0.75rem 1.5rem;
           border-radius: 8px;
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 500;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 8px rgba(49, 130, 206, 0.2);
-          position: relative;
-          z-index: 1;
+          box-shadow: 0 2px 8px rgba(48, 65, 115, 0.2);
           font-family: inherit;
         }
 
         .back-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
-          background: linear-gradient(135deg, #2c5aa0 0%,  #304173 100%);
+          box-shadow: 0 4px 12px rgba(48, 65, 115, 0.3);
+          background: #264163;
         }
 
-        .back-button:active {
-          transform: translateY(0);
-          box-shadow: 0 2px 6px rgba(49, 130, 206, 0.2);
+        /* Search Section */
+        .search-section {
+          margin-bottom: 3rem;
         }
 
-        .content {
-          max-width: 1200px;
+        .search-container {
+          max-width: 500px;
           margin: 0 auto;
-          padding: 60px 40px;
           position: relative;
         }
 
-        .provider-section {
-          margin-bottom: 60px;
-          border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 50px;
-          position: relative;
-        }
-
-        .provider-section::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 4px;
-          height: 100%;
-          background: linear-gradient(180deg,  #304173, #4299e1);
-          border-radius: 2px;
-        }
-
-        .provider-section:last-child {
-          border-bottom: none;
-          margin-bottom: 0;
-        }
-
-        .provider-header {
-          margin-bottom: 30px;
-          padding-left: 20px;
-          position: relative;
-        }
-
-        .provider-name {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #1a202c;
-          margin-bottom: 8px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          position: relative;
-        }
-
-        .service-type {
-          font-size: 0.9rem;
-          color:  #304173;
-          font-weight: 500;
-          background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
-          padding: 8px 18px;
-          border-radius: 25px;
-          display: inline-block;
-          border: 1px solid rgba(49, 130, 206, 0.1);
-          box-shadow: 0 2px 4px rgba(49, 130, 206, 0.1);
-        }
-
-        .contacts-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 24px;
-          padding-left: 20px;
-        }
-
-        .contact-card {
-          background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          padding: 28px;
-          transition: all 0.3s ease;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-
-        .contact-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
+        .search-input {
           width: 100%;
-          height: 3px;
-          background: linear-gradient(90deg,  #304173, #4299e1, #63b3ed);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.3s ease;
+          padding: 1rem 1.5rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 1rem;
+          background: white;
+          transition: all 0.2s ease;
+          font-family: inherit;
         }
 
-        .contact-card:hover {
-          border-color:  #304173;
-          box-shadow: 0 8px 25px rgba(49, 130, 206, 0.12);
-          transform: translateY(-2px);
+        .search-input:focus {
+          outline: none;
+          border-color: #304173;
+          box-shadow: 0 0 0 3px rgba(48, 65, 115, 0.1);
         }
 
-        .contact-card:hover::before {
-          transform: scaleX(1);
+        /* Providers Grid */
+        .providers-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          gap: 2rem;
+          margin-bottom: 3rem;
         }
 
-        .contact-name {
+        .provider-card {
+          background: white;
+          border-radius: 16px;
+          padding: 2rem;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          transition: all 0.3s ease;
+          border: 1px solid #e2e8f0;
+        }
+
+        .provider-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+          border-color: #304173;
+        }
+
+        .card-header {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .icon-container {
+          background: #304173;
+          width: 60px;
+          height: 60px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .provider-icon {
+          font-size: 1.8rem;
+        }
+
+        .card-title-section {
+          flex: 1;
+        }
+
+        .card-title {
           font-size: 1.1rem;
           font-weight: 600;
-          color: #1a202c;
-          margin-bottom: 20px;
-          text-transform: capitalize;
-          position: relative;
-          padding-bottom: 12px;
+          color: #2d3748;
+          margin-bottom: 0.5rem;
+          line-height: 1.3;
         }
 
-        .contact-name::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 30px;
-          height: 2px;
-          background: #cbd5e0;
-          border-radius: 1px;
+        .card-subtitle {
+          font-size: 0.9rem;
+          color: #304173;
+          font-weight: 500;
+          background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+          padding: 0.4rem 0.8rem;
+          border-radius: 20px;
+          display: inline-block;
+          border: 1px solid rgba(48, 65, 115, 0.1);
         }
 
-        .contact-details {
-          space-y: 12px;
+        .card-content {
+          border-top: 1px solid #f1f5f9;
+          padding-top: 1.5rem;
+        }
+
+        .contacts-title {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #304173;
+          margin-bottom: 1rem;
         }
 
         .contact-item {
-          display: flex;
-          align-items: flex-start;
-          margin-bottom: 14px;
-          gap: 12px;
-          padding: 8px 12px;
-          border-radius: 6px;
-          transition: background-color 0.2s ease;
-        }
-
-        .contact-item:hover {
-          background-color: #f7fafc;
+          margin-bottom: 1.5rem;
         }
 
         .contact-item:last-child {
           margin-bottom: 0;
         }
 
-        .label {
-          font-size: 0.8rem;
+        .contact-name {
+          font-size: 1rem;
           font-weight: 600;
-          color: #718096;
-          min-width: 75px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          position: relative;
-          padding-left: 16px;
-        }
-
-        .label::before {
-          content: '•';
-          position: absolute;
-          left: 0;
-          color:  #304173;
-          font-weight: bold;
-        }
-
-        .value {
-          font-size: 0.9rem;
           color: #2d3748;
+          margin-bottom: 0.8rem;
+        }
+
+        .contact-detail {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          margin-bottom: 0.5rem;
+          padding: 0.5rem;
+          border-radius: 6px;
+          transition: background-color 0.2s ease;
+        }
+
+        .contact-detail:hover {
+          background-color: #f8fafc;
+        }
+
+        .detail-icon {
+          font-size: 0.9rem;
+          width: 20px;
+          text-align: center;
+        }
+
+        .detail-text {
+          font-size: 0.9rem;
+          color: #4a5568;
           word-break: break-all;
-          flex: 1;
-          font-weight: 500;
+        }
+
+        .contact-divider {
+          height: 1px;
+          background: linear-gradient(to right, #e2e8f0, transparent);
+          margin: 1rem 0;
+        }
+
+        /* Footer */
+        .footer {
+          background: #304173;
+          color: white;
+          padding: 2rem 0;
+          margin-top: auto;
+        }
+
+        .footer-content {
+          text-align: center;
+          font-size: 0.9rem;
+          opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+          .providers-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          }
         }
 
         @media (max-width: 768px) {
-          .header-section {
-            padding: 40px 20px 30px;
+          .header-content {
+            padding: 0 1rem;
           }
 
-          .main-title {
+          .nav {
+            gap: 1rem;
+          }
+
+          .nav-link {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+          }
+
+          .content-wrapper {
+            padding: 0 1rem;
+          }
+
+          .page-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+          }
+
+          .page-title {
             font-size: 2rem;
           }
 
-          .back-button {
-            padding: 10px 20px;
-            font-size: 0.9rem;
-          }
-
-          .content {
-            padding: 40px 20px;
-          }
-
-          .content::before {
-            display: none;
-          }
-
-          .provider-section {
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-          }
-
-          .provider-section::before {
-            width: 3px;
-          }
-
-          .provider-header {
-            padding-left: 16px;
-          }
-
-          .provider-name {
-            font-size: 1.2rem;
-          }
-
-          .contacts-grid {
+          .providers-grid {
             grid-template-columns: 1fr;
-            gap: 16px;
-            padding-left: 16px;
+            gap: 1.5rem;
           }
 
-          .contact-card {
-            padding: 20px;
+          .provider-card {
+            padding: 1.5rem;
           }
 
-          .contact-item {
+          .card-header {
             flex-direction: column;
-            gap: 4px;
-            padding: 6px 8px;
+            text-align: center;
           }
 
-          .label {
-            min-width: auto;
-            padding-left: 12px;
+          .icon-container {
+            margin: 0 auto;
           }
         }
 
         @media (max-width: 480px) {
-          .header-section {
-            padding: 30px 16px 20px;
+          .logo-text {
+            display: none;
           }
 
-          .main-title {
-            font-size: 1.7rem;
-            letter-spacing: 1px;
+          .nav {
+            gap: 0.5rem;
           }
 
-          .back-button {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+          .page-title {
+            font-size: 1.8rem;
           }
 
-          .content {
-            padding: 30px 16px;
-          }
-
-          .provider-header {
-            padding-left: 12px;
-          }
-
-          .contacts-grid {
-            padding-left: 12px;
-          }
-
-          .contact-card {
-            padding: 16px;
+          .provider-card {
+            padding: 1rem;
           }
         }
       `}</style>

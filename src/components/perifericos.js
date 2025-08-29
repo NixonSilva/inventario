@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaFilter, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useAuth } from "../AutoContext";
 
-const API_URL = "https://inventario.navesoft.com/backend/perifericos.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/perifericos.php";
 
 const Perifericos = () => {
   const { user } = useAuth();
@@ -158,7 +158,7 @@ const Perifericos = () => {
         <input type="text" name="teclado" placeholder="Filtrar por Teclado" value={filtros.teclado} onChange={handleInputChange} />
         <button className="btn-estilo" onClick={limpiarFiltros}>Limpiar <FaFilter className="icono-filtro" /></button>
         {user.permite_insertar === "Y" &&
-          <button className="btn-estilo" onClick={() => navigate("/Rperifericos")}>+ Periférico</button>}
+          <button className="btn-estilo" onClick={() => navigate("/BuscarUsuarioP")}>+ Periférico</button>}
       </div>
 
       {perifericos.length === 0 ? (

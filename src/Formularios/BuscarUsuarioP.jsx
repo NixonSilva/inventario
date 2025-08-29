@@ -10,7 +10,6 @@ function BuscarUsuario() {
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
-  const [datosCompletos, setDatosCompletos] = useState(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -55,21 +54,6 @@ function BuscarUsuario() {
     }
   };
 
-  // Función para procesar datos completos del usuario desde la respuesta de búsqueda
-  const procesarDatosUsuario = (usuario) => {
-    return {
-      id: usuario.ID,
-      nombre: usuario.NOMBRE,
-      empresa: usuario.EMPRESAS || '',
-      ciudad: usuario.UBICACION || '',
-      ubicacion: usuario.UBICACION || '',
-      correo: usuario.CORREO_ELECTRONICO || '',
-      telefono: usuario.TELEFONO || '',
-      unidadNegocio: usuario.UNIDADES_NEGOCIO || '',
-      activo: usuario.ACTIVO || ''
-    };
-  };
-
   // Efecto para buscar automáticamente cuando cambia el nombre
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -105,28 +89,15 @@ function BuscarUsuario() {
     setNombre(usuario.NOMBRE);
     setMostrarDropdown(false);
     setError("");
-    
-    // Procesar datos completos del usuario usando la respuesta de búsqueda
-    const datosCompletos = procesarDatosUsuario(usuario);
-    setDatosCompletos(datosCompletos);
   };
 
   // Función para proceder con el usuario seleccionado
   const procederConUsuario = () => {
-    if (usuarioSeleccionado && datosCompletos) {
-      navigate("/Rtelefonia", {
+    if (usuarioSeleccionado) {
+      navigate("/Rperifericos", {
         state: {
-          usuarioData: {
-            id: datosCompletos.id,
-            usuarios: datosCompletos.nombre,
-            empresa: datosCompletos.empresa,
-            ciudad: datosCompletos.ciudad || datosCompletos.ubicacion,
-            ubicacion: datosCompletos.ubicacion,
-            correo: datosCompletos.correo,
-            telefono: datosCompletos.telefono,
-            unidadNegocio: datosCompletos.unidadNegocio
-          },
-          fromBuscarUsuario: true // Flag para identificar que viene de búsqueda
+          usuarioNombre: usuarioSeleccionado.NOMBRE,
+          cedula: usuarioSeleccionado.ID,
         },
       });
     } else {
@@ -139,7 +110,6 @@ function BuscarUsuario() {
     const valor = e.target.value;
     setNombre(valor);
     setUsuarioSeleccionado(null);
-    setDatosCompletos(null);
     
     if (valor.length < 3) {
       setMostrarDropdown(false);
@@ -208,11 +178,11 @@ function BuscarUsuario() {
         </div>
 
         <div>
-          <button onClick={() => navigate("/telefonia")}>Ver registros</button>
+          <button onClick={() => navigate("/perifericos")}>Ver registros</button>
           <button 
             onClick={procederConUsuario}
-            disabled={!usuarioSeleccionado || !datosCompletos}
-            className={usuarioSeleccionado && datosCompletos ? '' : 'btn-disabled'}
+            disabled={!usuarioSeleccionado}
+            className={usuarioSeleccionado ? '' : 'btn-disabled'}
           >
             Buscar
           </button>

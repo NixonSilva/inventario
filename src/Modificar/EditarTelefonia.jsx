@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarTelefonia.css";
 import MessageModal from "../MessageModal"; // ✅ Importación del modal
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarTelefonia.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerTelefonia.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarTelefonia.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerTelefonia.php";
 
 const EditarTelefonia = () => {
   const { id } = useParams();

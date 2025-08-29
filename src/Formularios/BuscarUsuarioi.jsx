@@ -29,7 +29,7 @@ function BuscarUsuario() {
       const nombreMayuscula = nombreBusqueda.toUpperCase();
       
       const response = await axios.get(
-        `https://inventario.navesoft.com/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
+        `http://172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
       );
 
       if (response.data.success) {
@@ -129,6 +129,22 @@ function BuscarUsuario() {
       <div className="buscar-usuario-container">
         <h2>Buscar usuario por nombre</h2>
 
+        {/* Mensaje de confirmación de usuario seleccionado - ARRIBA del input */}
+        {usuarioSeleccionado && (
+          <div style={{ 
+            backgroundColor: '#f8f9fa', 
+            border: '1px solid #e9ecef', 
+            color: '#28a745', 
+            padding: '8px 12px', 
+            borderRadius: '4px', 
+            marginBottom: '15px',
+            fontSize: '0.9em',
+            textAlign: 'center'
+          }}>
+            ✓ Usuario seleccionado
+          </div>
+        )}
+
         <div className="dropdown-wrapper" ref={dropdownRef}>
           <input
             type="text"
@@ -154,6 +170,7 @@ function BuscarUsuario() {
                   onClick={() => seleccionarUsuario(usuario)}
                 >
                   <div className="item-nombre">{usuario.NOMBRE}</div>
+                  <div className="item-id">ID: {usuario.ID}</div>
                 </div>
               ))}
             </div>
@@ -174,17 +191,9 @@ function BuscarUsuario() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         
         {nombre.length > 0 && nombre.length < 3 && (
-          <p style={{ color: "  #304173" }}>
+          <p style={{ color: "#304173" }}>
             Ingrese al menos 3 caracteres para buscar
           </p>
-        )}
-
-        {usuarioSeleccionado && (
-          <div className="confirmacion-usuario">
-            <p style={{ color: "#28a745", fontWeight: "bold" }}>
-              ✓ Usuario seleccionado: {usuarioSeleccionado.NOMBRE}
-            </p>
-          </div>
         )}
       </div>
     </div>

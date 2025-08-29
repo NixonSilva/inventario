@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/Styles_F1.css";
 import MessageModal from "../MessageModal";
 import axios from "axios";
 
 const Registrotelefonia = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [showModal, setShowModal] = useState(false);
   const [modalConfig, setModalConfig] = useState({
@@ -29,17 +30,51 @@ const Registrotelefonia = () => {
     ip: "",
   });
 
+  const [camposBloqueados, setCamposBloqueados] = useState({
+    id: false,
+    usuarios: false,
+    empresa: false,
+    ciudad: false,
+  });
+
   const [activeButton, setActiveButton] = useState(""); // controla qué botón fue presionado
+
+  // Efecto para cargar datos del usuario si viene de BuscarUsuario
+  useEffect(() => {
+    if (location.state && location.state.fromBuscarUsuario && location.state.usuarioData) {
+      const { usuarioData } = location.state;
+      
+      // Precargar los datos del usuario (SIN incluir el ID)
+      setFormData(prevData => ({
+        ...prevData,
+        usuarios: usuarioData.usuarios || "",
+        empresa: usuarioData.empresa || "",
+        ciudad: usuarioData.ciudad || usuarioData.ubicacion || "",
+      }));
+
+      // Bloquear los campos que vienen precargados (SIN incluir el ID)
+      setCamposBloqueados({
+        id: false, // El ID no se bloquea
+        usuarios: !!usuarioData.usuarios,
+        empresa: !!usuarioData.empresa,
+        ciudad: !!(usuarioData.ciudad || usuarioData.ubicacion),
+      });
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Solo permitir cambios en campos no bloqueados
+    if (!camposBloqueados[name]) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleRegistrar = async () => {
     try {
       await axios.post(
-        "https://inventario.navesoft.com/backend/RegistroTelefonia.php",
+        "http://172.20.158.193/inventario_navesoft/backend/RegistroTelefonia.php",
         formData
       );
 
@@ -81,14 +116,37 @@ const Registrotelefonia = () => {
     navigate("/telefonia");
   };
 
+  // Función para obtener el estilo del campo
+  const getFieldStyle = (fieldName) => {
+    if (camposBloqueados[fieldName]) {
+      return {
+        backgroundColor: '#f0f0f0',
+        cursor: 'not-allowed',
+        border: '2px solid #28a745',
+        color: '#495057'
+      };
+    }
+    return {};
+  };
+
+  // Función para obtener el placeholder del campo
+  const getPlaceholder = (key) => {
+    if (camposBloqueados[key]) {
+      return `${key.charAt(0).toUpperCase() + key.slice(1)} (precargado)`;
+    }
+    return `Ingrese ${key}`;
+  };
+
   return (
     <div className="form-container">
       <h2 className="form-title">Registro de Telefonía</h2>
+      
       <form className="form-grid">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="form-group">
             <label htmlFor={key}>
               {key.charAt(0).toUpperCase() + key.slice(1)}
+              {camposBloqueados[key]}
             </label>
             <input
               type="text"
@@ -96,11 +154,15 @@ const Registrotelefonia = () => {
               name={key}
               value={value}
               onChange={handleChange}
-              placeholder={`Ingrese ${key}`}
+              placeholder={getPlaceholder(key)}
+              style={getFieldStyle(key)}
+              readOnly={camposBloqueados[key]}
+              title={camposBloqueados[key] ? 'Campo bloqueado - precargado desde búsqueda de usuario' : ''}
             />
           </div>
         ))}
       </form>
+      
       <div className="form-buttons">
         <button
           type="button"

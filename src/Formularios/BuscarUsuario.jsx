@@ -29,7 +29,7 @@ function BuscarUsuario() {
       const nombreMayuscula = nombreBusqueda.toUpperCase();
       
       const response = await axios.get(
-        `https://inventario.navesoft.com/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
+        `http://172.20.158.193/inventario_navesoft/backend/BuscarUsuario.php?nombre=${encodeURIComponent(nombreMayuscula)}`
       );
 
       if (response.data.success) {
@@ -85,7 +85,7 @@ function BuscarUsuario() {
 
   // Función para seleccionar un usuario
   const seleccionarUsuario = (usuario) => {
-    // ✅ DEBUG: Ver TODOS los campos del usuario
+    // DEBUG: Ver TODOS los campos del usuario
     console.log("Todos los campos del usuario:", usuario);
     console.log("Campos disponibles:", Object.keys(usuario));
     
@@ -95,14 +95,14 @@ function BuscarUsuario() {
     setError("");
   };
 
-  // ✅ Función ACTUALIZADA para proceder con el usuario seleccionado
+  // Función para proceder con el usuario seleccionado
   const procederConUsuario = () => {
     if (usuarioSeleccionado) {
       navigate("/Requipos", {
         state: {
           usuarioNombre: usuarioSeleccionado.NOMBRE,
           cedula: usuarioSeleccionado.ID,
-          ubicacion: usuarioSeleccionado.UBICACION || usuarioSeleccionado.ubicacion || "", // ✅ Agregada ubicación
+          ubicacion: usuarioSeleccionado.UBICACION || usuarioSeleccionado.ubicacion || "",
         },
       });
     } else {
@@ -134,6 +134,22 @@ function BuscarUsuario() {
       <div className="buscar-usuario-container">
         <h2>Buscar usuario por nombre</h2>
 
+        {/* Mensaje de confirmación de usuario seleccionado - ARRIBA del input */}
+        {usuarioSeleccionado && (
+          <div style={{ 
+            backgroundColor: '#f8f9fa', 
+            border: '1px solid #e9ecef', 
+            color: '#28a745', 
+            padding: '8px 12px', 
+            borderRadius: '4px', 
+            marginBottom: '15px',
+            fontSize: '0.9em',
+            textAlign: 'center'
+          }}>
+            ✓ Usuario seleccionado
+          </div>
+        )}
+
         <div className="dropdown-wrapper" ref={dropdownRef}>
           <input
             type="text"
@@ -146,7 +162,7 @@ function BuscarUsuario() {
           
           {cargando && <div className="loading-indicator">Buscando...</div>}
 
-          {/* ✅ Lista desplegable ACTUALIZADA para mostrar ubicación */}
+          {/* Lista desplegable con ubicación */}
           {mostrarDropdown && usuarios.length > 0 && (
             <div className="usuarios-dropdown">
               <div className="dropdown-header">
@@ -159,9 +175,10 @@ function BuscarUsuario() {
                   onClick={() => seleccionarUsuario(usuario)}
                 >
                   <div className="item-nombre">{usuario.NOMBRE}</div>
-                  {/* ✅ Mostrar ubicación si está disponible */}
+                  <div className="item-id">ID: {usuario.ID}</div>
+                  {/* Mostrar ubicación si está disponible */}
                   {(usuario.UBICACION || usuario.ubicacion) && (
-                    <div className="item-ubicacion" style={{ fontSize: '0.9em', color: '#666', marginTop: '2px' }}>
+                    <div className="item-ubicacion" style={{ fontSize: '0.8em', color: '#666', marginTop: '2px' }}>
                       📍 {usuario.UBICACION || usuario.ubicacion}
                     </div>
                   )}
@@ -178,25 +195,16 @@ function BuscarUsuario() {
             disabled={!usuarioSeleccionado}
             className={usuarioSeleccionado ? '' : 'btn-disabled'}
           >
-            Continuar con usuario
+            Buscar
           </button>
         </div>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
         
         {nombre.length > 0 && nombre.length < 3 && (
-          <p style={{ color: "  #304173" }}>
+          <p style={{ color: "#304173" }}>
             Ingrese al menos 3 caracteres para buscar
           </p>
-        )}
-
-        {/* ✅ Confirmación ACTUALIZADA para mostrar ubicación */}
-        {usuarioSeleccionado && (
-          <div className="confirmacion-usuario">
-            <p style={{ color: "#28a745", fontWeight: "bold" }}>
-              ✓ Usuario seleccionado: {usuarioSeleccionado.NOMBRE}
-            </p>
-          </div>
         )}
       </div>
     </div>

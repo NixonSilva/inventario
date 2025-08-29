@@ -26,7 +26,7 @@ const LoginInterno = () => {
     }
 
     try {
-      const response = await fetch("https://inventario.navesoft.com/backend/login.php", {
+      const response = await fetch("http://172.20.158.193/inventario_navesoft/backend/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, clave }),

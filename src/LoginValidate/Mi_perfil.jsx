@@ -27,7 +27,7 @@ const MiPerfil = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // URL base consistente
-  const API_BASE_URL = 'https://inventario.navesoft.com/backend/miPerfil.php';
+  const API_BASE_URL = 'http://172.20.158.193/inventario_navesoft/backend/miPerfil.php';
 
   // Función para obtener datos del perfil (memoizada para evitar re-renders)
   const fetchUserProfile = useCallback(async () => {

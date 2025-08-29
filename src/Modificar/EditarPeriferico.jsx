@@ -4,8 +4,8 @@ import axios from "axios";
 import "../styles/EditarPeriferico.css";
 import MessageModal from "../MessageModal";
 
-const API_URL = "https://inventario.navesoft.com/backend/actualizarPeriferico.php";
-const CONSULTA_API = "https://inventario.navesoft.com/backend/obtenerPeriferico.php";
+const API_URL = "http://172.20.158.193/inventario_navesoft/backend/actualizarPeriferico.php";
+const CONSULTA_API = "http://172.20.158.193/inventario_navesoft/backend/obtenerPeriferico.php";
 
 const EditarPeriferico = () => {
   const { id } = useParams();
@@ -13,7 +13,7 @@ const EditarPeriferico = () => {
 
   // DEBUGGING TEMPORAL - Agregar estos logs
   console.log("=== DEBUGGING EDITARPERIFERICO ===");
-  console.log("1. useParams completo:", { id }); // Cambio aquí
+  console.log("1. useParams completo:", { id });
   console.log("2. ID extraído:", id);
   console.log("3. Tipo de ID:", typeof id);
   console.log("4. URL actual:", window.location.pathname);
@@ -80,7 +80,7 @@ const EditarPeriferico = () => {
         console.error("ERROR: ID no válido recibido");
         console.error("- ID recibido:", id);
         console.error("- URL actual:", window.location.pathname);
-        console.error("- Parámetros disponibles:", { id }); // Cambio aquí
+        console.error("- Parámetros disponibles:", { id });
         
         setModalConfig({
           titulo: "Error de parámetros",
@@ -205,7 +205,7 @@ const EditarPeriferico = () => {
     console.log(`Campo ${name} actualizado:`, value);
   };
 
-  // Guardar cambios
+  // Guardar cambios - FUNCIÓN MEJORADA
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -260,7 +260,9 @@ const EditarPeriferico = () => {
         camaras_desktop: (formData.camaras_desktop || "").trim()
       };
 
+      console.log("=== ENVIANDO DATOS AL BACKEND ===");
       console.log("Datos a enviar:", datosParaEnviar);
+      console.log("URL:", API_URL);
 
       const response = await axios.post(API_URL, datosParaEnviar, {
         headers: {
@@ -269,61 +271,119 @@ const EditarPeriferico = () => {
         timeout: 15000 // Timeout de 15 segundos para actualización
       });
 
-      console.log("Respuesta de actualización:", response.data);
+      console.log("=== RESPUESTA COMPLETA DEL SERVIDOR ===");
+      console.log("Status:", response.status);
+      console.log("Headers:", response.headers);
+      console.log("Data completa:", response.data);
+      console.log("Tipo de response.data:", typeof response.data);
+      console.log("success:", response.data?.success);
+      console.log("message:", response.data?.message);
+      console.log("=======================================");
       
-      if (response.data.success || response.data.message) {
-        setModalConfig({
-          titulo: "Actualización exitosa",
-          texto: response.data.message || "El periférico fue actualizado correctamente.",
-          icono: "check",
-          buttons: [
-            {
-              label: "Aceptar",
-              onClick: () => {
-                setShowModal(false);
-                navigate("/perifericos");
+      // Verificar que la respuesta sea exitosa
+      if (response.status >= 200 && response.status < 300) {
+        // Status HTTP exitoso (200-299)
+        
+        if (response.data) {
+          // Hay datos en la respuesta
+          
+          if (response.data.success === false || response.data.error) {
+            // El servidor respondió con éxito HTTP pero indica error en los datos
+            throw new Error(response.data.error || response.data.message || "Error reportado por el servidor");
+          } else {
+            // Respuesta exitosa: success=true, o success no está definido pero hay message, o cualquier otra respuesta válida
+            setModalConfig({
+              titulo: "Actualización exitosa",
+              texto: response.data.message || "El periférico fue actualizado correctamente.",
+              icono: "check",
+              buttons: [
+                {
+                  label: "Aceptar",
+                  onClick: () => {
+                    setShowModal(false);
+                    navigate("/perifericos");
+                  },
+                },
+              ],
+            });
+            setShowModal(true);
+          }
+        } else {
+          // Status HTTP exitoso pero sin datos - asumir éxito
+          setModalConfig({
+            titulo: "Actualización exitosa",
+            texto: "El periférico fue actualizado correctamente.",
+            icono: "check",
+            buttons: [
+              {
+                label: "Aceptar",
+                onClick: () => {
+                  setShowModal(false);
+                  navigate("/perifericos");
+                },
               },
-            },
-          ],
-        });
-        setShowModal(true);
+            ],
+          });
+          setShowModal(true);
+        }
       } else {
-        throw new Error("Respuesta inesperada del servidor");
+        throw new Error(`Status HTTP de error: ${response.status}`);
       }
       
     } catch (error) {
-      console.error("Error completo:", error);
+      console.error("=== ERROR COMPLETO ===");
+      console.error("Error objeto:", error);
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
       
       let mensajeError = "Error desconocido al actualizar el periférico";
       
       if (error.code === 'ECONNABORTED') {
         mensajeError = "Tiempo de espera agotado. Intenta nuevamente.";
       } else if (error.response) {
+        console.error("=== ERROR RESPONSE ===");
+        console.error("Response status:", error.response.status);
+        console.error("Response data:", error.response.data);
+        console.error("Response headers:", error.response.headers);
+        
         const status = error.response.status;
         const data = error.response.data;
         
         switch (status) {
           case 400:
-            mensajeError = `Error de datos: ${data?.mensaje || data?.error || 'Datos inválidos enviados al servidor'}`;
+            mensajeError = `Error de datos: ${data?.mensaje || data?.error || data?.message || 'Datos inválidos enviados al servidor'}`;
             break;
           case 404:
             mensajeError = "Endpoint no encontrado. Verifica la URL del backend.";
             break;
           case 500:
-            mensajeError = `Error interno del servidor: ${data?.mensaje || data?.error || 'Error en el backend'}`;
+            mensajeError = `Error interno del servidor: ${data?.mensaje || data?.error || data?.message || 'Error en el backend'}`;
             break;
           default:
-            mensajeError = `Error ${status}: ${data?.mensaje || data?.error || error.response.statusText}`;
+            mensajeError = `Error ${status}: ${data?.mensaje || data?.error || data?.message || error.response.statusText}`;
         }
       } else if (error.request) {
-        mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando.";
+        console.error("=== ERROR REQUEST ===");
+        console.error("Request:", error.request);
+        mensajeError = "No se pudo conectar con el servidor. Verifica que el backend esté funcionando y la URL sea correcta.";
+      } else {
+        console.error("=== ERROR SETUP ===");
+        mensajeError = error.message || "Error desconocido al configurar la petición";
       }
       
       setModalConfig({
         titulo: "Error en la actualización",
-        texto: mensajeError,
+        texto: `${mensajeError}\n\nDetalles técnicos:\n- URL: ${API_URL}\n- ID: ${formData.id}\n- Error: ${error.name || 'Unknown'}\n\n¿Los datos se actualizaron correctamente en la base de datos?`,
         icono: "fail",
         buttons: [
+          {
+            label: "Verificar en Lista",
+            onClick: () => {
+              setShowModal(false);
+              navigate("/perifericos");
+            },
+          },
           {
             label: "Cerrar",
             onClick: () => setShowModal(false),

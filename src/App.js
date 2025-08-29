@@ -26,11 +26,13 @@ import Registroperifericos from "./Formularios/RegistroPerifericos";
 import Registroimpresoras from "./Formularios/Registroimpresoras";
 import LoginInventario from "./LoginValidate/loginInterno.jsx";
 import RestartPassword from "./LoginValidate/olvidoClave.jsx";
+import ResetPassword from "./LoginValidate/PageResetPassword.jsx";
 import MiPerfil from "./LoginValidate/Mi_perfil.jsx";
 import RegistroLogin from "./LoginValidate/RegistrarLogin.jsx";
 import BuscarUsuario from "./Formularios/BuscarUsuario.jsx";
 import BuscarUsuarioT from "./Formularios/BuscarUsuarioT.jsx";
 import BuscarUsuarioi from "./Formularios/BuscarUsuarioi.jsx";
+import BuscarUsuarioP from "./Formularios/BuscarUsuarioP.jsx";
 
 //Modificar Datos
 import EditarUsuario from "./Modificar/EditarUsuario.jsx";
@@ -49,6 +51,7 @@ function App() {
             <Routes>
               {/* Rutas públicas */}
               {/*<Route path="/login-navemar" element={<LoginInventario />} />*/}
+              {/*<Route path="/ResetPassword" element={<ResetPassword />} />*/}
             <Route
                   path="/"
                   element={
@@ -65,6 +68,7 @@ function App() {
                 <Route path="/usuarios" element={<TablaUsuarios />} />
                 <Route path="/LoginInventario" element={<LoginInventario />} />
                 <Route path="/olvidoCLave" element={<RestartPassword />} />
+                <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route path="/miPerfil" element={<MiPerfil />} />
                 <Route path="/RegistroLogin" element={<RegistroLogin />} />
                 <Route path="/equipos" element={<TablaEquipos />} />
@@ -79,6 +83,7 @@ function App() {
                 <Route path="/BuscarUsuario" element= {<BuscarUsuario />} />
                 <Route path="/BuscarUsuarioT" element= {<BuscarUsuarioT />} />
                 <Route path="/BuscarUsuarioi" element= {<BuscarUsuarioi />} />
+                <Route path="/BuscarUsuarioP" element= {<BuscarUsuarioP />} />
                 <Route path="/Modificar/EditarUsuario/:id" element={<EditarUsuario />} />
                 <Route path="/Modificar/EditarEquipo/:id" element={<EditarEquipo />} />
                 <Route path="/Modificar/EditarTelefonia/:id" element={<EditarTelefonia />} />
